@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Users, DollarSign, Target, TrendingUp,
   Search, Bell, Menu, X, Plus, CheckCircle, Clock, Briefcase,
   Upload, Sparkles, Mail, Copy, Loader2, Star, LogOut,
-  Shield, Eye, EyeOff, UserPlus, Trash2, Edit2,
+  Shield, Eye, EyeOff, UserPlus, Trash2, Edit2, FileDown,
 } from "lucide-react";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
@@ -64,6 +64,62 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const appId = myFirebaseConfig.projectId;
+
+// ============================================================
+// 📊 EXCEL EXPORT UTILITIES
+// ============================================================
+const exportToExcel = (data, filename, headers) => {
+  // Build CSV content (opens in Excel)
+  const csvRows = [];
+  // Add header row
+  csvRows.push(headers.map(h => `"${h.label}"`).join(","));
+  // Add data rows
+  data.forEach(row => {
+    const values = headers.map(h => {
+      const val = row[h.key] ?? "";
+      return `"${String(val).replace(/"/g, '""')}"`;
+    });
+    csvRows.push(values.join(","));
+  });
+  const csvContent = "\uFEFF" + csvRows.join("\n"); // BOM for Excel UTF-8
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename + "_" + new Date().toISOString().split("T")[0] + ".csv";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};
+
+const CUSTOMER_HEADERS = [
+  { label: "No.", key: "no" },
+  { label: "Customer Name", key: "client" },
+  { label: "Business/Workplace", key: "businessName" },
+  { label: "Phone", key: "phone" },
+  { label: "Branch", key: "branch" },
+  { label: "Loan Type", key: "loanType" },
+  { label: "Request Amount ($)", key: "amount" },
+  { label: "Approved Amount ($)", key: "approvedAmount" },
+  { label: "Rate (%)", key: "rate" },
+  { label: "Tenor (months)", key: "tenor" },
+  { label: "Income Type", key: "incomeType" },
+  { label: "Income Amount ($)", key: "incomeAmount" },
+  { label: "Income Status", key: "incomeStatus" },
+  { label: "Customer Priority", key: "customerStatus" },
+  { label: "Loan Status", key: "status" },
+  { label: "RM Name", key: "rmName" },
+  { label: "Date", key: "date" },
+];
+
+const USER_HEADERS = [
+  { label: "No.", key: "no" },
+  { label: "Full Name", key: "name" },
+  { label: "Username", key: "username" },
+  { label: "Role", key: "role" },
+  { label: "Branch", key: "branch" },
+];
 
 const LOAN_TYPES = ["Personal Loan", "Business Loan", "SME Loan", "Corporate Loan", "Mortgage", "Auto Loan"];
 const INCOME_STATUSES = ["Verified", "Pending", "Unverified"];
@@ -253,6 +309,20 @@ export default function App() {
   const rmList = appUsers.filter(u => u.role === "rm");
 
   const showToast = (msg) => { setSuccessToast(msg); setTimeout(() => setSuccessToast(null), 3500); };
+
+  // Export customers to Excel/CSV
+  const handleExportCustomers = (dealsToExport) => {
+    const data = dealsToExport.map((d, i) => ({ ...d, no: i + 1, status: d.status === "Won" ? "Completed Drawdown" : d.status }));
+    exportToExcel(data, "Chip_Mong_Customers", CUSTOMER_HEADERS);
+    showToast("✅ Customers exported to Excel!");
+  };
+
+  // Export users to Excel/CSV
+  const handleExportUsers = () => {
+    const data = appUsers.map((u, i) => ({ ...u, no: i + 1, role: u.role === "admin" ? "Administrator" : "Relationship Manager" }));
+    exportToExcel(data, "Chip_Mong_Users", USER_HEADERS);
+    showToast("✅ Users exported to Excel!");
+  };
 
   // 🔐 Session timeout — auto logout after 60 min inactivity
   React.useEffect(() => {
@@ -713,6 +783,10 @@ export default function App() {
                         <span className="w-1 h-5 bg-gradient-to-b from-indigo-500 to-blue-500 rounded-full mr-3 inline-block"></span>
                         🏆 Top Performance
                       </h3>
+                      <button onClick={() => handleExportCustomers(visibleDeals)}
+                        className="flex items-center space-x-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm transition-all hover:shadow-md">
+                        <FileDown size={16} /><span>📊 Export Excel</span>
+                      </button>
                     </div>
                     {/* Filter row */}
                     <div className="flex flex-wrap gap-2 items-center">
@@ -829,10 +903,30 @@ export default function App() {
                         })()} records
                       </span>
                     </div>
-                    <button onClick={() => setIsAddDealModalOpen(true)}
-                      className="flex items-center space-x-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm transition-all hover:shadow-md">
-                      <Plus size={16} /><span>Create New Customer</span>
-                    </button>
+                    <div className="flex flex-wrap gap-2">
+                      <button onClick={() => setIsAddDealModalOpen(true)}
+                        className="flex items-center space-x-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm transition-all hover:shadow-md">
+                        <Plus size={16} /><span>New Customer</span>
+                      </button>
+                      <button onClick={() => {
+                        let d = selectedTeamRm ? visibleDeals.filter(x => x.rmUsername === selectedTeamRm) : visibleDeals;
+                        if (teamLoanType !== "all") d = d.filter(x => x.loanType === teamLoanType);
+                        if (teamLoanStatus !== "all") d = d.filter(x => x.status === teamLoanStatus);
+                        if (teamCustStatus !== "all") d = d.filter(x => x.customerStatus === teamCustStatus);
+                        if (teamStartDate) d = d.filter(x => x.date >= teamStartDate);
+                        if (teamEndDate) d = d.filter(x => x.date <= teamEndDate);
+                        handleExportCustomers(d);
+                      }}
+                        className="flex items-center space-x-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm transition-all hover:shadow-md">
+                        <FileDown size={16} /><span>📊 Export Excel</span>
+                      </button>
+                      {isAdmin && (
+                        <button onClick={handleExportUsers}
+                          className="flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-500 hover:to-violet-500 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm transition-all hover:shadow-md">
+                          <FileDown size={16} /><span>👥 Export Users</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
                   {/* 5 Filters row */}
                   <div className="flex flex-wrap gap-2 items-center">
