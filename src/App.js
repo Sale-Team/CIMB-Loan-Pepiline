@@ -1683,6 +1683,38 @@ export default function App() {
                 </div>
               </div>
 
+              {/* Row 8: Existing Bank Section */}
+              <div className="border-t border-slate-100 pt-4">
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3 flex items-center gap-2">
+                  🏦 Existing Bank <span className="text-slate-300 font-normal">(optional)</span>
+                </p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Existing Bank Name</label>
+                    <input type="text" value={newDeal.existingBank} onChange={e => setNewDeal({...newDeal, existingBank: e.target.value})}
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 focus:bg-white transition text-sm" placeholder="e.g. ABA Bank" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Loan Outstanding ($)</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-bold">$</span>
+                      <input type="number" min="0" value={newDeal.loanOutstanding} onChange={e => setNewDeal({...newDeal, loanOutstanding: e.target.value})}
+                        className="w-full pl-7 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 focus:bg-white transition text-sm" placeholder="20,000" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Existing Rate (%)</label>
+                    <input type="number" step="0.01" value={newDeal.existingRate} onChange={e => setNewDeal({...newDeal, existingRate: e.target.value})}
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 focus:bg-white transition text-sm" placeholder="7.5" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Maturity Date</label>
+                    <input type="date" value={newDeal.maturityDate} onChange={e => setNewDeal({...newDeal, maturityDate: e.target.value})}
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 text-sm" />
+                  </div>
+                </div>
+              </div>
+
               {/* RM info bar */}
               <div className="bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-100 rounded-xl px-4 py-3 flex items-center justify-between">
                 <div className="flex items-center space-x-2">
