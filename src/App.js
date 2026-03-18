@@ -909,7 +909,6 @@ export default function App() {
                         )}
                       </div>
                     </div>
-                    </div>
                   </div>
                   {(() => {
                     const branchesToShow = isAdmin ? BRANCHES : isBM ? (loggedInUser.branches || [loggedInUser.branch]) : [loggedInUser.branch];
