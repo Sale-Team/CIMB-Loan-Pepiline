@@ -262,6 +262,67 @@ function LoginPage({ onLogin }) {
 // =============================================
 // MAIN APP
 // =============================================
+// ── Multi-Select Dropdown Component (must be outside App to avoid re-mount) ──
+function MultiSelect({ label, options, selected, onChange, color = "indigo" }) {
+  const [open, setOpen] = useState(false);
+  const ref = React.useRef(null);
+  React.useEffect(() => {
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+  const toggleVal = (val) => onChange(selected.includes(val) ? selected.filter(x => x !== val) : [...selected, val]);
+  const colorMap = {
+    indigo:  { active: "border-indigo-500 bg-indigo-50 text-indigo-700",   check: "bg-indigo-600",  tag: "bg-indigo-100 text-indigo-700"  },
+    purple:  { active: "border-purple-500 bg-purple-50 text-purple-700",   check: "bg-purple-600",  tag: "bg-purple-100 text-purple-700"  },
+    amber:   { active: "border-amber-500 bg-amber-50 text-amber-700",      check: "bg-amber-500",   tag: "bg-amber-100 text-amber-700"    },
+    emerald: { active: "border-emerald-500 bg-emerald-50 text-emerald-700",check: "bg-emerald-600", tag: "bg-emerald-100 text-emerald-700"},
+  };
+  const c = colorMap[color] || colorMap.indigo;
+  const displayText = selected.length === 0
+    ? `All ${label}`
+    : selected.map(s => options.find(o => o.value === s)?.label || s).join(", ");
+  return (
+    <div className="relative flex-shrink-0" ref={ref}>
+      <button type="button" onClick={() => setOpen(o => !o)}
+        className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold transition-all shadow-sm min-w-[140px] max-w-[240px] ${selected.length > 0 ? c.active : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"}`}>
+        <span className="flex-1 text-left truncate">{displayText}</span>
+        <span className="text-slate-400 flex-shrink-0">{open ? "▲" : "▼"}</span>
+      </button>
+      {open && (
+        <div className="absolute top-full left-0 mt-1 bg-white rounded-xl border border-slate-200 shadow-2xl min-w-[200px] max-h-64 overflow-y-auto" style={{zIndex:9999}}>
+          <div className="p-1.5">
+            {/* All option */}
+            <button type="button"
+              onClick={() => { onChange([]); setOpen(false); }}
+              className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 transition-colors ${selected.length === 0 ? c.tag + " font-bold" : "text-slate-500 hover:bg-slate-50"}`}>
+              <span className={`w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center ${selected.length === 0 ? c.check + " border-transparent" : "border-slate-300"}`}>
+                {selected.length === 0 && <span className="text-white text-xs font-bold">✓</span>}
+              </span>
+              All {label}
+            </button>
+            <div className="border-t border-slate-100 my-1"></div>
+            {/* Individual options */}
+            {options.map(opt => {
+              const checked = selected.includes(opt.value);
+              return (
+                <button key={opt.value} type="button"
+                  onClick={() => toggleVal(opt.value)}
+                  className={`w-full text-left px-3 py-2 rounded-lg text-xs flex items-center gap-2 transition-colors ${checked ? c.tag + " font-semibold" : "text-slate-600 hover:bg-slate-50"}`}>
+                  <span className={`w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center ${checked ? c.check + " border-transparent" : "border-slate-300 bg-white"}`}>
+                    {checked && <span className="text-white text-xs font-bold">✓</span>}
+                  </span>
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function App() {
   const [firebaseUser, setFirebaseUser] = useState(null);
   const [loggedInUser, setLoggedInUser] = useState(null);
@@ -326,57 +387,6 @@ export default function App() {
 
   // Multi-select toggle helper
   const toggleArr = (arr, val) => arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val];
-
-  // ── Multi-Select Dropdown Component ──
-  const MultiSelect = ({ label, options, selected, onChange, color = "indigo" }) => {
-    const [open, setOpen] = React.useState(false);
-    const ref = React.useRef(null);
-    React.useEffect(() => {
-      const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-      document.addEventListener("mousedown", handler);
-      return () => document.removeEventListener("mousedown", handler);
-    }, []);
-    const colorMap = {
-      indigo: { btn: "border-indigo-500 bg-indigo-50 text-indigo-700", check: "bg-indigo-600", tag: "bg-indigo-100 text-indigo-700" },
-      purple: { btn: "border-purple-500 bg-purple-50 text-purple-700", check: "bg-purple-600", tag: "bg-purple-100 text-purple-700" },
-      amber:  { btn: "border-amber-500 bg-amber-50 text-amber-700",   check: "bg-amber-500",  tag: "bg-amber-100 text-amber-700"  },
-      emerald:{ btn: "border-emerald-500 bg-emerald-50 text-emerald-700", check: "bg-emerald-600", tag: "bg-emerald-100 text-emerald-700" },
-    };
-    const c = colorMap[color] || colorMap.indigo;
-    const displayText = selected.length === 0 ? `All ${label}` : selected.map(s => options.find(o => o.value === s)?.label || s).join(", ");
-    return (
-      <div className="relative" ref={ref}>
-        <button type="button" onClick={() => setOpen(o => !o)}
-          className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold transition-all min-w-[130px] max-w-[220px] truncate shadow-sm ${selected.length > 0 ? c.btn : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"}`}>
-          <span className="flex-1 text-left truncate">{displayText}</span>
-          <span className="flex-shrink-0 text-slate-400">{open ? "▲" : "▼"}</span>
-        </button>
-        {open && (
-          <div className="absolute top-full left-0 mt-1 bg-white rounded-xl border border-slate-200 shadow-xl z-50 min-w-[180px] max-h-60 overflow-y-auto">
-            <div className="p-1">
-              <button type="button" onClick={() => { onChange([]); setOpen(false); }}
-                className={`w-full text-left px-3 py-2 text-xs rounded-lg font-semibold transition-colors ${selected.length === 0 ? `${c.tag} font-bold` : "hover:bg-slate-50 text-slate-600"}`}>
-                ✓ All {label}
-              </button>
-              {options.map(opt => {
-                const checked = selected.includes(opt.value);
-                return (
-                  <button key={opt.value} type="button"
-                    onClick={() => onChange(toggleArr(selected, opt.value))}
-                    className={`w-full text-left px-3 py-2 text-xs rounded-lg flex items-center gap-2 transition-colors ${checked ? c.tag + " font-semibold" : "hover:bg-slate-50 text-slate-600"}`}>
-                    <span className={`w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center ${checked ? `${c.check} border-transparent` : "border-slate-300"}`}>
-                      {checked && <span className="text-white text-xs">✓</span>}
-                    </span>
-                    {opt.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
 
   // Export customers to Excel/CSV
   const handleExportCustomers = (dealsToExport) => {
