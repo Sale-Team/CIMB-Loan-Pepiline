@@ -783,18 +783,71 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Active filter indicator */}
-              {(topPerfStartDate || topPerfEndDate || topPerfLoanType.length > 0 || topPerfBranch.length > 0 || topPerfFilter.length > 0) && (
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-xs text-slate-500 font-medium">🔍 Filters active:</span>
-                  {topPerfFilter.map(s => <span key={s} className="px-2.5 py-1 bg-amber-100 text-amber-700 text-xs font-semibold rounded-full">{s}</span>)}
-                  {topPerfBranch.map(b => <span key={b} className="px-2.5 py-1 bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-full">{b}</span>)}
-                  {topPerfLoanType.map(t => <span key={t} className="px-2.5 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full">{t}</span>)}
-                  {topPerfStartDate && <span className="px-2.5 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">From: {topPerfStartDate}</span>}
-                  {topPerfEndDate && <span className="px-2.5 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">To: {topPerfEndDate}</span>}
-                  <button onClick={() => { setTopPerfStartDate(""); setTopPerfEndDate(""); setTopPerfLoanType([]); setTopPerfBranch([]); setTopPerfFilter([]); }} className="text-xs text-red-400 hover:text-red-600 font-medium">✕ Clear all</button>
+              {/* ── DASHBOARD FILTER PANEL ── */}
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-600 uppercase tracking-wide">🔍 Filters — click to select, click again to deselect</span>
+                  {(topPerfStartDate || topPerfEndDate || topPerfLoanType.length > 0 || topPerfBranch.length > 0 || topPerfFilter.length > 0) && (
+                    <button onClick={() => { setTopPerfStartDate(""); setTopPerfEndDate(""); setTopPerfLoanType([]); setTopPerfBranch([]); setTopPerfFilter([]); }}
+                      className="text-xs text-red-400 hover:text-red-600 font-semibold px-3 py-1 bg-red-50 rounded-lg hover:bg-red-100 transition-colors">✕ Reset All</button>
+                  )}
                 </div>
-              )}
+                {/* Status chips */}
+                <div className="flex flex-wrap gap-1.5 items-center">
+                  <span className="text-xs text-slate-400 font-semibold w-16 flex-shrink-0">Status:</span>
+                  {[["Pending","⏳ Pipeline"],["Pre-Approval","✅ Pre-Approval"],["Processing","🔄 Processing"],["LOS","📁 LOS"],["LOO","⭐ LOO"],["Won","🏦 Completed"],["Rejected","❌ Rejected"]].map(([val,label]) => (
+                    <button key={val} onClick={() => setTopPerfFilter(a => toggleArr(a, val))}
+                      className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${topPerfFilter.includes(val) ? "bg-indigo-600 text-white border-indigo-600 shadow-sm" : "bg-slate-50 text-slate-600 border-slate-200 hover:border-indigo-400 hover:text-indigo-600"}`}>
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                {/* Branch chips */}
+                <div className="flex flex-wrap gap-1.5 items-center">
+                  <span className="text-xs text-slate-400 font-semibold w-16 flex-shrink-0">Branch:</span>
+                  {BRANCHES.map(b => (
+                    <button key={b} onClick={() => setTopPerfBranch(a => toggleArr(a, b))}
+                      className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${topPerfBranch.includes(b) ? "bg-emerald-600 text-white border-emerald-600 shadow-sm" : "bg-slate-50 text-slate-600 border-slate-200 hover:border-emerald-400 hover:text-emerald-600"}`}>
+                      {b}
+                    </button>
+                  ))}
+                </div>
+                {/* Product chips */}
+                <div className="flex flex-wrap gap-1.5 items-center">
+                  <span className="text-xs text-slate-400 font-semibold w-16 flex-shrink-0">Product:</span>
+                  {LOAN_TYPES.map(t => (
+                    <button key={t} onClick={() => setTopPerfLoanType(a => toggleArr(a, t))}
+                      className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${topPerfLoanType.includes(t) ? "bg-purple-600 text-white border-purple-600 shadow-sm" : "bg-slate-50 text-slate-600 border-slate-200 hover:border-purple-400 hover:text-purple-600"}`}>
+                      {t}
+                    </button>
+                  ))}
+                </div>
+                {/* Date range */}
+                <div className="flex flex-wrap gap-2 items-center">
+                  <span className="text-xs text-slate-400 font-semibold w-16 flex-shrink-0">Date:</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs text-slate-400">From</span>
+                    <input type="date" value={topPerfStartDate} onChange={e => setTopPerfStartDate(e.target.value)}
+                      className="text-xs border border-slate-200 bg-slate-50 rounded-xl px-3 py-1.5 outline-none focus:border-indigo-400 text-slate-700" />
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs text-slate-400">To</span>
+                    <input type="date" value={topPerfEndDate} onChange={e => setTopPerfEndDate(e.target.value)}
+                      className="text-xs border border-slate-200 bg-slate-50 rounded-xl px-3 py-1.5 outline-none focus:border-indigo-400 text-slate-700" />
+                  </div>
+                </div>
+                {/* Active filter summary */}
+                {(topPerfFilter.length > 0 || topPerfBranch.length > 0 || topPerfLoanType.length > 0 || topPerfStartDate || topPerfEndDate) && (
+                  <div className="flex flex-wrap gap-1.5 items-center pt-1 border-t border-slate-100">
+                    <span className="text-xs text-slate-400">Active:</span>
+                    {topPerfFilter.map(s => <span key={s} className="px-2 py-0.5 bg-indigo-100 text-indigo-700 text-xs font-bold rounded-full">{s === "Won" ? "Completed" : s}</span>)}
+                    {topPerfBranch.map(b => <span key={b} className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full">{b}</span>)}
+                    {topPerfLoanType.map(t => <span key={t} className="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs font-bold rounded-full">{t}</span>)}
+                    {topPerfStartDate && <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">From: {topPerfStartDate}</span>}
+                    {topPerfEndDate && <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">To: {topPerfEndDate}</span>}
+                  </div>
+                )}
+              </div>
 
               {/* KPI Cards - Banking Style */}
               {(() => {
@@ -841,13 +894,14 @@ export default function App() {
                 {/* ── Top Performance ── full width */}
                 <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
                   <div className="p-5 border-b bg-gradient-to-r from-slate-50 to-indigo-50/30">
-                    <div className="flex flex-wrap gap-3 justify-between items-center mb-3">
+                    <div className="flex flex-wrap gap-3 justify-between items-center">
                       <h3 className="text-lg font-bold text-slate-800 flex items-center">
                         <span className="w-1 h-5 bg-gradient-to-b from-indigo-500 to-blue-500 rounded-full mr-3 inline-block"></span>
-                        🏆 Top Performance
+                        🏆 Top Performance by Branch
                       </h3>
                       <button onClick={() => {
                         let d = visibleDeals;
+                        if (topPerfFilter.length > 0) d = d.filter(x => topPerfFilter.includes(x.status));
                         if (topPerfLoanType.length > 0) d = d.filter(x => topPerfLoanType.includes(x.loanType));
                         if (topPerfBranch.length > 0) d = d.filter(x => topPerfBranch.includes(x.branch));
                         if (topPerfStartDate) d = d.filter(x => x.date >= topPerfStartDate);
@@ -857,57 +911,6 @@ export default function App() {
                         className="flex items-center space-x-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm transition-all hover:shadow-md">
                         <FileDown size={16} /><span>📊 Export Excel</span>
                       </button>
-                    </div>
-                    {/* Multi-select filter chips */}
-                    <div className="space-y-2">
-                      {/* Status chips */}
-                      <div className="flex flex-wrap gap-1.5 items-center">
-                        <span className="text-xs text-slate-400 font-medium w-14">Status:</span>
-                        {[["Pending","⏳ Pipeline"],["Pre-Approval","✅ Pre-Approval"],["Processing","🔄 Processing"],["LOS","📁 LOS"],["LOO","⭐ LOO"],["Won","🏦 Completed"],["Rejected","❌ Rejected"]].map(([val,label]) => (
-                          <button key={val} onClick={() => setTopPerfFilter(a => toggleArr(a, val))}
-                            className={`px-2.5 py-1 rounded-full text-xs font-semibold border transition-all ${topPerfFilter.includes(val) ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-slate-600 border-slate-200 hover:border-indigo-300"}`}>
-                            {label}
-                          </button>
-                        ))}
-                      </div>
-                      {/* Branch chips */}
-                      <div className="flex flex-wrap gap-1.5 items-center">
-                        <span className="text-xs text-slate-400 font-medium w-14">Branch:</span>
-                        {BRANCHES.map(b => (
-                          <button key={b} onClick={() => setTopPerfBranch(a => toggleArr(a, b))}
-                            className={`px-2.5 py-1 rounded-full text-xs font-semibold border transition-all ${topPerfBranch.includes(b) ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-slate-600 border-slate-200 hover:border-indigo-300"}`}>
-                            {b}
-                          </button>
-                        ))}
-                      </div>
-                      {/* Product chips */}
-                      <div className="flex flex-wrap gap-1.5 items-center">
-                        <span className="text-xs text-slate-400 font-medium w-14">Product:</span>
-                        {LOAN_TYPES.map(t => (
-                          <button key={t} onClick={() => setTopPerfLoanType(a => toggleArr(a, t))}
-                            className={`px-2.5 py-1 rounded-full text-xs font-semibold border transition-all ${topPerfLoanType.includes(t) ? "bg-purple-600 text-white border-purple-600" : "bg-white text-slate-600 border-slate-200 hover:border-purple-300"}`}>
-                            {t}
-                          </button>
-                        ))}
-                      </div>
-                      {/* Date + Reset */}
-                      <div className="flex flex-wrap gap-2 items-center">
-                        <span className="text-xs text-slate-400 font-medium w-14">Date:</span>
-                        <div className="flex items-center gap-1">
-                          <span className="text-xs text-slate-400">From</span>
-                          <input type="date" value={topPerfStartDate} onChange={e => setTopPerfStartDate(e.target.value)}
-                            className="text-xs border border-slate-200 bg-white rounded-xl px-2 py-1.5 outline-none focus:border-indigo-400 text-slate-700 shadow-sm" />
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <span className="text-xs text-slate-400">To</span>
-                          <input type="date" value={topPerfEndDate} onChange={e => setTopPerfEndDate(e.target.value)}
-                            className="text-xs border border-slate-200 bg-white rounded-xl px-2 py-1.5 outline-none focus:border-indigo-400 text-slate-700 shadow-sm" />
-                        </div>
-                        {(topPerfStartDate || topPerfEndDate || topPerfLoanType.length > 0 || topPerfBranch.length > 0 || topPerfFilter.length > 0) && (
-                          <button onClick={() => { setTopPerfStartDate(""); setTopPerfEndDate(""); setTopPerfLoanType([]); setTopPerfBranch([]); setTopPerfFilter([]); }}
-                            className="text-xs text-red-400 hover:text-red-600 px-2 py-1.5 rounded-xl hover:bg-red-50 transition-colors">✕ Reset all</button>
-                        )}
-                      </div>
                     </div>
                   </div>
                   {(() => {
@@ -1005,56 +1008,70 @@ export default function App() {
 
                     </div>
                   </div>
-                  {/* Multi-select filter chips */}
-                  <div className="space-y-2">
+                  {/* Multi-select filter chips — clean panel */}
+                  <div className="p-4 bg-slate-50/50 border-b border-slate-100 space-y-2">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-bold text-slate-500 uppercase tracking-wide">🔍 Filters — click to select/deselect</span>
+                      {(teamLoanType.length > 0 || teamLoanStatus.length > 0 || teamCustStatus.length > 0 || teamStartDate || teamEndDate) && (
+                        <button onClick={() => { setTeamLoanType([]); setTeamLoanStatus([]); setTeamCustStatus([]); setTeamStartDate(""); setTeamEndDate(""); }}
+                          className="text-xs text-red-400 hover:text-red-600 font-semibold px-3 py-1 bg-red-50 rounded-lg hover:bg-red-100 transition-colors">✕ Reset All</button>
+                      )}
+                    </div>
                     {/* Status chips */}
                     <div className="flex flex-wrap gap-1.5 items-center">
-                      <span className="text-xs text-slate-400 font-medium w-14">Status:</span>
+                      <span className="text-xs text-slate-400 font-semibold w-16 flex-shrink-0">Status:</span>
                       {[["Pending","⏳ Pipeline"],["Pre-Approval","✅ Pre-Approval"],["Processing","🔄 Processing"],["LOS","📁 LOS"],["LOO","⭐ LOO"],["Won","🏦 Completed"],["Rejected","❌ Rejected"]].map(([val,label]) => (
                         <button key={val} onClick={() => setTeamLoanStatus(a => toggleArr(a, val))}
-                          className={`px-2.5 py-1 rounded-full text-xs font-semibold border transition-all ${teamLoanStatus.includes(val) ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-slate-600 border-slate-200 hover:border-indigo-300"}`}>
+                          className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${teamLoanStatus.includes(val) ? "bg-indigo-600 text-white border-indigo-600 shadow-sm" : "bg-white text-slate-600 border-slate-200 hover:border-indigo-400 hover:text-indigo-600"}`}>
                           {label}
                         </button>
                       ))}
                     </div>
                     {/* Product chips */}
                     <div className="flex flex-wrap gap-1.5 items-center">
-                      <span className="text-xs text-slate-400 font-medium w-14">Product:</span>
+                      <span className="text-xs text-slate-400 font-semibold w-16 flex-shrink-0">Product:</span>
                       {LOAN_TYPES.map(t => (
                         <button key={t} onClick={() => setTeamLoanType(a => toggleArr(a, t))}
-                          className={`px-2.5 py-1 rounded-full text-xs font-semibold border transition-all ${teamLoanType.includes(t) ? "bg-purple-600 text-white border-purple-600" : "bg-white text-slate-600 border-slate-200 hover:border-purple-300"}`}>
+                          className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${teamLoanType.includes(t) ? "bg-purple-600 text-white border-purple-600 shadow-sm" : "bg-white text-slate-600 border-slate-200 hover:border-purple-400 hover:text-purple-600"}`}>
                           {t}
                         </button>
                       ))}
                     </div>
                     {/* Priority chips */}
                     <div className="flex flex-wrap gap-1.5 items-center">
-                      <span className="text-xs text-slate-400 font-medium w-14">Priority:</span>
+                      <span className="text-xs text-slate-400 font-semibold w-16 flex-shrink-0">Priority:</span>
                       {[["High","🔴 High"],["Medium","🟡 Medium"],["Low","🟢 Low"]].map(([val,label]) => (
                         <button key={val} onClick={() => setTeamCustStatus(a => toggleArr(a, val))}
-                          className={`px-2.5 py-1 rounded-full text-xs font-semibold border transition-all ${teamCustStatus.includes(val) ? "bg-amber-500 text-white border-amber-500" : "bg-white text-slate-600 border-slate-200 hover:border-amber-300"}`}>
+                          className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${teamCustStatus.includes(val) ? "bg-amber-500 text-white border-amber-500 shadow-sm" : "bg-white text-slate-600 border-slate-200 hover:border-amber-400 hover:text-amber-600"}`}>
                           {label}
                         </button>
                       ))}
                     </div>
                     {/* Date row */}
                     <div className="flex flex-wrap gap-2 items-center">
-                      <span className="text-xs text-slate-400 font-medium w-14">Date:</span>
-                      <div className="flex items-center gap-1">
+                      <span className="text-xs text-slate-400 font-semibold w-16 flex-shrink-0">Date:</span>
+                      <div className="flex items-center gap-1.5">
                         <span className="text-xs text-slate-400">From</span>
                         <input type="date" value={teamStartDate} onChange={e => setTeamStartDate(e.target.value)}
-                          className="text-xs border border-slate-200 bg-white rounded-xl px-2 py-1.5 outline-none focus:border-indigo-400 text-slate-700 shadow-sm" />
+                          className="text-xs border border-slate-200 bg-white rounded-xl px-3 py-1.5 outline-none focus:border-indigo-400 text-slate-700" />
                       </div>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1.5">
                         <span className="text-xs text-slate-400">To</span>
                         <input type="date" value={teamEndDate} onChange={e => setTeamEndDate(e.target.value)}
-                          className="text-xs border border-slate-200 bg-white rounded-xl px-2 py-1.5 outline-none focus:border-indigo-400 text-slate-700 shadow-sm" />
+                          className="text-xs border border-slate-200 bg-white rounded-xl px-3 py-1.5 outline-none focus:border-indigo-400 text-slate-700" />
                       </div>
-                      {(teamLoanType.length > 0 || teamLoanStatus.length > 0 || teamCustStatus.length > 0 || teamStartDate || teamEndDate) && (
-                        <button onClick={() => { setTeamLoanType([]); setTeamLoanStatus([]); setTeamCustStatus([]); setTeamStartDate(""); setTeamEndDate(""); }}
-                          className="text-xs text-red-400 hover:text-red-600 px-2 py-1.5 rounded-xl hover:bg-red-50 transition-colors font-medium">✕ Reset</button>
-                      )}
                     </div>
+                    {/* Active summary */}
+                    {(teamLoanStatus.length > 0 || teamLoanType.length > 0 || teamCustStatus.length > 0 || teamStartDate || teamEndDate) && (
+                      <div className="flex flex-wrap gap-1.5 items-center pt-1 border-t border-slate-200">
+                        <span className="text-xs text-slate-400">Active:</span>
+                        {teamLoanStatus.map(s => <span key={s} className="px-2 py-0.5 bg-indigo-100 text-indigo-700 text-xs font-bold rounded-full">{s === "Won" ? "Completed" : s}</span>)}
+                        {teamLoanType.map(t => <span key={t} className="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs font-bold rounded-full">{t}</span>)}
+                        {teamCustStatus.map(c => <span key={c} className="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">{c}</span>)}
+                        {teamStartDate && <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">From: {teamStartDate}</span>}
+                        {teamEndDate && <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">To: {teamEndDate}</span>}
+                      </div>
+                    )}
                   </div>
                 </div>
 
