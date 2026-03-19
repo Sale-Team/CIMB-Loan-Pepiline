@@ -970,7 +970,7 @@ export default function App() {
       {[
         { id: "dashboard", icon: <LayoutDashboard size={19} />, label: "Dashboard" },
         { id: "team", icon: <Users size={19} />, label: "Sale Performance" },
-        { id: "deals", icon: <Briefcase size={19} />, label: "Create Follow Up" },
+        { id: "deals", icon: <Briefcase size={19} />, label: "List Customer Follow Up" },
         ...(isAdmin ? [{ id: "users", icon: <Shield size={19} />, label: "User Created", badge: "Admin" }] : []),
       ].map(item => (
         <button key={item.id} onClick={() => { setActiveTab(item.id); setIsMobileMenuOpen(false); }}
@@ -1472,7 +1472,7 @@ export default function App() {
                     <div>
                       <h2 className="text-lg font-bold text-slate-800 flex items-center">
                         <span className="w-1 h-5 bg-gradient-to-b from-indigo-500 to-blue-500 rounded-full mr-3 inline-block"></span>
-                        📋 Create Follow Up
+                        📋 List Customer Follow Up
                       </h2>
                       <p className="text-xs text-slate-400 mt-1 ml-4">Click ➕ Follow Up on any customer to add a note</p>
                     </div>
@@ -1538,7 +1538,7 @@ export default function App() {
                               <td className="p-4">
                                 <button onClick={() => { setSelectedDealForFollowUp(deal); setFollowUpForm({ startDate: "", endDate: "", remark: "", status: "Medium" }); setIsFollowUpModalOpen(true); }}
                                   className="flex items-center space-x-1 px-3 py-1.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white rounded-lg text-xs font-medium transition-colors shadow-sm">
-                                  <Plus size={12} /><span>Follow Up</span>
+                                  <Plus size={12} /><span>Create Follow Up</span>
                                 </button>
                               </td>
                             </tr>
@@ -1663,7 +1663,7 @@ export default function App() {
                       </button>
                       <button onClick={() => { setEditingUser(null); setNewUser({ username: "", password: "", name: "", role: "rm", branch: "NRD", branches: [] }); setIsUserModalOpen(true); }}
                         className="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium">
-                        <UserPlus size={18} /><span>Add New User</span>
+                        <UserPlus size={18} /><span>Create New User</span>
                       </button>
                     </div>
                   </div>
@@ -2441,7 +2441,7 @@ export default function App() {
             {/* Modal Header */}
             <div className="px-6 py-4 border-b bg-gradient-to-r from-indigo-50 to-blue-50 flex justify-between items-center rounded-t-2xl">
               <div>
-                <h3 className="text-lg font-bold text-slate-800">📋 Create Follow Up</h3>
+                <h3 className="text-lg font-bold text-slate-800">📋 List Customer Follow Up</h3>
                 <p className="text-xs text-slate-500 mt-0.5">🔒 Locked after save — cannot be edited</p>
               </div>
               <button onClick={() => setIsFollowUpModalOpen(false)}><X size={20} className="text-slate-400" /></button>
