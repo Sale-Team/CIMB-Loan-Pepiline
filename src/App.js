@@ -350,6 +350,7 @@ export default function App() {
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [selectedDealForEmail, setSelectedDealForEmail] = useState(null);
   const [selectedTeamRm, setSelectedTeamRm] = useState(null);
+  const [teamRm, setTeamRm] = useState([]);
   const [teamStartDate, setTeamStartDate] = useState("");
   const [teamEndDate, setTeamEndDate] = useState("");
   const [teamLoanType, setTeamLoanType] = useState([]);
@@ -1156,7 +1157,8 @@ export default function App() {
                       </h2>
                       <span className="text-xs bg-indigo-100 text-indigo-700 font-semibold px-2.5 py-1 rounded-full">
                         {(() => {
-                          let d = selectedTeamRm ? visibleDeals.filter(x => x.rmUsername === selectedTeamRm) : visibleDeals;
+                          let d = visibleDeals;
+                          if (teamRm.length > 0) d = d.filter(x => teamRm.includes(x.rmUsername));
                           if (teamLoanType.length > 0) d = d.filter(x => teamLoanType.includes(x.loanType));
                           if (teamLoanStatus.length > 0) d = d.filter(x => teamLoanStatus.includes(x.status));
                           if (teamCustStatus.length > 0) d = d.filter(x => teamCustStatus.includes(x.customerStatus));
@@ -1174,7 +1176,8 @@ export default function App() {
                         </button>
                       )}
                       <button onClick={() => {
-                        let d = selectedTeamRm ? visibleDeals.filter(x => x.rmUsername === selectedTeamRm) : visibleDeals;
+                        let d = visibleDeals;
+                        if (teamRm.length > 0) d = d.filter(x => teamRm.includes(x.rmUsername));
                         if (teamLoanType.length > 0) d = d.filter(x => teamLoanType.includes(x.loanType));
                         if (teamLoanStatus.length > 0) d = d.filter(x => teamLoanStatus.includes(x.status));
                         if (teamCustStatus.length > 0) d = d.filter(x => teamCustStatus.includes(x.customerStatus));
@@ -1190,6 +1193,17 @@ export default function App() {
                   </div>
                   {/* Multi-select filter dropdowns */}
                   <div className="flex flex-wrap gap-2 items-center p-4 border-b border-slate-100 bg-slate-50/50">
+                    {/* RM filter — Admin sees all, BM sees own branch RMs */}
+                    {(isAdmin || isBM) && (
+                      <MultiSelect label="RM" color="indigo"
+                        options={(() => {
+                          const visible = isAdmin
+                            ? rmList
+                            : rmList.filter(rm => (loggedInUser.branches || [loggedInUser.branch]).includes(rm.branch));
+                          return visible.map(rm => ({ value: rm.username, label: rm.name }));
+                        })()}
+                        selected={teamRm} onChange={setTeamRm} />
+                    )}
                     <MultiSelect label="Status" color="indigo"
                       options={[{value:"Pending",label:"⏳ Pipeline"},{value:"Pre-Approval",label:"✅ Pre-Approval"},{value:"Processing",label:"🔄 Processing"},{value:"LOS",label:"📁 LOS"},{value:"LOO",label:"⭐ LOO"},{value:"Won",label:"🏦 Completed"},{value:"Rejected",label:"❌ Rejected"}]}
                       selected={teamLoanStatus} onChange={setTeamLoanStatus} />
@@ -1209,41 +1223,18 @@ export default function App() {
                       <input type="date" value={teamEndDate} onChange={e => setTeamEndDate(e.target.value)}
                         className="text-xs border border-slate-200 bg-white rounded-xl px-3 py-2 outline-none focus:border-indigo-400 text-slate-700 shadow-sm" />
                     </div>
-                    {(teamLoanStatus.length > 0 || teamLoanType.length > 0 || teamCustStatus.length > 0 || teamStartDate || teamEndDate) && (
-                      <button onClick={() => { setTeamLoanStatus([]); setTeamLoanType([]); setTeamCustStatus([]); setTeamStartDate(""); setTeamEndDate(""); }}
+                    {(teamRm.length > 0 || teamLoanStatus.length > 0 || teamLoanType.length > 0 || teamCustStatus.length > 0 || teamStartDate || teamEndDate) && (
+                      <button onClick={() => { setTeamRm([]); setTeamLoanStatus([]); setTeamLoanType([]); setTeamCustStatus([]); setTeamStartDate(""); setTeamEndDate(""); }}
                         className="text-xs text-red-400 hover:text-red-600 font-semibold px-3 py-2 bg-red-50 rounded-xl hover:bg-red-100 transition-colors">✕ Reset</button>
                     )}
                   </div>
                 </div>
 
-                {/* RM mini cards row */}
-                {isAdmin && (
-                  <div className="flex gap-3 p-4 overflow-x-auto border-b border-slate-100 bg-slate-50/50">
-                    <button onClick={() => setSelectedTeamRm(null)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold flex-shrink-0 transition-all ${!selectedTeamRm ? "bg-indigo-600 text-white border-indigo-600 shadow" : "bg-white text-slate-600 border-slate-200 hover:border-indigo-300"}`}>
-                      <Users size={14} /> All
-                    </button>
-                    {rmList.map(rm => {
-                      const cnt = visibleDeals.filter(d => d.rmUsername === rm.username).length;
-                      const sel = selectedTeamRm === rm.username;
-                      return (
-                        <button key={rm.username} onClick={() => setSelectedTeamRm(sel ? null : rm.username)}
-                          className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold flex-shrink-0 transition-all ${sel ? "bg-indigo-600 text-white border-indigo-600 shadow" : "bg-white text-slate-600 border-slate-200 hover:border-indigo-300"}`}>
-                          {rm.photoUrl
-                            ? <img src={rm.photoUrl} alt={rm.name} className="w-6 h-6 rounded-full object-cover" />
-                            : <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${sel ? "bg-white/20 text-white" : "bg-indigo-100 text-indigo-600"}`}>{rm.name?.charAt(0)}</div>}
-                          {rm.name}
-                          <span className={`px-1.5 py-0.5 rounded-full text-xs ${sel ? "bg-white/20" : "bg-indigo-50 text-indigo-600"}`}>{cnt}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-
                 {/* Customer table */}
                 <div className="overflow-x-auto">
                   {(() => {
-                    let teamDeals = selectedTeamRm ? visibleDeals.filter(d => d.rmUsername === selectedTeamRm) : visibleDeals;
+                    let teamDeals = visibleDeals;
+                    if (teamRm.length > 0) teamDeals = teamDeals.filter(d => teamRm.includes(d.rmUsername));
                     if (teamLoanType.length > 0) teamDeals = teamDeals.filter(d => teamLoanType.includes(d.loanType));
                     if (teamLoanStatus.length > 0) teamDeals = teamDeals.filter(d => teamLoanStatus.includes(d.status));
                     if (teamCustStatus.length > 0) teamDeals = teamDeals.filter(d => teamCustStatus.includes(d.customerStatus));
