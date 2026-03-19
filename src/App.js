@@ -335,6 +335,9 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isPriorityModalOpen, setIsPriorityModalOpen] = useState(false);
   const [successToast, setSuccessToast] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifPanel, setShowNotifPanel] = useState(false);
+  const [notifPermission, setNotifPermission] = useState("default");
   const [statusFilterModal, setStatusFilterModal] = useState(null);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
@@ -417,6 +420,78 @@ export default function App() {
     window.addEventListener("keypress", resetSession);
     return () => { clearInterval(checkSession); window.removeEventListener("click", resetSession); window.removeEventListener("keypress", resetSession); };
   }, [loggedInUser?.sessionExpiry]);
+
+  // 🔔 Request browser notification permission on login
+  React.useEffect(() => {
+    if (!loggedInUser) return;
+    if ("Notification" in window) {
+      setNotifPermission(Notification.permission);
+      if (Notification.permission === "default") {
+        Notification.requestPermission().then(p => setNotifPermission(p));
+      }
+    }
+  }, [loggedInUser?.username]);
+
+  // 🔔 Check follow-up alerts every minute
+  React.useEffect(() => {
+    if (!loggedInUser || !followUps.length) return;
+
+    const checkAlerts = () => {
+      const now = Date.now();
+      const myFollowUps = loggedInUser.role === "admin" || loggedInUser.role === "bm"
+        ? followUps
+        : followUps.filter(f => f.rmUsername === loggedInUser.username);
+
+      const newNotifs = [];
+
+      myFollowUps.forEach(f => {
+        if (!f.startDate) return;
+        const startMs = new Date(f.startDate).setHours(8, 0, 0, 0); // 8am on start date
+        const diff = startMs - now; // ms until start
+
+        const alerts = [
+          { key: `${f.id}_1d`, ms: 24*60*60*1000, label: "1 day" },
+          { key: `${f.id}_4h`, ms: 4*60*60*1000,  label: "4 hours" },
+          { key: `${f.id}_1h`, ms: 1*60*60*1000,   label: "1 hour" },
+        ];
+
+        alerts.forEach(({ key, ms, label }) => {
+          // Within the alert window (e.g. diff between 0 and ms) and not already notified
+          if (diff > 0 && diff <= ms) {
+            const alreadyShown = sessionStorage.getItem(key);
+            if (!alreadyShown) {
+              sessionStorage.setItem(key, "1");
+              const notif = {
+                id: key,
+                title: `⏰ Follow-up in ${label}`,
+                body: `${f.client} — ${f.rmName} — Start: ${f.startDate}`,
+                priority: f.status || "Medium",
+                time: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
+              };
+              newNotifs.push(notif);
+
+              // Browser notification
+              if ("Notification" in window && Notification.permission === "granted") {
+                new Notification(`⏰ Follow-up in ${label}`, {
+                  body: `${f.client} — ${f.rmName}\nStart Date: ${f.startDate}`,
+                  icon: "/favicon.ico",
+                  tag: key,
+                });
+              }
+            }
+          }
+        });
+      });
+
+      if (newNotifs.length > 0) {
+        setNotifications(prev => [...newNotifs, ...prev].slice(0, 50));
+      }
+    };
+
+    checkAlerts(); // run immediately
+    const interval = setInterval(checkAlerts, 60000); // every minute
+    return () => clearInterval(interval);
+  }, [followUps, loggedInUser?.username]);
 
   // Firebase auth
   React.useEffect(() => {
@@ -813,6 +888,87 @@ export default function App() {
       )}
 
       <main className="flex-1 flex flex-col min-h-screen overflow-hidden">
+        {/* Top notification bar */}
+        <div className="bg-white border-b border-slate-100 px-6 py-3 flex items-center justify-between sticky top-0 z-40 shadow-sm">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold text-slate-700">👋 {loggedInUser.name}</span>
+            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${isAdmin ? "bg-purple-100 text-purple-700" : isBM ? "bg-amber-100 text-amber-700" : "bg-indigo-100 text-indigo-700"}`}>
+              {isAdmin ? "🔑 Admin" : isBM ? "🏦 BM" : "👤 RM"} • {loggedInUser.branch}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            {/* Browser permission request */}
+            {notifPermission === "default" && (
+              <button onClick={() => Notification.requestPermission().then(p => setNotifPermission(p))}
+                className="text-xs text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg font-medium transition-colors">
+                🔔 Enable alerts
+              </button>
+            )}
+            {/* Bell icon */}
+            <button onClick={() => setShowNotifPanel(p => !p)}
+              className="relative p-2 rounded-xl hover:bg-slate-100 transition-colors">
+              <Bell size={20} className={notifications.length > 0 ? "text-indigo-600" : "text-slate-400"} />
+              {notifications.length > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                  {notifications.length > 9 ? "9+" : notifications.length}
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Notification Panel */}
+        {showNotifPanel && (
+          <div className="fixed top-14 right-4 w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 max-h-[70vh] flex flex-col">
+            <div className="px-5 py-4 border-b flex items-center justify-between">
+              <div>
+                <h3 className="font-bold text-slate-800">🔔 Follow-up Alerts</h3>
+                <p className="text-xs text-slate-400 mt-0.5">{notifications.length} notification{notifications.length !== 1 ? "s" : ""}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                {notifications.length > 0 && (
+                  <button onClick={() => setNotifications([])} className="text-xs text-slate-400 hover:text-red-500 font-medium">Clear all</button>
+                )}
+                <button onClick={() => setShowNotifPanel(false)} className="p-1 hover:bg-slate-100 rounded-lg">
+                  <X size={16} className="text-slate-400" />
+                </button>
+              </div>
+            </div>
+            <div className="overflow-y-auto flex-1">
+              {notifications.length === 0 ? (
+                <div className="py-12 text-center text-slate-400">
+                  <Bell size={32} className="mx-auto mb-2 opacity-30" />
+                  <p className="text-sm font-medium">No alerts</p>
+                  <p className="text-xs mt-1">Follow-up alerts will appear here</p>
+                </div>
+              ) : (
+                notifications.map((n, i) => (
+                  <div key={n.id || i} className="px-5 py-4 border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                    <div className="flex items-start gap-3">
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${n.priority === "High" ? "bg-red-100" : n.priority === "Low" ? "bg-emerald-100" : "bg-amber-100"}`}>
+                        <Bell size={16} className={n.priority === "High" ? "text-red-600" : n.priority === "Low" ? "text-emerald-600" : "text-amber-600"} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-slate-800 text-sm">{n.title}</p>
+                        <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{n.body}</p>
+                        <p className="text-xs text-slate-400 mt-1">{n.time}</p>
+                      </div>
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-bold flex-shrink-0 ${n.priority === "High" ? "bg-red-100 text-red-600" : n.priority === "Low" ? "bg-emerald-100 text-emerald-600" : "bg-amber-100 text-amber-600"}`}>
+                        {n.priority === "High" ? "🔴" : n.priority === "Low" ? "🟢" : "🟡"}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+            <div className="px-5 py-3 border-t bg-slate-50 rounded-b-2xl">
+              <p className="text-xs text-slate-400 text-center">
+                {notifPermission === "granted" ? "✅ Browser alerts enabled" : notifPermission === "denied" ? "❌ Browser alerts blocked" : "⚠️ Browser alerts not enabled"}
+              </p>
+            </div>
+          </div>
+        )}
+
         <div className="flex-1 p-6 overflow-y-auto">
 
           {/* DASHBOARD */}
