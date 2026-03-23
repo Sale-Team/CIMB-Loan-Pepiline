@@ -109,14 +109,14 @@ const DEFAULT_ADMINS = [
 ];
 
 // ============================================================
-// LOGIN PAGE
+// LOGIN PAGE — Professional Full Layout
 // ============================================================
 function LoginPage({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showPw, setShowPw] = useState(false);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [showPw, setShowPw]     = useState(false);
+  const [error,   setError]     = useState("");
+  const [loading, setLoading]   = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault(); setLoading(true); setError("");
@@ -142,7 +142,7 @@ function LoginPage({ onLogin }) {
       const userRecord = users.find((u) => u.username === username.trim());
       if (userRecord && !userRecord.passwordHashed) {
         const hashed = await hashPassword(userRecord.password);
-        await updateDoc(doc(db,"artifacts",appId,"public","data","appUsers",userRecord.id), { password:hashed, passwordHashed:true });
+        await updateDoc(doc(db,"artifacts",appId,"public","data","appUsers",userRecord.id),{ password:hashed, passwordHashed:true });
         userRecord.password = hashed; userRecord.passwordHashed = true;
       }
       const hashedInput = await hashPassword(password);
@@ -161,140 +161,182 @@ function LoginPage({ onLogin }) {
   };
 
   return (
-    <div className="min-h-screen flex" style={{ background:"#0d0d0d" }}>
+    <div style={{ minHeight:"100vh", display:"flex", fontFamily:"'Segoe UI',sans-serif" }}>
 
-      {/* ── LEFT PANEL ── */}
-      <div className="hidden lg:flex flex-col w-1/2 relative overflow-hidden"
-        style={{ background:"linear-gradient(155deg,#5a0000 0%,#8B0010 30%,#C8102E 65%,#E31837 100%)" }}>
+      {/* ════════════════════════════════
+          LEFT PANEL
+      ════════════════════════════════ */}
+      <div style={{
+        width:"52%", position:"relative", overflow:"hidden", display:"flex", flexDirection:"column",
+        background:"linear-gradient(160deg, #6b0010 0%, #960015 25%, #C8102E 60%, #e81535 100%)"
+      }} className="hidden lg:flex">
 
-        {/* Top: real CIMB logo */}
-        <div className="px-10 pt-8 flex items-center gap-4 relative z-10">
-          <img src={CIMB_LOGO_SRC} alt="CIMB Bank Cambodia"
-            style={{ height:54, width:"auto", borderRadius:8 }} />
-          <div className="border-l border-white/30 pl-4">
-            <p className="text-white font-bold text-sm leading-tight">Loan Pipeline</p>
-            <p className="text-red-200 text-xs tracking-widest uppercase">Internal System</p>
+        {/* Top logo bar */}
+        <div style={{ padding:"28px 36px 0", display:"flex", alignItems:"center", gap:14, position:"relative", zIndex:10 }}>
+          <img src={{CIMB_LOGO_SRC}} alt="CIMB Bank Cambodia"
+            style={{ height:52, width:"auto", borderRadius:8, flexShrink:0 }} />
+          <div style={{ borderLeft:"1px solid rgba(255,255,255,0.35)", paddingLeft:14 }}>
+            <p style={{ color:"#fff", fontWeight:700, fontSize:13, margin:0, lineHeight:1.3 }}>Loan Pipeline</p>
+            <p style={{ color:"rgba(255,210,210,0.9)", fontSize:11, margin:0, letterSpacing:2, textTransform:"uppercase" }}>Internal System</p>
           </div>
         </div>
 
-        {/* Middle: headline */}
-        <div className="flex-1 flex flex-col justify-center px-10 relative z-10">
-          <p className="text-red-300 text-xs font-bold uppercase tracking-widest mb-3">● Banking Management</p>
-          <h2 className="text-white text-3xl font-black leading-snug mb-4">
-            Internal Banking<br />
-            <span style={{ color:"#FFD700" }}>Management</span><br />
-            Portal
+        {/* Headline block */}
+        <div style={{ padding:"32px 36px 0", position:"relative", zIndex:10 }}>
+          <p style={{ color:"rgba(255,200,200,0.85)", fontSize:11, fontWeight:700, letterSpacing:3, textTransform:"uppercase", marginBottom:10 }}>
+            ● Banking System For Staffs
+          </p>
+          <h2 style={{ color:"#fff", fontSize:34, fontWeight:900, lineHeight:1.15, margin:"0 0 14px" }}>
+            Loan Tracking<br />
+            <span style={{ color:"#FFD700" }}>System</span>
           </h2>
-          <p className="text-red-200 text-sm leading-relaxed max-w-xs">
+          <p style={{ color:"rgba(255,220,220,0.8)", fontSize:13.5, lineHeight:1.7, maxWidth:340, margin:"0 0 24px" }}>
             Real-time loan tracking, team performance, and customer pipeline — all in one place.
           </p>
-          <div className="flex gap-3 mt-5">
-            {[["15+","Branches"],["3","Roles"],["Live","Real-time"]].map(([v,l]) => (
-              <div key={l} className="bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-center">
-                <p className="text-white font-black text-lg">{v}</p>
-                <p className="text-red-200 text-xs">{l}</p>
+
+          {/* Stats badges — removed "3 Roles" */}
+          <div style={{ display:"flex", gap:12, flexWrap:"wrap" }}>
+            {[["15+","Branches"],["Live","Real-time"],["100%","Secured"]].map(([v,l]) => (
+              <div key={l} style={{
+                background:"rgba(255,255,255,0.12)", border:"1px solid rgba(255,255,255,0.25)",
+                borderRadius:12, padding:"10px 18px", textAlign:"center", backdropFilter:"blur(6px)"
+              }}>
+                <p style={{ color:"#fff", fontWeight:900, fontSize:18, margin:0, lineHeight:1 }}>{v}</p>
+                <p style={{ color:"rgba(255,210,210,0.85)", fontSize:11, margin:"3px 0 0" }}>{l}</p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Bottom: House couple image (replaces car) */}
-        <div className="relative z-10 w-full" style={{ marginTop:"auto" }}>
+        {/* Spacer */}
+        <div style={{ flex:1 }} />
+
+        {/* HOUSE IMAGE — fills bottom, full width, no crop */}
+        <div style={{ position:"relative", width:"100%", zIndex:5 }}>
+          {/* Top fade so image blends into red panel */}
+          <div style={{
+            position:"absolute", top:0, left:0, right:0, height:120,
+            background:"linear-gradient(to bottom, #b8001a, transparent)",
+            zIndex:6, pointerEvents:"none"
+          }} />
           <img
             src={HOME_HERO_SRC}
-            alt="Dream home"
+            alt="Happy couple with their dream home"
             style={{
               width:"100%",
-              height:"280px",
-              objectFit:"cover",
-              objectPosition:"center top",
               display:"block",
+              objectFit:"cover",
+              objectPosition:"center 20%",
+              height:"340px",
             }}
           />
-          {/* Gradient overlay so image blends into red panel */}
+          {/* Bottom dark overlay so footer text is readable */}
           <div style={{
-            position:"absolute", inset:0,
-            background:"linear-gradient(to bottom, rgba(180,0,20,0.65) 0%, transparent 40%, rgba(120,0,10,0.55) 100%)",
-            pointerEvents:"none",
+            position:"absolute", bottom:0, left:0, right:0, height:80,
+            background:"linear-gradient(to top, rgba(80,0,10,0.85), transparent)",
+            zIndex:6, pointerEvents:"none"
           }} />
         </div>
 
         {/* Footer */}
-        <div className="px-10 py-3 relative z-10" style={{ background:"rgba(0,0,0,0.3)" }}>
-          <p className="text-red-300 text-xs">© {new Date().getFullYear()} CIMB Bank PLC. All rights reserved.</p>
+        <div style={{ padding:"10px 36px 16px", position:"relative", zIndex:10, background:"rgba(60,0,8,0.5)" }}>
+          <p style={{ color:"rgba(255,180,180,0.7)", fontSize:11, margin:0 }}>
+            © {new Date().getFullYear()} CIMB Bank PLC. All rights reserved.
+          </p>
         </div>
 
-        {/* Background glow circles */}
-        <div className="absolute top-0 right-0 w-80 h-80 rounded-full opacity-10"
-          style={{ background:"radial-gradient(circle,#fff,transparent)", transform:"translate(35%,-35%)" }} />
-        <div className="absolute bottom-40 left-0 w-60 h-60 rounded-full opacity-8"
-          style={{ background:"radial-gradient(circle,#fff,transparent)", transform:"translate(-25%,20%)" }} />
+        {/* Decorative glow circles */}
+        <div style={{ position:"absolute", top:"-15%", right:"-15%", width:360, height:360, borderRadius:"50%", background:"radial-gradient(circle,rgba(255,255,255,0.08),transparent)", pointerEvents:"none" }} />
+        <div style={{ position:"absolute", top:"30%", left:"-10%", width:260, height:260, borderRadius:"50%", background:"radial-gradient(circle,rgba(255,255,255,0.05),transparent)", pointerEvents:"none" }} />
       </div>
 
-      {/* ── RIGHT PANEL ── */}
-      <div className="flex-1 flex flex-col items-center justify-center px-8 py-12 bg-white">
+      {/* ════════════════════════════════
+          RIGHT PANEL — Sign In Form
+      ════════════════════════════════ */}
+      <div style={{
+        flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
+        padding:"40px 32px", background:"#fff", overflowY:"auto"
+      }}>
         {/* Mobile logo */}
-        <div className="lg:hidden mb-8 flex flex-col items-center">
-          <img src={CIMB_LOGO_SRC} alt="CIMB Bank Cambodia" style={{ height:60, borderRadius:8 }} />
+        <div className="lg:hidden" style={{ marginBottom:28 }}>
+          <img src={{CIMB_LOGO_SRC}} alt="CIMB Bank Cambodia" style={{ height:58, borderRadius:8 }} />
         </div>
 
-        <div className="w-full max-w-sm">
-          {/* Header logo */}
-          <div className="flex items-center gap-3 mb-8">
-            <img src={CIMB_LOGO_SRC} alt="CIMB Bank Cambodia" style={{ height:44, width:"auto", borderRadius:6 }} />
-            <div className="border-l-2 border-slate-200 pl-3">
-              <p className="text-xs font-bold text-slate-700">Loan Pipeline</p>
-              <p className="text-xs text-slate-400">Internal System</p>
+        <div style={{ width:"100%", maxWidth:400 }}>
+
+          {/* Logo row */}
+          <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:32 }}>
+            <img src={{CIMB_LOGO_SRC}} alt="CIMB Bank Cambodia"
+              style={{ height:52, width:"auto", borderRadius:8, flexShrink:0 }} />
+            <div style={{ borderLeft:"2px solid #e5e7eb", paddingLeft:14 }}>
+              <p style={{ fontWeight:700, fontSize:14, color:"#1e293b", margin:0 }}>Loan Pipeline</p>
+              <p style={{ fontSize:12, color:"#94a3b8", margin:0 }}>Internal System</p>
             </div>
           </div>
 
-          <div className="mb-7">
-            <h1 className="text-2xl font-bold text-slate-800">Sign In</h1>
-            <p className="text-slate-500 text-sm mt-1">Welcome back! Please enter your credentials.</p>
+          {/* Heading */}
+          <div style={{ marginBottom:28 }}>
+            <h1 style={{ fontSize:28, fontWeight:800, color:"#0f172a", margin:"0 0 6px" }}>Sign In</h1>
+            <p style={{ fontSize:14, color:"#64748b", margin:0 }}>Welcome back! Please enter your credentials.</p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-5">
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm flex items-center space-x-2">
-                <X size={16} /><span>{error}</span>
-              </div>
-            )}
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Username</label>
-              <input type="text" required value={username} onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none transition text-slate-800"
-                onFocus={(e) => (e.target.style.borderColor = "#C8102E")}
-                onBlur={(e)  => (e.target.style.borderColor = "")}
-                placeholder="Enter your username" />
+          {/* Error */}
+          {error && (
+            <div style={{ background:"#fef2f2", border:"1px solid #fecaca", color:"#dc2626", padding:"12px 16px", borderRadius:12, fontSize:13, display:"flex", alignItems:"center", gap:8, marginBottom:20 }}>
+              <X size={15} /><span>{error}</span>
             </div>
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Password</label>
-              <div className="relative">
-                <input type={showPw ? "text" : "password"} required value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none pr-12 transition text-slate-800"
-                  onFocus={(e) => (e.target.style.borderColor = "#C8102E")}
-                  onBlur={(e)  => (e.target.style.borderColor = "")}
-                  placeholder="Enter your password" />
-                <button type="button" onClick={() => setShowPw(!showPw)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-                  {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-            </div>
-            <button type="submit" disabled={loading}
-              className="w-full text-white py-3.5 rounded-xl font-bold flex items-center justify-center space-x-2 transition-all hover:opacity-90 shadow-lg disabled:opacity-60 mt-2"
-              style={{ background:"linear-gradient(135deg,#C8102E,#E31837)" }}>
-              {loading && <Loader2 size={18} className="animate-spin" />}
-              <span>{loading ? "Signing in..." : "Sign In"}</span>
-            </button>
-          </form>
+          )}
 
-          <p className="text-center text-xs text-slate-400 mt-6">
-            Contact your administrator for login credentials.
+          {/* Username */}
+          <div style={{ marginBottom:18 }}>
+            <label style={{ display:"block", fontSize:13, fontWeight:600, color:"#374151", marginBottom:7 }}>Username</label>
+            <input
+              type="text" required value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              onFocus={(e) => { e.target.style.borderColor="#C8102E"; e.target.style.boxShadow="0 0 0 3px rgba(200,16,46,0.1)"; }}
+              onBlur={(e)  => { e.target.style.borderColor="#e2e8f0"; e.target.style.boxShadow="none"; }}
+              placeholder="Enter your username"
+              style={{ width:"100%", padding:"13px 16px", border:"1.5px solid #e2e8f0", borderRadius:12, fontSize:14, color:"#1e293b", background:"#f8fafc", outline:"none", boxSizing:"border-box", transition:"border-color 0.2s" }}
+            />
+          </div>
+
+          {/* Password */}
+          <div style={{ marginBottom:24 }}>
+            <label style={{ display:"block", fontSize:13, fontWeight:600, color:"#374151", marginBottom:7 }}>Password</label>
+            <div style={{ position:"relative" }}>
+              <input
+                type={showPw ? "text" : "password"} required value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onFocus={(e) => { e.target.style.borderColor="#C8102E"; e.target.style.boxShadow="0 0 0 3px rgba(200,16,46,0.1)"; }}
+                onBlur={(e)  => { e.target.style.borderColor="#e2e8f0"; e.target.style.boxShadow="none"; }}
+                placeholder="Enter your password"
+                style={{ width:"100%", padding:"13px 48px 13px 16px", border:"1.5px solid #e2e8f0", borderRadius:12, fontSize:14, color:"#1e293b", background:"#f8fafc", outline:"none", boxSizing:"border-box", transition:"border-color 0.2s" }}
+              />
+              <button type="button" onClick={() => setShowPw(!showPw)}
+                style={{ position:"absolute", right:14, top:"50%", transform:"translateY(-50%)", background:"none", border:"none", cursor:"pointer", color:"#94a3b8", display:"flex", alignItems:"center" }}>
+                {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
+
+          {/* Sign In button */}
+          <button type="button" onClick={handleLogin} disabled={loading}
+            style={{ width:"100%", padding:"14px", background:loading?"#e2e8f0":"linear-gradient(135deg,#C8102E,#e8203e)", color:loading?"#94a3b8":"#fff", border:"none", borderRadius:12, fontSize:15, fontWeight:700, cursor:loading?"not-allowed":"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8, boxShadow:loading?"none":"0 4px 20px rgba(200,16,46,0.35)", transition:"all 0.2s" }}
+            onMouseEnter={(e)=>{ if(!loading)e.currentTarget.style.transform="translateY(-1px)"; }}
+            onMouseLeave={(e)=>{ e.currentTarget.style.transform="translateY(0)"; }}>
+            {loading && <Loader2 size={18} className="animate-spin" />}
+            <span>{loading ? "Signing in..." : "Sign In"}</span>
+          </button>
+
+          {/* Footer note */}
+          <p style={{ textAlign:"center", fontSize:12.5, color:"#94a3b8", margin:"20px 0 0" }}>
+            We are in one Team 🤝
           </p>
-          <div className="mt-8 pt-5 border-t border-slate-100 text-center">
-            <p className="text-xs text-slate-400">© {new Date().getFullYear()} CIMB Bank PLC. All rights reserved.</p>
+
+          <div style={{ marginTop:28, paddingTop:20, borderTop:"1px solid #f1f5f9", textAlign:"center" }}>
+            <p style={{ fontSize:11.5, color:"#cbd5e1", margin:0 }}>
+              © {new Date().getFullYear()} CIMB Bank PLC. All rights reserved.
+            </p>
           </div>
         </div>
       </div>
