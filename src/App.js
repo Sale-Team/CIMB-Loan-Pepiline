@@ -211,7 +211,7 @@ function LoginPage({ onLogin }) {
       <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full opacity-10" style={{background:"radial-gradient(circle, #ff9999, transparent)", transform:"translate(30%, 30%)"}}></div>
 
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden relative z-10">
-        {/* Header — Chip Mong Green */}
+        {/* Header — CIMB Red */}
         <div className="px-8 py-10 text-center" style={{background:"linear-gradient(135deg, #8B0000 0%, #C8102E 50%, #E31837 100%)"}}>
           {/* CIMB Bank Logo */}
             <div className="flex flex-col items-center mb-1">
@@ -223,7 +223,7 @@ function LoginPage({ onLogin }) {
               </svg>
             </div>
           <h1 className="text-2xl font-bold text-white">Welcome to CIMB Bank</h1>
-          <p className="text-green-200 text-sm mt-1">Sign in to your account</p>
+          <p className="text-red-200 text-sm mt-1">Sign in to your account</p>
         </div>
 
         <form onSubmit={handleLogin} className="p-8 space-y-5">
@@ -1027,6 +1027,7 @@ export default function App() {
             <span className="text-base font-bold text-white leading-tight block">CIMB Bank</span>
             <span className="text-xs text-red-300">Loan Pipeline</span>
           </div>
+        </div>
         <SidebarNav />
       </aside>
 
