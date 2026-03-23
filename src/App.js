@@ -250,142 +250,178 @@ function LoginPage({ onLogin }) {
           </div>
         </div>
 
-        {/* LUXURY CAR — Premium Mercedes/BMW style sedan */}
+        {/* SUV CAR — Like CIMB website style */}
         <div className="relative px-4 pb-2 z-10">
-          <svg viewBox="0 0 580 210" xmlns="http://www.w3.org/2000/svg" className="w-full drop-shadow-2xl">
-            {/* Ground shadow */}
-            <ellipse cx="290" cy="197" rx="220" ry="10" fill="rgba(0,0,0,0.5)"/>
-            {/* Road */}
-            <rect x="0" y="183" width="580" height="27" fill="rgba(0,0,0,0.3)" rx="2"/>
-            {/* Road markings */}
-            {[20,110,200,290,380,470].map((x,i) => <rect key={i} x={x} y="193" width="50" height="3" fill="rgba(255,255,255,0.15)" rx="1"/>)}
-
-            {/* ── CAR BODY ── */}
-            {/* Main body — pearl white */}
-            <path d="M58 150 Q62 136 78 134 L502 134 Q518 136 522 150 L522 180 Q516 183 502 183 L78 183 Q62 183 58 180 Z" fill="#F2F2F0"/>
-            {/* Body upper highlight */}
-            <path d="M65 148 Q68 138 82 136 L498 136 Q512 138 515 148 L515 154 Q495 150 280 150 Q65 150 65 148 Z" fill="white" opacity="0.7"/>
-            {/* Lower chrome trim */}
-            <rect x="72" y="176" width="436" height="4" rx="2" fill="url(#chrome)"/>
+          <svg viewBox="0 0 580 230" xmlns="http://www.w3.org/2000/svg" className="w-full">
             <defs>
-              <linearGradient id="chrome" x1="0%" y1="0%" x2="0%" y2="100%">
+              <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#ffffff"/>
+                <stop offset="40%" stopColor="#f0f0f0"/>
+                <stop offset="100%" stopColor="#d8d8d8"/>
+              </linearGradient>
+              <linearGradient id="roofGrad" x1="0%" y1="0%" x2="0%" y2="100%">
                 <stop offset="0%" stopColor="#e8e8e8"/>
-                <stop offset="50%" stopColor="white"/>
-                <stop offset="100%" stopColor="#aaa"/>
+                <stop offset="100%" stopColor="#cccccc"/>
               </linearGradient>
-              <linearGradient id="glass" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="rgba(160,220,245,0.7)"/>
-                <stop offset="100%" stopColor="rgba(100,180,220,0.4)"/>
+              <linearGradient id="glassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="rgba(180,225,245,0.85)"/>
+                <stop offset="100%" stopColor="rgba(120,185,220,0.6)"/>
               </linearGradient>
+              <linearGradient id="wheelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#555"/>
+                <stop offset="50%" stopColor="#ccc"/>
+                <stop offset="100%" stopColor="#444"/>
+              </linearGradient>
+              <filter id="shadow">
+                <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="rgba(0,0,0,0.4)"/>
+              </filter>
             </defs>
-            {/* Side body crease line */}
-            <path d="M78 160 Q200 155 290 155 Q380 155 502 160" stroke="rgba(180,180,180,0.5)" strokeWidth="1.5" fill="none"/>
 
-            {/* ── ROOFLINE — Sleek coupe-style ── */}
-            <path d="M135 134 C142 96 182 66 220 56 L360 52 C400 54 438 74 452 102 L468 134 Z" fill="#EDEDED"/>
-            <path d="M142 130 C148 96 184 70 222 62 L358 58 C396 60 432 78 448 105 L460 130 Z" fill="white" opacity="0.55"/>
-            {/* Roof dark panel */}
-            <path d="M172 128 C176 108 195 90 222 84 L358 80 C385 84 405 102 415 122 L424 128 Z" fill="#DADADD"/>
+            {/* Ground shadow */}
+            <ellipse cx="290" cy="213" rx="240" ry="12" fill="rgba(0,0,0,0.45)"/>
+            {/* Road */}
+            <rect x="0" y="200" width="580" height="30" fill="rgba(0,0,0,0.25)" rx="3"/>
+            {[15,105,195,285,375,465].map((x,i) => <rect key={i} x={x} y="211" width="55" height="4" fill="rgba(255,255,255,0.12)" rx="2"/>)}
 
-            {/* ── WINDSHIELDS ── */}
-            {/* Front windshield */}
-            <path d="M172 128 C176 108 195 90 222 84 L270 80 L270 128 Z" fill="url(#glass)" opacity="0.85"/>
+            {/* ═══ SUV BODY ═══ */}
+            {/* Main lower body — wide tall SUV */}
+            <path d="M55 148 Q60 132 80 130 L500 130 Q520 132 525 148 L525 195 Q520 198 500 198 L80 198 Q60 198 55 195 Z" fill="url(#bodyGrad)" filter="url(#shadow)"/>
+            {/* Upper body highlight stripe */}
+            <path d="M62 140 Q66 133 84 131 L496 131 Q514 133 518 140 L518 148 L62 148 Z" fill="white" opacity="0.6"/>
+            {/* Side body crease */}
+            <path d="M80 168 Q200 163 290 163 Q380 163 500 168" stroke="rgba(160,160,160,0.6)" strokeWidth="2" fill="none"/>
+            {/* Lower rocker panel */}
+            <path d="M78 190 L502 190 L505 195 L75 195 Z" fill="#bbb"/>
+            {/* Red accent strip */}
+            <rect x="78" y="185" width="424" height="5" rx="2" fill="#C8102E"/>
+
+            {/* ═══ SUV ROOF — tall boxy SUV style ═══ */}
+            <path d="M115 130 L130 65 Q140 48 165 44 L415 44 Q440 46 450 65 L465 130 Z" fill="url(#roofGrad)" filter="url(#shadow)"/>
+            {/* Roof highlight */}
+            <path d="M122 128 L136 68 Q145 52 168 48 L412 48 Q436 50 444 68 L458 128 Z" fill="white" opacity="0.35"/>
+            {/* Roof rails — SUV characteristic */}
+            <rect x="148" y="44" width="12" height="84" rx="4" fill="#aaa"/>
+            <rect x="420" y="44" width="12" height="84" rx="4" fill="#aaa"/>
+            <rect x="148" y="44" width="284" height="8" rx="4" fill="#999"/>
+            <rect x="148" y="116" width="284" height="8" rx="4" fill="#999"/>
+
+            {/* ═══ WINDSHIELDS ═══ */}
+            {/* Front windshield — upright SUV angle */}
+            <path d="M130 128 L145 62 Q152 50 168 46 L290 44 L290 128 Z" fill="url(#glassGrad)" opacity="0.9"/>
             {/* Rear windshield */}
-            <path d="M350 80 L388 84 C406 98 415 118 420 128 L350 128 Z" fill="url(#glass)" opacity="0.75"/>
+            <path d="M415 44 L432 48 Q448 56 452 68 L465 128 L290 128 L290 44 Z" fill="url(#glassGrad)" opacity="0.85"/>
+            {/* A-pillar */}
+            <path d="M130 128 L148 62 L162 52 L168 46" stroke="#aaa" strokeWidth="5" fill="none" strokeLinecap="round"/>
+            {/* C-pillar */}
+            <path d="M450 128 L432 62 L418 52 L415 46" stroke="#aaa" strokeWidth="5" fill="none" strokeLinecap="round"/>
+            {/* B-pillar */}
+            <rect x="285" y="44" width="10" height="86" fill="#999"/>
 
-            {/* ── SIDE WINDOWS ── */}
-            <path d="M175 92 L243 88 L243 130 L175 130 Z" fill="url(#glass)" rx="4" opacity="0.9"/>
-            <rect x="252" y="82" width="88" height="48" rx="5" fill="url(#glass)" opacity="0.9"/>
-            <rect x="348" y="88" width="58" height="42" rx="4" fill="url(#glass)" opacity="0.8"/>
+            {/* ═══ SIDE WINDOWS — SUV style ═══ */}
+            {/* Front door window */}
+            <path d="M152 62 L168 46 L283 44 L283 128 L152 128 Z" fill="url(#glassGrad)" opacity="0.8"/>
+            {/* Rear door window */}
+            <path d="M297 44 L415 46 L430 62 L430 128 L297 128 Z" fill="url(#glassGrad)" opacity="0.75"/>
+            {/* Quarter window */}
+            <path d="M432 68 L450 80 L450 128 L432 128 Z" fill="url(#glassGrad)" opacity="0.6"/>
             {/* Window frames */}
-            <path d="M175 92 L243 88 L243 130 L175 130 Z" fill="none" stroke="#bbb" strokeWidth="1.5"/>
-            <rect x="252" y="82" width="88" height="48" rx="5" fill="none" stroke="#bbb" strokeWidth="1.5"/>
-            <rect x="348" y="88" width="58" height="42" rx="4" fill="none" stroke="#bbb" strokeWidth="1.5"/>
+            <path d="M152 62 L168 46 L283 44 L283 128 L152 128 Z" fill="none" stroke="#bbb" strokeWidth="2"/>
+            <path d="M297 44 L415 46 L430 62 L430 128 L297 128 Z" fill="none" stroke="#bbb" strokeWidth="2"/>
 
-            {/* ── DOOR LINES ── */}
-            <line x1="248" y1="134" x2="248" y2="178" stroke="#ccc" strokeWidth="1.5"/>
-            <line x1="344" y1="134" x2="344" y2="178" stroke="#ccc" strokeWidth="1.5"/>
-            <line x1="414" y1="134" x2="414" y2="178" stroke="#ccc" strokeWidth="1.5"/>
-            {/* Door handles — slim touch handles */}
-            <rect x="195" y="157" width="26" height="5" rx="2.5" fill="#bbb"/>
-            <rect x="285" y="157" width="26" height="5" rx="2.5" fill="#bbb"/>
-            <rect x="365" y="157" width="26" height="5" rx="2.5" fill="#bbb"/>
+            {/* ═══ DOORS ═══ */}
+            <line x1="283" y1="128" x2="283" y2="193" stroke="#ccc" strokeWidth="2"/>
+            <line x1="297" y1="128" x2="297" y2="193" stroke="#ccc" strokeWidth="2"/>
+            <line x1="428" y1="128" x2="428" y2="193" stroke="#ccc" strokeWidth="2"/>
+            {/* Door handles */}
+            <rect x="200" y="162" width="30" height="7" rx="3.5" fill="#bbb"/>
+            <rect x="318" y="162" width="30" height="7" rx="3.5" fill="#bbb"/>
+            <rect x="435" y="162" width="20" height="7" rx="3.5" fill="#bbb"/>
 
-            {/* ── FRONT END ── */}
-            <path d="M58 150 L78 134 L125 134 L112 150 Z" fill="#E8E8E8"/>
-            <path d="M52 156 Q52 178 74 181 L120 181 L124 156 Z" fill="#DCDCDC"/>
-            {/* Front grille — luxury kidney shape */}
-            <rect x="60" y="153" width="50" height="22" rx="6" fill="#111"/>
-            {/* Grille bars */}
-            {[156,161,166,171].map((y,i) => <rect key={i} x="63" y={y} width="44" height="2" rx="1" fill="#2a2a2a"/>)}
-            {/* Grille chrome surround */}
-            <rect x="59" y="152" width="52" height="24" rx="7" fill="none" stroke="rgba(200,200,200,0.8)" strokeWidth="2"/>
-            {/* Hood star/emblem */}
-            <circle cx="95" cy="134" r="5" fill="silver"/>
-            <circle cx="95" cy="134" r="3" fill="#C8102E"/>
-            {/* Front headlight — ultra slim LED */}
-            <path d="M60 140 L122 138 L125 146 L62 147 Z" fill="#111"/>
-            <path d="M63 141 L120 139 L122 144 L64 145 Z" fill="rgba(255,248,200,0.95)"/>
-            <rect x="63" y="141" width="58" height="2" rx="1" fill="white" opacity="0.9"/>
+            {/* ═══ FRONT END — SUV style ═══ */}
+            {/* Hood */}
+            <path d="M55 148 L80 130 L115 130 L100 148 Z" fill="#e0e0e0"/>
+            <path d="M60 155 Q58 175 76 195 L118 195 L125 155 Z" fill="#d8d8d8"/>
+            {/* Front bumper large */}
+            <path d="M56 155 Q55 178 78 192 L120 192 L128 160 L60 158 Z" fill="#ddd"/>
+            {/* Grille — wide honeycomb SUV style */}
+            <rect x="62" y="155" width="58" height="30" rx="5" fill="#111"/>
+            {[158,164,170,176,180].map((y,i) => <rect key={i} x="65" y={y} width="52" height="3" rx="1.5" fill="#222"/>)}
+            {[68,76,84,92,100,108,114].map((x,i) => <rect key={i} x={x} y="155" width="2" height="30" rx="1" fill="#222"/>)}
+            {/* Chrome grille surround */}
+            <rect x="61" y="154" width="60" height="32" rx="6" fill="none" stroke="rgba(220,220,220,0.9)" strokeWidth="2.5"/>
+            {/* Chrome center bar */}
+            <rect x="58" y="163" width="66" height="4" rx="2" fill="url(#wheelGrad)"/>
+            {/* Emblem */}
+            <circle cx="91" cy="130" r="7" fill="url(#wheelGrad)"/>
+            <circle cx="91" cy="130" r="4" fill="#C8102E"/>
+            {/* Headlights — slim LED SUV */}
+            <path d="M58 138 L120 136 L124 148 L60 150 Z" fill="#111"/>
+            <path d="M61 139 L118 137 L121 146 L62 148 Z" fill="rgba(255,248,200,0.95)"/>
+            <rect x="61" y="139" width="58" height="2.5" rx="1" fill="white" opacity="0.9"/>
             {/* DRL */}
-            <path d="M64 145 L121 143" stroke="rgba(255,220,80,0.7)" strokeWidth="1.5" strokeLinecap="round"/>
-            {/* Front fog */}
-            <ellipse cx="82" cy="176" rx="11" ry="4" fill="rgba(255,245,160,0.6)"/>
+            <path d="M62 148 L120 146" stroke="rgba(255,200,0,0.7)" strokeWidth="2" strokeLinecap="round"/>
+            {/* Fog lights */}
+            <rect x="66" y="183" width="24" height="7" rx="3" fill="rgba(255,245,180,0.5)" stroke="rgba(200,200,200,0.5)" strokeWidth="1"/>
             {/* Hood crease */}
-            <path d="M78 134 Q110 125 135 122" stroke="rgba(200,200,200,0.4)" strokeWidth="1" fill="none"/>
+            <path d="M80 130 Q95 118 115 115 L130 130" stroke="rgba(180,180,180,0.5)" strokeWidth="1.5" fill="none"/>
+            <path d="M62 130 Q75 120 90 118" stroke="rgba(180,180,180,0.3)" strokeWidth="1" fill="none"/>
 
-            {/* ── REAR END ── */}
-            <path d="M522 150 L502 134 L455 134 L468 150 Z" fill="#E8E8E8"/>
-            <path d="M528 156 Q528 178 506 181 L460 181 L456 156 Z" fill="#DCDCDC"/>
-            {/* Rear lights — full-width LED bar like modern luxury */}
-            <path d="M454 138 L524 138 L526 148 L454 148 Z" fill="#111"/>
-            <path d="M456 139 L522 139 L523 146 L456 146 Z" fill="rgba(220,40,40,0.9)"/>
-            <rect x="456" y="139" width="66" height="2" rx="1" fill="rgba(255,80,80,0.95)"/>
-            {/* LED connecting bar top */}
-            <rect x="136" y="52" width="288" height="3" rx="1.5" fill="rgba(220,40,40,0.3)"/>
-            {/* Exhaust pipes — dual quad */}
-            <ellipse cx="462" cy="179" rx="9" ry="4" fill="#444"/>
-            <ellipse cx="462" cy="179" rx="6" ry="2.5" fill="#1a1a1a"/>
-            <ellipse cx="477" cy="179" rx="9" ry="4" fill="#444"/>
-            <ellipse cx="477" cy="179" rx="6" ry="2.5" fill="#1a1a1a"/>
+            {/* ═══ REAR END — SUV style ═══ */}
+            <path d="M525 148 L500 130 L465 130 L480 148 Z" fill="#e0e0e0"/>
+            <path d="M524 155 Q526 178 504 192 L462 192 L455 160 L520 158 Z" fill="#d8d8d8"/>
+            {/* Rear bumper */}
+            <path d="M524 158 Q526 178 505 192 L462 192 L456 162 L522 160 Z" fill="#ddd"/>
+            {/* Full-width rear light bar */}
+            <rect x="456" y="136" width="70" height="14" rx="3" fill="#111"/>
+            <rect x="458" y="138" width="66" height="10" rx="2" fill="rgba(200,30,30,0.9)"/>
+            <rect x="458" y="138" width="66" height="3" rx="1" fill="rgba(255,60,60,0.95)"/>
+            {/* Rear light connecting strip across roof */}
+            <rect x="150" y="44" width="280" height="4" rx="2" fill="rgba(180,20,20,0.3)"/>
+            {/* Dual exhaust */}
+            <rect x="462" y="188" width="18" height="7" rx="3" fill="#555"/>
+            <rect x="463" y="189" width="16" height="5" rx="2" fill="#222"/>
+            <rect x="485" y="188" width="18" height="7" rx="3" fill="#555"/>
+            <rect x="486" y="189" width="16" height="5" rx="2" fill="#222"/>
+            {/* Rear wiper */}
+            <line x1="500" y1="48" x2="520" y2="80" stroke="#999" strokeWidth="2.5" strokeLinecap="round"/>
             {/* Trunk crease */}
-            <path d="M502 134 Q460 126 440 122" stroke="rgba(200,200,200,0.4)" strokeWidth="1" fill="none"/>
+            <path d="M500 130 Q470 120 450 116" stroke="rgba(180,180,180,0.5)" strokeWidth="1.5" fill="none"/>
 
             {/* CIMB badge */}
-            <rect x="238" y="153" width="104" height="18" rx="4" fill="#C8102E"/>
-            <rect x="239" y="154" width="102" height="16" rx="3" fill="none" stroke="rgba(255,200,0,0.5)" strokeWidth="1"/>
-            <text x="290" y="165" textAnchor="middle" fill="white" fontSize="8.5" fontWeight="900" fontFamily="Arial Black,sans-serif" letterSpacing="2">CIMB BANK</text>
+            <rect x="245" y="160" width="90" height="16" rx="4" fill="#C8102E"/>
+            <rect x="246" y="161" width="88" height="14" rx="3" fill="none" stroke="rgba(255,200,0,0.5)" strokeWidth="1"/>
+            <text x="290" y="172" textAnchor="middle" fill="white" fontSize="7.5" fontWeight="900" fontFamily="Arial Black,sans-serif" letterSpacing="1.5">CIMB BANK</text>
 
-            {/* ── WHEELS — 5-spoke luxury alloy ── */}
-            {[160, 420].map((cx,i) => (
-              <g key={i}>
-                <circle cx={cx} cy="183" r="28" fill="#0d0d0d"/>
-                <circle cx={cx} cy="183" r="23" fill="#1e1e1e"/>
+            {/* ═══ WHEELS — 5-spoke SUV alloy ═══ */}
+            {[148, 432].map((cx) => (
+              <g key={cx}>
+                <circle cx={cx} cy="198" r="30" fill="#111"/>
+                <circle cx={cx} cy="198" r="25" fill="#1e1e1e"/>
+                <circle cx={cx} cy="198" r="20" fill="#252525"/>
                 {/* 5 spokes */}
                 {[0,72,144,216,288].map((deg,j) => {
-                  const rad = (deg-90) * Math.PI/180;
-                  return <line key={j} x1={cx} y1={183} x2={cx + 21*Math.cos(rad)} y2={183 + 21*Math.sin(rad)} stroke="url(#spokeGrad)" strokeWidth="5" strokeLinecap="round"/>
+                  const r = (deg - 90) * Math.PI / 180;
+                  const x2 = cx + 22 * Math.cos(r);
+                  const y2 = 198 + 22 * Math.sin(r);
+                  return (
+                    <g key={j}>
+                      <line x1={cx} y1="198" x2={x2} y2={y2} stroke="#777" strokeWidth="7" strokeLinecap="round"/>
+                      <line x1={cx} y1="198" x2={x2} y2={y2} stroke="url(#wheelGrad)" strokeWidth="4" strokeLinecap="round"/>
+                    </g>
+                  );
                 })}
-                <defs>
-                  <linearGradient id="spokeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#888"/>
-                    <stop offset="50%" stopColor="silver"/>
-                    <stop offset="100%" stopColor="#666"/>
-                  </linearGradient>
-                </defs>
-                {/* Between-spoke dark */}
-                <circle cx={cx} cy="183" r="9" fill="#333"/>
-                <circle cx={cx} cy="183" r="6" fill="#C8102E"/>
-                <circle cx={cx} cy="183" r="3" fill="silver"/>
-                {/* Outer tire */}
-                <circle cx={cx} cy="183" r="28" fill="none" stroke="#080808" strokeWidth="5"/>
+                <circle cx={cx} cy="198" r="8" fill="#333"/>
+                <circle cx={cx} cy="198" r="5.5" fill="#C8102E"/>
+                <circle cx={cx} cy="198" r="2.5" fill="silver"/>
+                {/* Tire */}
+                <circle cx={cx} cy="198" r="30" fill="none" stroke="#060606" strokeWidth="6"/>
               </g>
             ))}
 
-            {/* Speed lines */}
-            <line x1="0" y1="128" x2="50" y2="128" stroke="rgba(255,255,255,0.15)" strokeWidth="2" strokeDasharray="8,5"/>
-            <line x1="0" y1="142" x2="45" y2="142" stroke="rgba(255,255,255,0.1)" strokeWidth="1.5" strokeDasharray="6,6"/>
-            <line x1="0" y1="155" x2="42" y2="155" stroke="rgba(255,255,255,0.07)" strokeWidth="1" strokeDasharray="5,6"/>
+            {/* Motion speed lines */}
+            <line x1="0" y1="135" x2="48" y2="135" stroke="rgba(255,255,255,0.2)" strokeWidth="2.5" strokeDasharray="10,6"/>
+            <line x1="0" y1="150" x2="44" y2="150" stroke="rgba(255,255,255,0.13)" strokeWidth="1.5" strokeDasharray="8,7"/>
+            <line x1="0" y1="165" x2="40" y2="165" stroke="rgba(255,255,255,0.07)" strokeWidth="1" strokeDasharray="6,8"/>
           </svg>
         </div>
 
