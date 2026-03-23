@@ -153,7 +153,7 @@ function LoginPage({ onLogin }) {
         recordFailedAttempt(username.trim());
         const r3 = loginAttempts[username.trim()];
         const rem = r3 ? MAX_ATTEMPTS-(r3.count||0) : MAX_ATTEMPTS;
-        setError(`Invalid username or password. ${rem>0?rem+" attempt(s) remaining.":""}`);
+        setError("Invalid username or password. " + (rem>0?rem+" attempt(s) remaining.":""));
       }
     } catch { setError("Connection error. Please try again."); }
     setLoading(false);
@@ -207,15 +207,15 @@ function LoginPage({ onLogin }) {
         <span>{loading?"Signing in...":"Sign In"}</span>
       </button>
       <p style={{textAlign:"center",fontSize:13,color:"#64748b",margin:"16px 0 0",fontWeight:500}}>
-        🤝 We are in one Team
+         We are in one Team
       </p>
       <p style={{textAlign:"center",fontSize:11,color:"#cbd5e1",margin:"10px 0 0"}}>
-        © {new Date().getFullYear()} CIMB Bank PLC. All rights reserved.
+        (c) {new Date().getFullYear()} CIMB Bank PLC. All rights reserved.
       </p>
     </form>
   );
 
-  // ── MOBILE ──────────────────────────────────────────────────
+  // -- MOBILE --------------------------------------------------
   if (isMobile) return (
     <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",
       background:"linear-gradient(170deg,#6b0010 0%,#960015 30%,#C8102E 65%,#e81535 100%)",
@@ -240,7 +240,7 @@ function LoginPage({ onLogin }) {
           background:"linear-gradient(to top,#C8102E,transparent)",zIndex:6,pointerEvents:"none"}}/>
         <div style={{position:"absolute",bottom:14,left:20,zIndex:7}}>
           <p style={{color:"rgba(255,200,200,.9)",fontSize:10,fontWeight:700,letterSpacing:2,
-            textTransform:"uppercase",margin:0}}>● Banking System For Staffs</p>
+            textTransform:"uppercase",margin:0}}>* Banking System For Staffs</p>
           <h2 style={{color:"#fff",fontSize:22,fontWeight:900,margin:"3px 0 0",lineHeight:1.2}}>
             Loan Tracking <span style={{color:"#FFD700"}}>System</span>
           </h2>
@@ -266,7 +266,7 @@ function LoginPage({ onLogin }) {
     </div>
   );
 
-  // ── DESKTOP ─────────────────────────────────────────────────
+  // -- DESKTOP -------------------------------------------------
   return (
     <div style={{minHeight:"100vh",display:"flex"}}>
       {/* Left */}
@@ -281,12 +281,12 @@ function LoginPage({ onLogin }) {
         </div>
         <div style={{padding:"28px 36px 0",flex:1,position:"relative",zIndex:10}}>
           <p style={{color:"rgba(255,200,200,.85)",fontSize:11,fontWeight:700,letterSpacing:3,
-            textTransform:"uppercase",marginBottom:10}}>● Banking System For Staffs</p>
+            textTransform:"uppercase",marginBottom:10}}>* Banking System For Staffs</p>
           <h2 style={{color:"#fff",fontSize:36,fontWeight:900,lineHeight:1.15,margin:"0 0 14px"}}>
             Loan Tracking<br/><span style={{color:"#FFD700"}}>System</span>
           </h2>
           <p style={{color:"rgba(255,220,220,.8)",fontSize:13.5,lineHeight:1.7,maxWidth:340,margin:"0 0 24px"}}>
-            Real-time loan tracking, team performance, and customer pipeline — all in one place.
+            Real-time loan tracking, team performance, and customer pipeline - all in one place.
           </p>
           <div style={{display:"flex",gap:12}}>
             {[["15+","Branches"],["Live","Real-time"],["100%","Secured"]].map(([v,l])=>(
@@ -309,7 +309,7 @@ function LoginPage({ onLogin }) {
         </div>
         <div style={{padding:"10px 36px 14px",position:"relative",zIndex:10,background:"rgba(40,0,6,.6)"}}>
           <p style={{color:"rgba(255,180,180,.65)",fontSize:11,margin:0}}>
-            © {new Date().getFullYear()} CIMB Bank PLC. All rights reserved.
+            (c) {new Date().getFullYear()} CIMB Bank PLC. All rights reserved.
           </p>
         </div>
         <div style={{position:"absolute",top:"-15%",right:"-15%",width:360,height:360,borderRadius:"50%",
@@ -356,29 +356,29 @@ function MultiSelect({ label, options, selected, onChange, color="indigo" }) {
     emerald: {a:"border-emerald-500 bg-emerald-50 text-emerald-700",c:"bg-emerald-600",t:"bg-emerald-100 text-emerald-700"},
   };
   const c = cm[color]||cm.indigo;
-  const display = selected.length===0 ? `All ${label}` : selected.map(s=>options.find(o=>o.value===s)?.label||s).join(", ");
+  const display = selected.length===0 ? "All " + (label) + "" : selected.map(s=>options.find(o=>o.value===s)?.label||s).join(", ");
   return (
     <div className="relative flex-shrink-0" ref={ref}>
       <button type="button" onClick={()=>setOpen(o=>!o)}
-        className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold transition-all shadow-sm min-w-[140px] max-w-[240px] ${selected.length>0?c.a:"border-slate-200 bg-white text-slate-600 hover:border-slate-300"}`}>
+        className={"flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold transition-all shadow-sm min-w-[140px] max-w-[240px] " + (selected.length>0?c.a:"border-slate-200 bg-white text-slate-600 hover:border-slate-300") + ""}>
         <span className="flex-1 text-left truncate">{display}</span>
-        <span className="text-slate-400 flex-shrink-0">{open?"▲":"▼"}</span>
+        <span className="text-slate-400 flex-shrink-0">{open?"":""}</span>
       </button>
       {open && (
         <div className="absolute top-full left-0 mt-1 bg-white rounded-xl border border-slate-200 shadow-2xl min-w-[200px] max-h-64 overflow-y-auto" style={{zIndex:9999}}>
           <div className="p-1.5">
             <button type="button" onClick={()=>{onChange([]);setOpen(false);}}
-              className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 ${selected.length===0?c.t+" font-bold":"text-slate-500 hover:bg-slate-50"}`}>
-              <span className={`w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center ${selected.length===0?c.c+" border-transparent":"border-slate-300"}`}>
-                {selected.length===0&&<span className="text-white text-xs font-bold">✓</span>}
+              className={"w-full text-left px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 " + (selected.length===0?c.t+" font-bold":"text-slate-500 hover:bg-slate-50") + ""}>
+              <span className={"w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center " + (selected.length===0?c.c+" border-transparent":"border-slate-300") + ""}>
+                {selected.length===0&&<span className="text-white text-xs font-bold">v</span>}
               </span>All {label}
             </button>
             <div className="border-t border-slate-100 my-1"></div>
             {options.map(opt=>{const checked=selected.includes(opt.value);return(
               <button key={opt.value} type="button" onClick={()=>toggle(opt.value)}
-                className={`w-full text-left px-3 py-2 rounded-lg text-xs flex items-center gap-2 ${checked?c.t+" font-semibold":"text-slate-600 hover:bg-slate-50"}`}>
-                <span className={`w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center ${checked?c.c+" border-transparent":"border-slate-300 bg-white"}`}>
-                  {checked&&<span className="text-white text-xs font-bold">✓</span>}
+                className={"w-full text-left px-3 py-2 rounded-lg text-xs flex items-center gap-2 " + (checked?c.t+" font-semibold":"text-slate-600 hover:bg-slate-50") + ""}>
+                <span className={"w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center " + (checked?c.c+" border-transparent":"border-slate-300 bg-white") + ""}>
+                  {checked&&<span className="text-white text-xs font-bold">v</span>}
                 </span>{opt.label}
               </button>
             );})}
@@ -459,7 +459,7 @@ export default function App() {
   const priorityColor=(l)=>l==="High"?"bg-red-50 text-red-700 border-red-200":l==="Medium"?"bg-amber-50 text-amber-700 border-amber-200":"bg-emerald-50 text-emerald-700 border-emerald-200";
   const priorityDot=(l)=>l==="High"?"bg-red-500":l==="Medium"?"bg-amber-500":"bg-emerald-500";
 
-  // ── LOGIN ACTIVITY ────────────────────────────────────────
+  // -- LOGIN ACTIVITY ----------------------------------------
   const recordLoginActivity = async (user) => {
     try {
       let ip = "Unknown";
@@ -500,7 +500,7 @@ export default function App() {
       const diffMs = logoutTime - loginTime;
       const mins = Math.floor(diffMs/60000);
       const hrs = Math.floor(mins/60);
-      const duration = hrs>0 ? `${hrs}h ${mins%60}m` : `${mins}m`;
+      const duration = hrs>0 ? "" + (hrs) + "h " + (mins%60) + "m" : "" + (mins) + "m";
       await updateDoc(doc(db,"artifacts",appId,"public","data","loginActivity",docId),{
         logoutTime, duration, status:"Logged Out",
       });
@@ -508,12 +508,12 @@ export default function App() {
     } catch(err) { console.error("Logout log error:", err); }
   };
 
-  // ── EXPORT ────────────────────────────────────────────────
-  const handleExportCustomers=(d)=>{exportToExcel(d.map((x,i)=>({...x,no:i+1,status:x.status==="Won"?"Completed Drawdown":x.status})),"Customers",CUSTOMER_HEADERS);showToast("✅ Exported!");};
-  const handleExportUsers=()=>{exportToExcel(appUsers.map((u,i)=>({...u,no:i+1,role:u.role==="admin"?"Administrator":u.role==="bm"?"Branch Manager":"Relationship Manager"})),"Users",USER_HEADERS);showToast("✅ Users exported!");};
+  // -- EXPORT ------------------------------------------------
+  const handleExportCustomers=(d)=>{exportToExcel(d.map((x,i)=>({...x,no:i+1,status:x.status==="Won"?"Completed Drawdown":x.status})),"Customers",CUSTOMER_HEADERS);showToast(" Exported!");};
+  const handleExportUsers=()=>{exportToExcel(appUsers.map((u,i)=>({...u,no:i+1,role:u.role==="admin"?"Administrator":u.role==="bm"?"Branch Manager":"Relationship Manager"})),"Users",USER_HEADERS);showToast(" Users exported!");};
   const handleDownloadTemplate=()=>{
-    const csv="\uFEFF"+[["Customer Name","Business/Workplace","Phone","Branch","Loan Type","Request Amount ($)","Approved Amount ($)","Rate (%)","Tenor (months)","Income Type","Income Amount ($)","Income Status","Customer Priority","Loan Status","Existing Bank","Loan Outstanding ($)","Existing Rate (%)","Maturity Date","RM Username"],["John Smith","Acme Corp","+855 12 345 678","NRD","Personal Loan","50000","45000","5.5","36","Salary","3000","Verified","Medium","Pending","ABA Bank","20000","7","2026-12-31","rm_username"]].map(r=>r.map(v=>`"${v}"`).join(",")).join("\n");
-    const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8;"}));a.download="Template.csv";document.body.appendChild(a);a.click();document.body.removeChild(a);showToast("✅ Downloaded!");
+    const csv="\uFEFF"+[["Customer Name","Business/Workplace","Phone","Branch","Loan Type","Request Amount ($)","Approved Amount ($)","Rate (%)","Tenor (months)","Income Type","Income Amount ($)","Income Status","Customer Priority","Loan Status","Existing Bank","Loan Outstanding ($)","Existing Rate (%)","Maturity Date","RM Username"],["John Smith","Acme Corp","+855 12 345 678","NRD","Personal Loan","50000","45000","5.5","36","Salary","3000","Verified","Medium","Pending","ABA Bank","20000","7","2026-12-31","rm_username"]].map(r=>r.map(v=>""" + (v) + """).join(",")).join("\n");
+    const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8;"}));a.download="Template.csv";document.body.appendChild(a);a.click();document.body.removeChild(a);showToast(" Downloaded!");
   };
   const handleFileUpload=(e)=>{
     const file=e.target.files[0];if(!file)return;
@@ -533,10 +533,10 @@ export default function App() {
         const get=(f)=>idx[f]!==-1?cols[idx[f]]||"":"";
         const client=get("client"),branch=get("branch"),amount=parseFloat(get("amount"))||0;
         const re2=[];
-        if(!client)re2.push(`Row ${rn+2}: Customer Name required`);
-        if(!branch)re2.push(`Row ${rn+2}: Branch required`);
-        if(!amount)re2.push(`Row ${rn+2}: Amount must be a number`);
-        if(branch&&!BRANCHES.includes(branch))re2.push(`Row ${rn+2}: Invalid branch "${branch}"`);
+        if(!client)re2.push("Row " + (rn+2) + ": Customer Name required");
+        if(!branch)re2.push("Row " + (rn+2) + ": Branch required");
+        if(!amount)re2.push("Row " + (rn+2) + ": Amount must be a number");
+        if(branch&&!BRANCHES.includes(branch))re2.push("Row " + (rn+2) + ": Invalid branch "" + (branch) + """);
         if(re2.length){errors.push(...re2);return;}
         const rmUser=appUsers.find(u=>u.username===get("rmUsername"));
         preview.push({client,businessName:get("businessName"),phone:get("phone"),branch,loanType:get("loanType")||"Personal Loan",amount,approvedAmount:parseFloat(get("approvedAmount"))||0,rate:parseFloat(get("rate"))||0,tenor:parseInt(get("tenor"))||0,incomeType:get("incomeType")||"Salary",incomeAmount:parseFloat(get("incomeAmount"))||0,incomeStatus:get("incomeStatus")||"Pending",customerStatus:get("customerStatus")||"Medium",status:get("status")||"Pending",existingBank:get("existingBank"),loanOutstanding:parseFloat(get("loanOutstanding"))||0,existingRate:parseFloat(get("existingRate"))||0,maturityDate:get("maturityDate"),rmUsername:rmUser?.username||loggedInUser.username,rmName:rmUser?.name||loggedInUser.name,date:new Date().toISOString().split("T")[0],createdAt:Date.now()});
@@ -547,11 +547,11 @@ export default function App() {
   };
   const handleImportSave=async()=>{
     if(!importPreview.length)return;setIsImporting(true);
-    try{const ref=collection(db,"artifacts",appId,"public","data","deals");for(const d of importPreview)await addDoc(ref,d);showToast(`✅ ${importPreview.length} imported!`);setIsImportModalOpen(false);setImportPreview([]);setImportErrors([]);}catch{showToast("❌ Import failed.");}
+    try{const ref=collection(db,"artifacts",appId,"public","data","deals");for(const d of importPreview)await addDoc(ref,d);showToast(" " + (importPreview.length) + " imported!");setIsImportModalOpen(false);setImportPreview([]);setImportErrors([]);}catch{showToast(" Import failed.");}
     setIsImporting(false);
   };
 
-  // ── EFFECTS ───────────────────────────────────────────────
+  // -- EFFECTS -----------------------------------------------
   React.useEffect(()=>{
     if(!loggedInUser)return;
     const check=setInterval(()=>{if(loggedInUser.sessionExpiry&&Date.now()>loggedInUser.sessionExpiry){handleLogout();}},60000);
@@ -574,11 +574,11 @@ export default function App() {
       my.forEach(f=>{
         if(!f.startDate)return;
         const startMs=new Date(f.startDate).setHours(8,0,0,0);const diff=startMs-now;
-        [{key:`${f.id}_1d`,ms:86400000,label:"1 day"},{key:`${f.id}_4h`,ms:14400000,label:"4 hours"},{key:`${f.id}_1h`,ms:3600000,label:"1 hour"}].forEach(({key,ms,label})=>{
+        [{key:"" + (f.id) + "_1d",ms:86400000,label:"1 day"},{key:"" + (f.id) + "_4h",ms:14400000,label:"4 hours"},{key:"" + (f.id) + "_1h",ms:3600000,label:"1 hour"}].forEach(({key,ms,label})=>{
           if(diff>0&&diff<=ms&&!sessionStorage.getItem(key)){
             sessionStorage.setItem(key,"1");
-            newN.push({id:key,title:`⏰ Follow-up in ${label}`,body:`${f.client} — ${f.rmName}`,priority:f.status||"Medium",time:new Date().toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"})});
-            if("Notification"in window&&Notification.permission==="granted")new Notification(`⏰ Follow-up in ${label}`,{body:`${f.client}\nStart: ${f.startDate}`,tag:key});
+            newN.push({id:key,title:" Follow-up in " + (label) + "",body:"" + (f.client) + " - " + (f.rmName) + "",priority:f.status||"Medium",time:new Date().toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"})});
+            if("Notification"in window&&Notification.permission==="granted")new Notification(" Follow-up in " + (label) + "",{body:"" + (f.client) + "\nStart: " + (f.startDate) + "",tag:key});
           }
         });
       });
@@ -620,22 +620,22 @@ export default function App() {
   const totalRevenue=useMemo(()=>visibleDeals.filter(d=>d.status==="Won").reduce((s,d)=>s+d.amount,0),[visibleDeals]);
   const totalPending=useMemo(()=>visibleDeals.filter(d=>d.status==="Pending").reduce((s,d)=>s+d.amount,0),[visibleDeals]);
 
-  const callGeminiAPI=async(prompt)=>{const url=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=`;let r=3,d=1000;while(r>0){try{const res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});if(!res.ok)throw new Error();const data=await res.json();return data.candidates[0].content.parts[0].text;}catch{r--;if(!r)return"AI unavailable.";await new Promise(x=>setTimeout(x,d));d*=2;}}};
+  const callGeminiAPI=async(prompt)=>{const url="https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=";let r=3,d=1000;while(r>0){try{const res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});if(!res.ok)throw new Error();const data=await res.json();return data.candidates[0].content.parts[0].text;}catch{r--;if(!r)return"AI unavailable.";await new Promise(x=>setTimeout(x,d));d*=2;}}};
 
-  const handleAnalyzePipeline=async()=>{setIsAiLoading(true);setIsPriorityModalOpen(true);setPriorityList([]);setPriorityTabFilter("High");const list=visibleDeals.filter(d=>d.customerStatus).map(d=>({customerName:d.client,businessName:d.businessName||"",amount:d.amount||0,loanType:d.loanType||"",rmName:d.rmName||"",priorityLevel:d.customerStatus||"Medium",reason:`${d.loanType||"Loan"} — Status: ${d.status} — Income: ${d.incomeType||"N/A"}`,status:d.status,branch:d.branch})).sort((a,b)=>({High:0,Medium:1,Low:2}[a.priorityLevel]??1)-({High:0,Medium:1,Low:2}[b.priorityLevel]??1));setPriorityList(list.length?list:[{customerName:"No customers with priority set",reason:"Please assign Customer Status when creating customers.",priorityLevel:"Low"}]);setIsAiLoading(false);};
-  const handleDraftEmail=async(deal)=>{setSelectedDealForEmail(deal);setIsEmailModalOpen(true);setEmailDraft("");setIsAiLoading(true);const draft=await callGeminiAPI(`Write a professional follow-up email from RM ${deal.rmName||"our team"} to "${deal.client}" about a ${deal.loanType||"loan"} worth $${deal.amount}. Under 150 words, no subject line.`);setEmailDraft(draft);setIsAiLoading(false);};
-  const copyToClipboard=(text)=>{const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");showToast("✅ Copied!");}catch{}document.body.removeChild(ta);};
+  const handleAnalyzePipeline=async()=>{setIsAiLoading(true);setIsPriorityModalOpen(true);setPriorityList([]);setPriorityTabFilter("High");const list=visibleDeals.filter(d=>d.customerStatus).map(d=>({customerName:d.client,businessName:d.businessName||"",amount:d.amount||0,loanType:d.loanType||"",rmName:d.rmName||"",priorityLevel:d.customerStatus||"Medium",reason:"" + (d.loanType||"Loan") + " - Status: " + (d.status) + " - Income: " + (d.incomeType||"N/A") + "",status:d.status,branch:d.branch})).sort((a,b)=>({High:0,Medium:1,Low:2}[a.priorityLevel]??1)-({High:0,Medium:1,Low:2}[b.priorityLevel]??1));setPriorityList(list.length?list:[{customerName:"No customers with priority set",reason:"Please assign Customer Status when creating customers.",priorityLevel:"Low"}]);setIsAiLoading(false);};
+  const handleDraftEmail=async(deal)=>{setSelectedDealForEmail(deal);setIsEmailModalOpen(true);setEmailDraft("");setIsAiLoading(true);const draft=await callGeminiAPI("Write a professional follow-up email from RM " + (deal.rmName||"our team") + " to "" + (deal.client) + "" about a " + (deal.loanType||"loan") + " worth $" + (deal.amount) + ". Under 150 words, no subject line.");setEmailDraft(draft);setIsAiLoading(false);};
+  const copyToClipboard=(text)=>{const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");showToast(" Copied!");}catch{}document.body.removeChild(ta);};
 
-  const handleAddDeal=async(e)=>{e.preventDefault();if(!newDeal.client||!newDeal.amount)return;setIsSyncing(true);const rm=isAdmin&&newDeal.repUsername?appUsers.find(u=>u.username===newDeal.repUsername):loggedInUser;const deal={client:newDeal.client,businessName:newDeal.businessName,phone:newDeal.phone,branch:newDeal.branch,amount:parseFloat(newDeal.amount),rmUsername:rm?.username||loggedInUser.username,rmName:rm?.name||loggedInUser.name,status:newDeal.status,loanType:newDeal.loanType,rate:parseFloat(newDeal.rate)||0,tenor:parseInt(newDeal.tenor)||0,incomeStatus:newDeal.incomeStatus,incomeType:newDeal.incomeType||"Salary",incomeAmount:parseFloat(newDeal.incomeAmount)||0,customerStatus:newDeal.customerStatus||"Medium",approvedAmount:parseFloat(newDeal.approvedAmount)||0,existingBank:newDeal.existingBank||"",loanOutstanding:parseFloat(newDeal.loanOutstanding)||0,existingRate:parseFloat(newDeal.existingRate)||0,maturityDate:newDeal.maturityDate||"",date:new Date().toISOString().split("T")[0],createdAt:Date.now()};try{await addDoc(collection(db,"artifacts",appId,"public","data","deals"),deal);setNewDeal({client:"",businessName:"",phone:"",branch:loggedInUser?.branch||"NRD",amount:"",approvedAmount:"",repUsername:"",status:"Pending",loanType:"Personal Loan",rate:"",tenor:"",incomeStatus:"Pending",incomeType:"Salary",incomeAmount:"",customerStatus:"Medium",existingBank:"",loanOutstanding:"",existingRate:"",maturityDate:""});setIsAddDealModalOpen(false);showToast(`✅ Customer "${deal.client}" created!`);}catch(err){console.error(err);}finally{setIsSyncing(false);}};
-  const handleUpdateDeal=async(e)=>{e.preventDefault();if(!editingDeal)return;setIsSyncing(true);try{await updateDoc(doc(db,"artifacts",appId,"public","data","deals",editingDeal.id),{client:editDealForm.client,businessName:editDealForm.businessName,phone:editDealForm.phone,branch:editDealForm.branch,amount:parseFloat(editDealForm.amount)||0,loanType:editDealForm.loanType,rate:parseFloat(editDealForm.rate)||0,tenor:parseInt(editDealForm.tenor)||0,incomeStatus:editDealForm.incomeStatus,status:editDealForm.status,customerStatus:editDealForm.customerStatus||"Medium",incomeType:editDealForm.incomeType||"Salary",incomeAmount:parseFloat(editDealForm.incomeAmount)||0,approvedAmount:parseFloat(editDealForm.approvedAmount)||0,...(isAdmin&&editDealForm.repUsername?{rmUsername:editDealForm.repUsername,rmName:appUsers.find(u=>u.username===editDealForm.repUsername)?.name||editingDeal.rmName}:{})});setIsEditDealModalOpen(false);setEditingDeal(null);showToast(`✅ Customer updated!`);}catch(err){console.error(err);}finally{setIsSyncing(false);}};
+  const handleAddDeal=async(e)=>{e.preventDefault();if(!newDeal.client||!newDeal.amount)return;setIsSyncing(true);const rm=isAdmin&&newDeal.repUsername?appUsers.find(u=>u.username===newDeal.repUsername):loggedInUser;const deal={client:newDeal.client,businessName:newDeal.businessName,phone:newDeal.phone,branch:newDeal.branch,amount:parseFloat(newDeal.amount),rmUsername:rm?.username||loggedInUser.username,rmName:rm?.name||loggedInUser.name,status:newDeal.status,loanType:newDeal.loanType,rate:parseFloat(newDeal.rate)||0,tenor:parseInt(newDeal.tenor)||0,incomeStatus:newDeal.incomeStatus,incomeType:newDeal.incomeType||"Salary",incomeAmount:parseFloat(newDeal.incomeAmount)||0,customerStatus:newDeal.customerStatus||"Medium",approvedAmount:parseFloat(newDeal.approvedAmount)||0,existingBank:newDeal.existingBank||"",loanOutstanding:parseFloat(newDeal.loanOutstanding)||0,existingRate:parseFloat(newDeal.existingRate)||0,maturityDate:newDeal.maturityDate||"",date:new Date().toISOString().split("T")[0],createdAt:Date.now()};try{await addDoc(collection(db,"artifacts",appId,"public","data","deals"),deal);setNewDeal({client:"",businessName:"",phone:"",branch:loggedInUser?.branch||"NRD",amount:"",approvedAmount:"",repUsername:"",status:"Pending",loanType:"Personal Loan",rate:"",tenor:"",incomeStatus:"Pending",incomeType:"Salary",incomeAmount:"",customerStatus:"Medium",existingBank:"",loanOutstanding:"",existingRate:"",maturityDate:""});setIsAddDealModalOpen(false);showToast(" Customer "" + (deal.client) + "" created!");}catch(err){console.error(err);}finally{setIsSyncing(false);}};
+  const handleUpdateDeal=async(e)=>{e.preventDefault();if(!editingDeal)return;setIsSyncing(true);try{await updateDoc(doc(db,"artifacts",appId,"public","data","deals",editingDeal.id),{client:editDealForm.client,businessName:editDealForm.businessName,phone:editDealForm.phone,branch:editDealForm.branch,amount:parseFloat(editDealForm.amount)||0,loanType:editDealForm.loanType,rate:parseFloat(editDealForm.rate)||0,tenor:parseInt(editDealForm.tenor)||0,incomeStatus:editDealForm.incomeStatus,status:editDealForm.status,customerStatus:editDealForm.customerStatus||"Medium",incomeType:editDealForm.incomeType||"Salary",incomeAmount:parseFloat(editDealForm.incomeAmount)||0,approvedAmount:parseFloat(editDealForm.approvedAmount)||0,...(isAdmin&&editDealForm.repUsername?{rmUsername:editDealForm.repUsername,rmName:appUsers.find(u=>u.username===editDealForm.repUsername)?.name||editingDeal.rmName}:{})});setIsEditDealModalOpen(false);setEditingDeal(null);showToast(" Customer updated!");}catch(err){console.error(err);}finally{setIsSyncing(false);}};
   const openEditDeal=(deal)=>{setEditingDeal(deal);setEditDealForm({client:deal.client||"",businessName:deal.businessName||"",phone:deal.phone||"",branch:deal.branch||"NRD",amount:deal.amount||"",approvedAmount:deal.approvedAmount||"",loanType:deal.loanType||"Personal Loan",rate:deal.rate||"",tenor:deal.tenor||"",incomeStatus:deal.incomeStatus||"Pending",incomeType:deal.incomeType||"Salary",incomeAmount:deal.incomeAmount||"",customerStatus:deal.customerStatus||"Medium",status:deal.status||"Pending",repUsername:deal.rmUsername||""});setIsEditDealModalOpen(true);};
-  const handleDeleteDeal=async(dealId,clientName)=>{if(!dealId||typeof dealId!=="string"){showToast("❌ Cannot delete.");return;}if(!window.confirm(`Delete "${clientName}"?`))return;try{await deleteDoc(doc(db,"artifacts",appId,"public","data","deals",dealId));showToast(`🗑️ "${clientName}" deleted.`);}catch{showToast("❌ Delete failed.");}};
-  const handleSaveUser=async(e)=>{e.preventDefault();if(!newUser.username||!newUser.password||!newUser.name)return;const exists=appUsers.find(u=>u.username===newUser.username&&u.id!==editingUser?.id);if(exists){showToast("❌ Username already exists!");return;}const usersRef=collection(db,"artifacts",appId,"public","data","appUsers");if(editingUser){const upd={name:newUser.name,role:newUser.role,branch:newUser.branch,branches:newUser.role==="bm"?newUser.branches||[newUser.branch]:[newUser.branch]};if(newUser.password!=="••••••"){upd.password=await hashPassword(newUser.password);upd.passwordHashed=true;}await updateDoc(doc(db,"artifacts",appId,"public","data","appUsers",editingUser.id),upd);showToast(`✅ User "${newUser.name}" updated!`);}else{const hp=await hashPassword(newUser.password);await addDoc(usersRef,{...newUser,branches:newUser.role==="bm"?newUser.branches||[newUser.branch]:[newUser.branch],password:hp,passwordHashed:true,createdAt:Date.now()});showToast(`✅ User "${newUser.name}" created!`);}setNewUser({username:"",password:"",name:"",role:"rm",branch:"NRD",branches:[]});setEditingUser(null);setIsUserModalOpen(false);};
-  const handleDeleteUser=async(userId,userName)=>{if(!window.confirm(`Delete "${userName}"?`))return;await deleteDoc(doc(db,"artifacts",appId,"public","data","appUsers",userId));showToast(`🗑️ "${userName}" deleted.`);};
-  const handleEditUser=(u)=>{setEditingUser(u);setNewUser({username:u.username,password:"••••••",name:u.name,role:u.role,branch:u.branch||"NRD",branches:u.branches||[u.branch||"NRD"]});setIsUserModalOpen(true);};
+  const handleDeleteDeal=async(dealId,clientName)=>{if(!dealId||typeof dealId!=="string"){showToast(" Cannot delete.");return;}if(!window.confirm("Delete "" + (clientName) + ""?"))return;try{await deleteDoc(doc(db,"artifacts",appId,"public","data","deals",dealId));showToast(" "" + (clientName) + "" deleted.");}catch{showToast(" Delete failed.");}};
+  const handleSaveUser=async(e)=>{e.preventDefault();if(!newUser.username||!newUser.password||!newUser.name)return;const exists=appUsers.find(u=>u.username===newUser.username&&u.id!==editingUser?.id);if(exists){showToast(" Username already exists!");return;}const usersRef=collection(db,"artifacts",appId,"public","data","appUsers");if(editingUser){const upd={name:newUser.name,role:newUser.role,branch:newUser.branch,branches:newUser.role==="bm"?newUser.branches||[newUser.branch]:[newUser.branch]};if(newUser.password!=="******"){upd.password=await hashPassword(newUser.password);upd.passwordHashed=true;}await updateDoc(doc(db,"artifacts",appId,"public","data","appUsers",editingUser.id),upd);showToast(" User "" + (newUser.name) + "" updated!");}else{const hp=await hashPassword(newUser.password);await addDoc(usersRef,{...newUser,branches:newUser.role==="bm"?newUser.branches||[newUser.branch]:[newUser.branch],password:hp,passwordHashed:true,createdAt:Date.now()});showToast(" User "" + (newUser.name) + "" created!");}setNewUser({username:"",password:"",name:"",role:"rm",branch:"NRD",branches:[]});setEditingUser(null);setIsUserModalOpen(false);};
+  const handleDeleteUser=async(userId,userName)=>{if(!window.confirm("Delete "" + (userName) + ""?"))return;await deleteDoc(doc(db,"artifacts",appId,"public","data","appUsers",userId));showToast(" "" + (userName) + "" deleted.");};
+  const handleEditUser=(u)=>{setEditingUser(u);setNewUser({username:u.username,password:"******",name:u.name,role:u.role,branch:u.branch||"NRD",branches:u.branches||[u.branch||"NRD"]});setIsUserModalOpen(true);};
   const handleLogout=async()=>{await recordLogoutActivity();setLoggedInUser(null);setActiveTab("dashboard");};
-  const handleSaveFollowUp=async(e)=>{e.preventDefault();if(!selectedDealForFollowUp||!followUpForm.startDate||!followUpForm.endDate||!followUpForm.remark.trim())return;try{await addDoc(collection(db,"artifacts",appId,"public","data","followUps"),{dealId:selectedDealForFollowUp.id,client:selectedDealForFollowUp.client,branch:selectedDealForFollowUp.branch,amount:selectedDealForFollowUp.amount,rate:selectedDealForFollowUp.rate,date:selectedDealForFollowUp.date,rmUsername:loggedInUser.username,rmName:loggedInUser.name,startDate:followUpForm.startDate,endDate:followUpForm.endDate,remark:followUpForm.remark.trim(),status:followUpForm.status||"Medium",createdAt:Date.now(),locked:true});setIsFollowUpModalOpen(false);setFollowUpForm({startDate:"",endDate:"",remark:"",status:"Medium"});setSelectedDealForFollowUp(null);showToast(`✅ Follow-up saved!`);}catch{showToast("❌ Failed to save.");}};
-  const handlePhotoUpload=async(userId,file)=>{if(!file)return;const reader=new FileReader();reader.onload=async(e)=>{await updateDoc(doc(db,"artifacts",appId,"public","data","appUsers",userId),{photoUrl:e.target.result});showToast("✅ Photo updated!");};reader.readAsDataURL(file);};
+  const handleSaveFollowUp=async(e)=>{e.preventDefault();if(!selectedDealForFollowUp||!followUpForm.startDate||!followUpForm.endDate||!followUpForm.remark.trim())return;try{await addDoc(collection(db,"artifacts",appId,"public","data","followUps"),{dealId:selectedDealForFollowUp.id,client:selectedDealForFollowUp.client,branch:selectedDealForFollowUp.branch,amount:selectedDealForFollowUp.amount,rate:selectedDealForFollowUp.rate,date:selectedDealForFollowUp.date,rmUsername:loggedInUser.username,rmName:loggedInUser.name,startDate:followUpForm.startDate,endDate:followUpForm.endDate,remark:followUpForm.remark.trim(),status:followUpForm.status||"Medium",createdAt:Date.now(),locked:true});setIsFollowUpModalOpen(false);setFollowUpForm({startDate:"",endDate:"",remark:"",status:"Medium"});setSelectedDealForFollowUp(null);showToast(" Follow-up saved!");}catch{showToast(" Failed to save.");}};
+  const handlePhotoUpload=async(userId,file)=>{if(!file)return;const reader=new FileReader();reader.onload=async(e)=>{await updateDoc(doc(db,"artifacts",appId,"public","data","appUsers",userId),{photoUrl:e.target.result});showToast(" Photo updated!");};reader.readAsDataURL(file);};
 
   if(!loggedInUser)return(
     <LoginPage onLogin={(u)=>{
@@ -645,7 +645,7 @@ export default function App() {
     }}/>
   );
 
-  // ── SIDEBAR ──────────────────────────────────────────────
+  // -- SIDEBAR ----------------------------------------------
   const SidebarNav = () => (
     <nav className="flex-1 px-4 py-6 space-y-1">
       {[
@@ -658,7 +658,7 @@ export default function App() {
         ]:[]),
       ].map(item=>(
         <button key={item.id} onClick={()=>{setActiveTab(item.id);setIsMobileMenuOpen(false);}}
-          className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${activeTab===item.id?"bg-gradient-to-r from-red-600/40 to-red-500/20 text-white border border-red-500/40 shadow-sm":"text-slate-400 hover:bg-white/5 hover:text-white"}`}>
+          className={"w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all " + (activeTab===item.id?"bg-gradient-to-r from-red-600/40 to-red-500/20 text-white border border-red-500/40 shadow-sm":"text-slate-400 hover:bg-white/5 hover:text-white") + ""}>
           {item.icon}
           <span className="font-medium flex-1 text-left">{item.label}</span>
           {item.badge&&<span className="text-xs bg-red-500/30 text-red-300 border border-red-500/30 px-2 py-0.5 rounded-full">{item.badge}</span>}
@@ -667,7 +667,7 @@ export default function App() {
       <div className="pt-4 border-t border-white/10 mt-4">
         <div className="px-4 py-3 bg-white/5 rounded-xl mb-2 border border-white/10">
           <p className="text-sm font-bold text-white">{loggedInUser.name}</p>
-          <p className="text-xs text-slate-400">{isAdmin?"🔑 Administrator":isBM?"🏦 Branch Manager":"👤 RM"} • {loggedInUser.branch}</p>
+          <p className="text-xs text-slate-400">{isAdmin?" Administrator":isBM?" Branch Manager":" RM"} * {loggedInUser.branch}</p>
         </div>
         <div className="mx-3 mb-2 px-3 py-2 rounded-xl bg-red-900/30 border border-red-700/30 flex items-center gap-2">
           <Shield size={13} className="text-red-400 flex-shrink-0"/>
@@ -717,16 +717,16 @@ export default function App() {
             <button className="md:hidden p-2 rounded-xl hover:bg-slate-100" onClick={()=>setIsMobileMenuOpen(true)}>
               <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="6" x2="17" y2="6"/><line x1="3" y1="12" x2="17" y2="12"/><line x1="3" y1="18" x2="17" y2="18"/></svg>
             </button>
-            <span className="text-sm font-semibold text-slate-700">👋 {loggedInUser.name}</span>
-            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${isAdmin?"bg-purple-100 text-purple-700":isBM?"bg-amber-100 text-amber-700":"bg-indigo-100 text-indigo-700"}`}>
-              {isAdmin?"🔑 Admin":isBM?"🏦 BM":"👤 RM"} • {loggedInUser.branch}
+            <span className="text-sm font-semibold text-slate-700"> {loggedInUser.name}</span>
+            <span className={"text-xs px-2 py-0.5 rounded-full font-medium " + (isAdmin?"bg-purple-100 text-purple-700":isBM?"bg-amber-100 text-amber-700":"bg-indigo-100 text-indigo-700") + ""}>
+              {isAdmin?" Admin":isBM?" BM":" RM"} * {loggedInUser.branch}
             </span>
           </div>
           <div className="flex items-center gap-2">
             {notifPermission==="default"&&(
               <button onClick={()=>Notification.requestPermission().then(p=>setNotifPermission(p))}
                 className="text-xs text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg font-medium">
-                🔔 Enable alerts
+                 Enable alerts
               </button>
             )}
             <button onClick={()=>setShowNotifPanel(p=>!p)} className="relative p-2 rounded-xl hover:bg-slate-100">
@@ -740,7 +740,7 @@ export default function App() {
         {showNotifPanel&&(
           <div className="fixed top-14 right-4 w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 max-h-[70vh] flex flex-col">
             <div className="px-5 py-4 border-b flex items-center justify-between">
-              <h3 className="font-bold text-slate-800 text-sm">🔔 Follow-up Alerts ({notifications.length})</h3>
+              <h3 className="font-bold text-slate-800 text-sm"> Follow-up Alerts ({notifications.length})</h3>
               <div className="flex items-center gap-2">
                 {notifications.length>0&&<button onClick={()=>setNotifications([])} className="text-xs text-slate-400 hover:text-red-500">Clear all</button>}
                 <button onClick={()=>setShowNotifPanel(false)} className="p-1 hover:bg-slate-100 rounded-lg"><X size={16} className="text-slate-400"/></button>
@@ -762,9 +762,9 @@ export default function App() {
 
         <div className="flex-1 p-4 md:p-6 overflow-y-auto">
 
-          {/* ════════════════════════════════════════
+          {/* ========================================
               LOGIN ACTIVITY TAB
-          ════════════════════════════════════════ */}
+          ======================================== */}
           {activeTab==="activity" && isAdmin && (
             <div className="max-w-7xl mx-auto space-y-5">
               <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
@@ -774,17 +774,17 @@ export default function App() {
                     <div>
                       <h2 className="text-lg font-bold text-slate-800 flex items-center">
                         <span className="w-1 h-5 bg-gradient-to-b from-red-500 to-rose-600 rounded-full mr-3 inline-block"></span>
-                        🔐 Login Activity Log
+                         Login Activity Log
                       </h2>
                       <p className="text-xs text-slate-400 mt-1 ml-4">Who logged in, from where, what device, and when</p>
                     </div>
                     <button onClick={()=>{
                       const data=activityLogs.map((a,i)=>({...a,no:i+1,
-                        loginTimeStr:a.loginTime?new Date(a.loginTime).toLocaleString("en-US"):"—",
+                        loginTimeStr:a.loginTime?new Date(a.loginTime).toLocaleString("en-US"):"-",
                         logoutTimeStr:a.logoutTime?new Date(a.logoutTime).toLocaleString("en-US"):"Still Active",
                       }));
                       exportToExcel(data,"Login_Activity",ACTIVITY_HEADERS);
-                      showToast("✅ Activity exported!");
+                      showToast(" Activity exported!");
                     }} className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-sm">
                       <FileDown size={15}/> Export Excel
                     </button>
@@ -794,12 +794,12 @@ export default function App() {
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
                     {[
                       {label:"Total Sessions",  value:activityLogs.length,                                    color:"text-slate-800",  bg:"bg-slate-50 border-slate-200"},
-                      {label:"🟢 Active Now",    value:activityLogs.filter(a=>a.status==="Active").length,     color:"text-emerald-700",bg:"bg-emerald-50 border-emerald-200"},
-                      {label:"📱 Mobile",        value:activityLogs.filter(a=>a.device==="Mobile").length,     color:"text-blue-700",   bg:"bg-blue-50 border-blue-200"},
-                      {label:"🖥️ Desktop",       value:activityLogs.filter(a=>a.device==="Desktop").length,    color:"text-purple-700", bg:"bg-purple-50 border-purple-200"},
+                      {label:" Active Now",    value:activityLogs.filter(a=>a.status==="Active").length,     color:"text-emerald-700",bg:"bg-emerald-50 border-emerald-200"},
+                      {label:" Mobile",        value:activityLogs.filter(a=>a.device==="Mobile").length,     color:"text-blue-700",   bg:"bg-blue-50 border-blue-200"},
+                      {label:" Desktop",       value:activityLogs.filter(a=>a.device==="Desktop").length,    color:"text-purple-700", bg:"bg-purple-50 border-purple-200"},
                     ].map(s=>(
-                      <div key={s.label} className={`${s.bg} border rounded-xl p-3 text-center`}>
-                        <p className={`text-2xl font-extrabold ${s.color}`}>{s.value}</p>
+                      <div key={s.label} className={"" + (s.bg) + " border rounded-xl p-3 text-center"}>
+                        <p className={"text-2xl font-extrabold " + (s.color) + ""}>{s.value}</p>
                         <p className="text-xs text-slate-500 mt-0.5">{s.label}</p>
                       </div>
                     ))}
@@ -807,7 +807,7 @@ export default function App() {
 
                   {/* Filters */}
                   <div className="flex flex-wrap gap-2 items-center">
-                    <input type="text" placeholder="🔍 Search by name or username..."
+                    <input type="text" placeholder=" Search by name or username..."
                       value={activityFilter.user}
                       onChange={e=>setActivityFilter(p=>({...p,user:e.target.value}))}
                       className="text-xs border border-slate-200 bg-white rounded-xl px-3 py-2 outline-none focus:border-red-400 text-slate-700 shadow-sm"
@@ -821,7 +821,7 @@ export default function App() {
                     {(activityFilter.user||activityFilter.date)&&(
                       <button onClick={()=>setActivityFilter({user:"",date:""})}
                         className="text-xs text-red-400 hover:text-red-600 font-semibold px-3 py-2 bg-red-50 rounded-xl hover:bg-red-100">
-                        ✕ Reset
+                         Reset
                       </button>
                     )}
                   </div>
@@ -855,30 +855,30 @@ export default function App() {
                             <td className="p-4 text-slate-400 text-sm">{idx+1}</td>
                             <td className="p-4">
                               <div className="flex items-center gap-2">
-                                <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 ${log.role==="admin"?"bg-purple-100 text-purple-700":log.role==="bm"?"bg-amber-100 text-amber-700":"bg-indigo-100 text-indigo-700"}`}>
+                                <div className={"w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 " + (log.role==="admin"?"bg-purple-100 text-purple-700":log.role==="bm"?"bg-amber-100 text-amber-700":"bg-indigo-100 text-indigo-700") + ""}>
                                   {log.name?.charAt(0)?.toUpperCase()||"?"}
                                 </div>
                                 <div>
                                   <p className="font-semibold text-slate-800 text-sm">{log.name}</p>
-                                  <p className="text-xs text-slate-400">@{log.username} • {log.branch}</p>
+                                  <p className="text-xs text-slate-400">@{log.username} * {log.branch}</p>
                                 </div>
                               </div>
                             </td>
                             <td className="p-4">
-                              <span className="font-mono text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg">{log.ip||"—"}</span>
+                              <span className="font-mono text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg">{log.ip||"-"}</span>
                             </td>
                             <td className="p-4">
-                              <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${log.device==="Mobile"?"bg-blue-50 text-blue-700":log.device==="Tablet"?"bg-teal-50 text-teal-700":"bg-purple-50 text-purple-700"}`}>
-                                {log.device==="Mobile"?"📱 Mobile":log.device==="Tablet"?"📟 Tablet":"🖥️ Desktop"}
+                              <span className={"px-2.5 py-1 rounded-full text-xs font-bold " + (log.device==="Mobile"?"bg-blue-50 text-blue-700":log.device==="Tablet"?"bg-teal-50 text-teal-700":"bg-purple-50 text-purple-700") + ""}>
+                                {log.device==="Mobile"?" Mobile":log.device==="Tablet"?" Tablet":" Desktop"}
                               </span>
                             </td>
                             <td className="p-4">
-                              <p className="text-xs font-semibold text-slate-700">{log.browser||"—"}</p>
-                              <p className="text-xs text-slate-400">{log.os||"—"}</p>
+                              <p className="text-xs font-semibold text-slate-700">{log.browser||"-"}</p>
+                              <p className="text-xs text-slate-400">{log.os||"-"}</p>
                             </td>
                             <td className="p-4">
                               <p className="text-xs font-semibold text-slate-700">
-                                {log.loginTime?new Date(log.loginTime).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}):"—"}
+                                {log.loginTime?new Date(log.loginTime).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}):"-"}
                               </p>
                               <p className="text-xs text-slate-400">
                                 {log.loginTime?new Date(log.loginTime).toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit",second:"2-digit"}):""}
@@ -895,17 +895,17 @@ export default function App() {
                                   </p>
                                 </>
                               ):(
-                                <span className="text-xs text-emerald-600 font-semibold animate-pulse">● Still Active</span>
+                                <span className="text-xs text-emerald-600 font-semibold animate-pulse">* Still Active</span>
                               )}
                             </td>
                             <td className="p-4">
                               <span className="text-xs font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg">
-                                {log.duration||(log.status==="Active"?"⏱ Online":"—")}
+                                {log.duration||(log.status==="Active"?" Online":"-")}
                               </span>
                             </td>
                             <td className="p-4">
-                              <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${log.status==="Active"?"bg-emerald-50 text-emerald-700 border-emerald-200":"bg-slate-50 text-slate-500 border-slate-200"}`}>
-                                {log.status==="Active"?"🟢 Active":"⚫ Logged Out"}
+                              <span className={"px-2.5 py-1 rounded-full text-xs font-bold border " + (log.status==="Active"?"bg-emerald-50 text-emerald-700 border-emerald-200":"bg-slate-50 text-slate-500 border-slate-200") + ""}>
+                                {log.status==="Active"?" Active":" Logged Out"}
                               </span>
                             </td>
                           </tr>
@@ -925,9 +925,9 @@ export default function App() {
             </div>
           )}
 
-          {/* ══════════════════════════════════════════
+          {/* ==========================================
               DASHBOARD TAB
-          ══════════════════════════════════════════ */}
+          ========================================== */}
           {activeTab==="dashboard" && (
             <div className="space-y-6 max-w-7xl mx-auto">
               {/* AI Banner */}
@@ -939,7 +939,7 @@ export default function App() {
                   <div>
                     <div className="flex items-center space-x-2 mb-2">
                       <div className="w-8 h-8 rounded-lg bg-emerald-400/30 flex items-center justify-center"><Sparkles size={16} className="text-emerald-300" /></div>
-                      <span className="text-red-200 text-xs font-semibold tracking-widest uppercase">● AI Analysis</span>
+                      <span className="text-red-200 text-xs font-semibold tracking-widest uppercase">* AI Analysis</span>
                     </div>
                     <h3 className="text-xl font-bold text-white">Customer Priority Analysis</h3>
                     <p className="text-emerald-100/70 mt-1 text-sm">Instantly see which pending customers to follow up with first.</p>
@@ -947,7 +947,7 @@ export default function App() {
                   <button onClick={handleAnalyzePipeline} disabled={isAiLoading}
                     className="whitespace-nowrap flex items-center space-x-2 bg-white hover:bg-red-50 disabled:opacity-50 text-red-700 px-6 py-3 rounded-xl text-sm font-bold shadow-lg transition-all hover:scale-105">
                     {isAiLoading ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
-                    <span>View Customer Priority ✨</span>
+                    <span>View Customer Priority </span>
                   </button>
                 </div>
               </div>
@@ -955,7 +955,7 @@ export default function App() {
               {/* Dashboard Filters */}
               <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
                 <div className="flex flex-wrap gap-2 items-center">
-                  <MultiSelect label="Status" color="indigo" options={[{value:"Pending",label:"⏳ Pipeline"},{value:"Pre-Approval",label:"✅ Pre-Approval"},{value:"Processing",label:"🔄 Processing"},{value:"LOS",label:"📁 LOS"},{value:"LOO",label:"⭐ LOO"},{value:"Won",label:"🏦 Completed"},{value:"Rejected",label:"❌ Rejected"}]} selected={topPerfFilter} onChange={setTopPerfFilter} />
+                  <MultiSelect label="Status" color="indigo" options={[{value:"Pending",label:" Pipeline"},{value:"Pre-Approval",label:" Pre-Approval"},{value:"Processing",label:" Processing"},{value:"LOS",label:" LOS"},{value:"LOO",label:" LOO"},{value:"Won",label:" Completed"},{value:"Rejected",label:" Rejected"}]} selected={topPerfFilter} onChange={setTopPerfFilter} />
                   <MultiSelect label="Branch" color="emerald" options={BRANCHES.map((b) => ({value:b,label:b}))} selected={topPerfBranch} onChange={setTopPerfBranch} />
                   <MultiSelect label="Product" color="purple" options={LOAN_TYPES.map((t) => ({value:t,label:t}))} selected={topPerfLoanType} onChange={setTopPerfLoanType} />
                   <div className="flex items-center gap-1.5">
@@ -967,7 +967,7 @@ export default function App() {
                     <input type="date" value={topPerfEndDate} onChange={(e) => setTopPerfEndDate(e.target.value)} className="text-xs border border-slate-200 bg-white rounded-xl px-3 py-2 outline-none focus:border-indigo-400 text-slate-700 shadow-sm" />
                   </div>
                   {(topPerfFilter.length>0||topPerfBranch.length>0||topPerfLoanType.length>0||topPerfStartDate||topPerfEndDate) && (
-                    <button onClick={() => {setTopPerfFilter([]);setTopPerfBranch([]);setTopPerfLoanType([]);setTopPerfStartDate("");setTopPerfEndDate("");}} className="text-xs text-red-400 hover:text-red-600 font-semibold px-3 py-2 bg-red-50 rounded-xl hover:bg-red-100 transition-colors">✕ Reset</button>
+                    <button onClick={() => {setTopPerfFilter([]);setTopPerfBranch([]);setTopPerfLoanType([]);setTopPerfStartDate("");setTopPerfEndDate("");}} className="text-xs text-red-400 hover:text-red-600 font-semibold px-3 py-2 bg-red-50 rounded-xl hover:bg-red-100 transition-colors"> Reset</button>
                   )}
                 </div>
               </div>
@@ -986,22 +986,22 @@ export default function App() {
                   {title:"Processing",status:"Processing",value:dashDeals.filter((d) => d.status==="Processing").length,sub:formatCurrency(amt("Processing")),gradient:"from-violet-500 to-purple-500",bg:"from-violet-50 to-purple-50",border:"border-violet-200",text:"text-violet-700",icon:<Loader2 size={20} />},
                   {title:"LOS",status:"LOS",value:dashDeals.filter((d) => d.status==="LOS").length,sub:formatCurrency(amt("LOS")),gradient:"from-indigo-500 to-blue-600",bg:"from-indigo-50 to-blue-50",border:"border-indigo-200",text:"text-indigo-700",icon:<Briefcase size={20} />},
                   {title:"LOO",status:"LOO",value:dashDeals.filter((d) => d.status==="LOO").length,sub:formatCurrency(amt("LOO")),gradient:"from-teal-500 to-emerald-500",bg:"from-teal-50 to-emerald-50",border:"border-teal-200",text:"text-teal-700",icon:<Star size={20} />},
-                  {title:"🏦 Completed",status:"Won",value:dashDeals.filter((d) => d.status==="Won").length,sub:formatCurrency(amt("Won")),gradient:"from-emerald-500 to-green-500",bg:"from-emerald-50 to-green-50",border:"border-emerald-200",text:"text-emerald-700",icon:<DollarSign size={20} />},
+                  {title:" Completed",status:"Won",value:dashDeals.filter((d) => d.status==="Won").length,sub:formatCurrency(amt("Won")),gradient:"from-emerald-500 to-green-500",bg:"from-emerald-50 to-green-50",border:"border-emerald-200",text:"text-emerald-700",icon:<DollarSign size={20} />},
                   {title:"Rejected",status:"Rejected",value:dashDeals.filter((d) => d.status==="Rejected").length,sub:formatCurrency(amt("Rejected")),gradient:"from-red-500 to-rose-500",bg:"from-red-50 to-rose-50",border:"border-red-200",text:"text-red-700",icon:<X size={20} />},
-                  {title:"📊 Total",status:"all",value:dashDeals.length,sub:formatCurrency(dashDeals.reduce((s,d) => s+d.amount,0)),gradient:"from-slate-500 to-slate-700",bg:"from-slate-50 to-slate-100",border:"border-slate-300",text:"text-slate-700",icon:<Briefcase size={20} />},
+                  {title:" Total",status:"all",value:dashDeals.length,sub:formatCurrency(dashDeals.reduce((s,d) => s+d.amount,0)),gradient:"from-slate-500 to-slate-700",bg:"from-slate-50 to-slate-100",border:"border-slate-300",text:"text-slate-700",icon:<Briefcase size={20} />},
                 ];
                 return (
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8 gap-3">
                     {cards.map((card,i) => (
                       <button key={card.status} onClick={() => setStatusFilterModal({title:card.title,status:card.status,filteredDeals:dashDeals})}
-                        className={`relative overflow-hidden bg-gradient-to-br ${card.bg} border ${card.border} rounded-2xl p-6 hover:shadow-xl transition-all hover:-translate-y-1 group flex flex-col items-center justify-center w-full`}
-                        style={{animationDelay:`${i*80}ms`,minHeight:"200px"}}>
-                        <div className={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${card.gradient} rounded-t-2xl`}></div>
-                        <div className={`flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br ${card.gradient} shadow-lg mb-4 group-hover:scale-110 transition-transform`}>
+                        className={"relative overflow-hidden bg-gradient-to-br " + (card.bg) + " border " + (card.border) + " rounded-2xl p-6 hover:shadow-xl transition-all hover:-translate-y-1 group flex flex-col items-center justify-center w-full"}
+                        style={{animationDelay:"" + (i*80) + "ms",minHeight:"200px"}}>
+                        <div className={"absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r " + (card.gradient) + " rounded-t-2xl"}></div>
+                        <div className={"flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br " + (card.gradient) + " shadow-lg mb-4 group-hover:scale-110 transition-transform"}>
                           <span className="text-white">{React.cloneElement(card.icon,{size:28})}</span>
                         </div>
                         <p className="text-xs font-bold text-slate-500 mb-1.5 text-center uppercase tracking-wide">{card.title}</p>
-                        <p className={`text-4xl font-extrabold ${card.text} text-center`}>{card.value}</p>
+                        <p className={"text-4xl font-extrabold " + (card.text) + " text-center"}>{card.value}</p>
                         <p className="text-sm text-slate-400 mt-1.5 text-center w-full font-medium">{card.sub}</p>
                         <div className="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all rounded-2xl"></div>
                       </button>
@@ -1016,11 +1016,11 @@ export default function App() {
                   <div className="flex flex-wrap gap-3 justify-between items-center">
                     <h3 className="text-lg font-bold text-slate-800 flex items-center">
                       <span className="w-1 h-5 bg-gradient-to-b from-indigo-500 to-blue-500 rounded-full mr-3 inline-block"></span>
-                      🏆 Top Performance by Branch
+                       Top Performance by Branch
                     </h3>
                     <button onClick={() => { let d=visibleDeals; if(topPerfFilter.length>0)d=d.filter((x)=>topPerfFilter.includes(x.status)); if(topPerfLoanType.length>0)d=d.filter((x)=>topPerfLoanType.includes(x.loanType)); if(topPerfBranch.length>0)d=d.filter((x)=>topPerfBranch.includes(x.branch)); if(topPerfStartDate)d=d.filter((x)=>x.date>=topPerfStartDate); if(topPerfEndDate)d=d.filter((x)=>x.date<=topPerfEndDate); handleExportCustomers(d); }}
                       className="flex items-center space-x-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm transition-all hover:shadow-md">
-                      <FileDown size={16} /><span>📊 Export Excel</span>
+                      <FileDown size={16} /><span> Export Excel</span>
                     </button>
                   </div>
                 </div>
@@ -1037,24 +1037,24 @@ export default function App() {
                   const maxVal=perfList[0]?.filteredTotal||1;
                   const filterLabel=topPerfFilter.length===0?"All Status":topPerfFilter.map((s)=>s==="Won"?"Completed":s).join(", ");
                   return perfList.map((br,i)=>(
-                    <div key={br.branch} onClick={()=>setStatusFilterModal({title:`Branch ${br.branch} — ${filterLabel}`,status:topPerfFilter.length===0?"all":topPerfFilter[0],branchFilter:br.branch})}
+                    <div key={br.branch} onClick={()=>setStatusFilterModal({title:"Branch " + (br.branch) + " - " + (filterLabel) + "",status:topPerfFilter.length===0?"all":topPerfFilter[0],branchFilter:br.branch})}
                       className="flex items-center px-5 py-4 border-b border-slate-50 last:border-0 hover:bg-indigo-50/40 transition-colors cursor-pointer">
-                      <span className={`font-extrabold w-7 text-base flex-shrink-0 ${i===0?"text-amber-400":i===1?"text-slate-400":i===2?"text-orange-400":"text-slate-300"}`}>{i===0?"🥇":i===1?"🥈":i===2?"🥉":`${i+1}`}</span>
+                      <span className={"font-extrabold w-7 text-base flex-shrink-0 " + (i===0?"text-amber-400":i===1?"text-slate-400":i===2?"text-orange-400":"text-slate-300") + ""}>{i===0?"":i===1?"":i===2?"":"" + (i+1) + ""}</span>
                       <div className="w-10 h-10 rounded-full ml-1 flex-shrink-0 bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center">
                         <span className="text-white font-bold text-xs">{br.branch.substring(0,3)}</span>
                       </div>
                       <div className="ml-3 flex-1 min-w-0">
-                        <p className="font-bold text-slate-800">🏦 {br.branch}</p>
+                        <p className="font-bold text-slate-800"> {br.branch}</p>
                         <div className="flex items-center gap-2 mt-1">
                           <div className="flex-1 bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                            <div className={`h-full rounded-full ${i===0?"bg-amber-400":i===1?"bg-slate-400":i===2?"bg-orange-400":"bg-indigo-300"}`} style={{width:`${maxVal>0?Math.round(br.filteredTotal/maxVal*100):0}%`,transition:"width 0.8s ease"}}></div>
+                            <div className={"h-full rounded-full " + (i===0?"bg-amber-400":i===1?"bg-slate-400":i===2?"bg-orange-400":"bg-indigo-300") + ""} style={{width:"" + (maxVal>0?Math.round(br.filteredTotal/maxVal*100):0) + "%",transition:"width 0.8s ease"}}></div>
                           </div>
                           <span className="text-xs text-slate-400 flex-shrink-0">{br.filteredCount} deals</span>
                         </div>
                       </div>
                       <div className="text-right ml-4">
                         <p className="font-bold text-emerald-600 text-sm">{formatCurrency(br.filteredTotal)}</p>
-                        <p className="text-xs text-indigo-400 mt-0.5">click to view →</p>
+                        <p className="text-xs text-indigo-400 mt-0.5">click to view -></p>
                       </div>
                     </div>
                   ));
@@ -1063,9 +1063,9 @@ export default function App() {
             </div>
           )}
 
-          {/* ══════════════════════════════════════════
+          {/* ==========================================
               SALE PERFORMANCE TAB
-          ══════════════════════════════════════════ */}
+          ========================================== */}
           {activeTab==="team" && (
             <div className="max-w-7xl mx-auto">
               <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
@@ -1082,18 +1082,18 @@ export default function App() {
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {!isBM && <button onClick={() => setIsAddDealModalOpen(true)} className="flex items-center space-x-2 bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm transition-all hover:shadow-md"><Plus size={16} /><span>New Customer</span></button>}
-                      {isAdmin && <button onClick={() => {setImportPreview([]);setImportErrors([]);setIsImportModalOpen(true);}} className="flex items-center space-x-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm"><Upload size={16} /><span>📥 Import Excel</span></button>}
-                      <button onClick={() => { let d=visibleDeals; if(teamRm.length>0)d=d.filter((x)=>teamRm.includes(x.rmUsername)); if(teamLoanType.length>0)d=d.filter((x)=>teamLoanType.includes(x.loanType)); if(teamLoanStatus.length>0)d=d.filter((x)=>teamLoanStatus.includes(x.status)); if(teamCustStatus.length>0)d=d.filter((x)=>teamCustStatus.includes(x.customerStatus)); if(teamStartDate)d=d.filter((x)=>x.date>=teamStartDate); if(teamEndDate)d=d.filter((x)=>x.date<=teamEndDate); handleExportCustomers(d); }} className="flex items-center space-x-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm"><FileDown size={16} /><span>📊 Export Excel</span></button>
+                      {isAdmin && <button onClick={() => {setImportPreview([]);setImportErrors([]);setIsImportModalOpen(true);}} className="flex items-center space-x-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm"><Upload size={16} /><span> Import Excel</span></button>}
+                      <button onClick={() => { let d=visibleDeals; if(teamRm.length>0)d=d.filter((x)=>teamRm.includes(x.rmUsername)); if(teamLoanType.length>0)d=d.filter((x)=>teamLoanType.includes(x.loanType)); if(teamLoanStatus.length>0)d=d.filter((x)=>teamLoanStatus.includes(x.status)); if(teamCustStatus.length>0)d=d.filter((x)=>teamCustStatus.includes(x.customerStatus)); if(teamStartDate)d=d.filter((x)=>x.date>=teamStartDate); if(teamEndDate)d=d.filter((x)=>x.date<=teamEndDate); handleExportCustomers(d); }} className="flex items-center space-x-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm"><FileDown size={16} /><span> Export Excel</span></button>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2 items-center p-4 border-b border-slate-100 bg-slate-50/50">
                     {(isAdmin||isBM) && <MultiSelect label="RM" color="indigo" options={(() => { const visible=isAdmin?rmList:rmList.filter((rm)=>(loggedInUser.branches||[loggedInUser.branch]).includes(rm.branch)); return visible.map((rm)=>({value:rm.username,label:rm.name})); })()} selected={teamRm} onChange={setTeamRm} />}
-                    <MultiSelect label="Status" color="indigo" options={[{value:"Pending",label:"⏳ Pipeline"},{value:"Pre-Approval",label:"✅ Pre-Approval"},{value:"Processing",label:"🔄 Processing"},{value:"LOS",label:"📁 LOS"},{value:"LOO",label:"⭐ LOO"},{value:"Won",label:"🏦 Completed"},{value:"Rejected",label:"❌ Rejected"}]} selected={teamLoanStatus} onChange={setTeamLoanStatus} />
+                    <MultiSelect label="Status" color="indigo" options={[{value:"Pending",label:" Pipeline"},{value:"Pre-Approval",label:" Pre-Approval"},{value:"Processing",label:" Processing"},{value:"LOS",label:" LOS"},{value:"LOO",label:" LOO"},{value:"Won",label:" Completed"},{value:"Rejected",label:" Rejected"}]} selected={teamLoanStatus} onChange={setTeamLoanStatus} />
                     <MultiSelect label="Product" color="purple" options={LOAN_TYPES.map((t)=>({value:t,label:t}))} selected={teamLoanType} onChange={setTeamLoanType} />
-                    <MultiSelect label="Priority" color="amber" options={[{value:"High",label:"🔴 High"},{value:"Medium",label:"🟡 Medium"},{value:"Low",label:"🟢 Low"}]} selected={teamCustStatus} onChange={setTeamCustStatus} />
+                    <MultiSelect label="Priority" color="amber" options={[{value:"High",label:" High"},{value:"Medium",label:" Medium"},{value:"Low",label:" Low"}]} selected={teamCustStatus} onChange={setTeamCustStatus} />
                     <div className="flex items-center gap-1.5"><span className="text-xs text-slate-400 font-medium">From</span><input type="date" value={teamStartDate} onChange={(e)=>setTeamStartDate(e.target.value)} className="text-xs border border-slate-200 bg-white rounded-xl px-3 py-2 outline-none focus:border-indigo-400 text-slate-700 shadow-sm" /></div>
                     <div className="flex items-center gap-1.5"><span className="text-xs text-slate-400 font-medium">To</span><input type="date" value={teamEndDate} onChange={(e)=>setTeamEndDate(e.target.value)} className="text-xs border border-slate-200 bg-white rounded-xl px-3 py-2 outline-none focus:border-indigo-400 text-slate-700 shadow-sm" /></div>
-                    {(teamRm.length>0||teamLoanStatus.length>0||teamLoanType.length>0||teamCustStatus.length>0||teamStartDate||teamEndDate) && <button onClick={()=>{setTeamRm([]);setTeamLoanStatus([]);setTeamLoanType([]);setTeamCustStatus([]);setTeamStartDate("");setTeamEndDate("");}} className="text-xs text-red-400 hover:text-red-600 font-semibold px-3 py-2 bg-red-50 rounded-xl hover:bg-red-100 transition-colors">✕ Reset</button>}
+                    {(teamRm.length>0||teamLoanStatus.length>0||teamLoanType.length>0||teamCustStatus.length>0||teamStartDate||teamEndDate) && <button onClick={()=>{setTeamRm([]);setTeamLoanStatus([]);setTeamLoanType([]);setTeamCustStatus([]);setTeamStartDate("");setTeamEndDate("");}} className="text-xs text-red-400 hover:text-red-600 font-semibold px-3 py-2 bg-red-50 rounded-xl hover:bg-red-100 transition-colors"> Reset</button>}
                   </div>
                 </div>
                 <div className="overflow-x-auto">
@@ -1116,20 +1116,20 @@ export default function App() {
                             <tr key={deal.id} className="hover:bg-indigo-50/30 transition-colors">
                               <td className="p-4 text-slate-400 text-sm font-medium">{idx+1}</td>
                               <td className="p-4"><p className="font-semibold text-slate-800">{deal.client}</p>{deal.businessName&&<p className="text-xs text-slate-400">{deal.businessName}</p>}</td>
-                              <td className="p-4"><span className="px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg">{deal.branch||"—"}</span></td>
-                              <td className="p-4"><span className="text-sm text-slate-600">{deal.phone||"—"}</span></td>
-                              <td className="p-4"><span className="text-sm text-slate-600">{deal.loanType||"—"}</span></td>
+                              <td className="p-4"><span className="px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg">{deal.branch||"-"}</span></td>
+                              <td className="p-4"><span className="text-sm text-slate-600">{deal.phone||"-"}</span></td>
+                              <td className="p-4"><span className="text-sm text-slate-600">{deal.loanType||"-"}</span></td>
                               <td className="p-4"><span className="font-bold text-slate-700">{formatCurrency(deal.amount)}</span></td>
-                              <td className="p-4"><span className={`px-2 py-1 rounded-full text-xs font-medium ${deal.incomeType==="Salary"?"bg-blue-50 text-blue-700":deal.incomeType==="Business"?"bg-purple-50 text-purple-700":deal.incomeType==="Rental"?"bg-teal-50 text-teal-700":"bg-slate-50 text-slate-600"}`}>{deal.incomeType||"—"}</span></td>
-                              <td className="p-4"><span className={`px-2.5 py-1 rounded-full text-xs font-bold ${deal.customerStatus==="High"?"bg-red-100 text-red-600":deal.customerStatus==="Low"?"bg-emerald-100 text-emerald-600":"bg-amber-100 text-amber-600"}`}>{deal.customerStatus==="High"?"🔴 High":deal.customerStatus==="Low"?"🟢 Low":"🟡 Medium"}</span></td>
+                              <td className="p-4"><span className={"px-2 py-1 rounded-full text-xs font-medium " + (deal.incomeType==="Salary"?"bg-blue-50 text-blue-700":deal.incomeType==="Business"?"bg-purple-50 text-purple-700":deal.incomeType==="Rental"?"bg-teal-50 text-teal-700":"bg-slate-50 text-slate-600") + ""}>{deal.incomeType||"-"}</span></td>
+                              <td className="p-4"><span className={"px-2.5 py-1 rounded-full text-xs font-bold " + (deal.customerStatus==="High"?"bg-red-100 text-red-600":deal.customerStatus==="Low"?"bg-emerald-100 text-emerald-600":"bg-amber-100 text-amber-600") + ""}>{deal.customerStatus==="High"?" High":deal.customerStatus==="Low"?" Low":" Medium"}</span></td>
                               <td className="p-4">
                                 <div className="flex items-center gap-2">
                                   {(() => { const rm=appUsers.find((u)=>u.username===deal.rmUsername); return rm?.photoUrl ? <img src={rm.photoUrl} alt={rm.name} className="w-7 h-7 rounded-full object-cover flex-shrink-0" /> : <div className="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-600 flex-shrink-0">{deal.rmName?.charAt(0)}</div>; })()}
-                                  <span className="text-sm font-medium text-slate-700">{deal.rmName||"—"}</span>
+                                  <span className="text-sm font-medium text-slate-700">{deal.rmName||"-"}</span>
                                 </div>
                               </td>
                               <td className="p-4"><span className="text-xs text-slate-500">{new Date(deal.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span></td>
-                              <td className="p-4"><span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${statusBadge(deal.status)}`}>{deal.status==="Won"?"Completed":deal.status}</span></td>
+                              <td className="p-4"><span className={"px-2.5 py-1 rounded-full text-xs font-medium border " + (statusBadge(deal.status)) + ""}>{deal.status==="Won"?"Completed":deal.status}</span></td>
                               <td className="p-4">
                                 <div className="flex items-center gap-2">
                                   {!isBM && <button onClick={()=>openEditDeal(deal)} className="flex items-center space-x-1 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-lg text-xs font-medium transition-colors"><Edit2 size={12} /><span>Edit</span></button>}
@@ -1149,17 +1149,17 @@ export default function App() {
             </div>
           )}
 
-          {/* ══════════════════════════════════════════
+          {/* ==========================================
               FOLLOW UP TAB
-          ══════════════════════════════════════════ */}
+          ========================================== */}
           {activeTab==="deals" && (
             <div className="max-w-7xl mx-auto space-y-6">
               <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
                 <div className="p-5 border-b bg-gradient-to-r from-slate-50 to-indigo-50/30">
                   <div className="flex flex-wrap gap-3 items-center justify-between mb-3">
                     <div>
-                      <h2 className="text-lg font-bold text-slate-800 flex items-center"><span className="w-1 h-5 bg-gradient-to-b from-indigo-500 to-blue-500 rounded-full mr-3 inline-block"></span>📋 List Customer Follow Up</h2>
-                      <p className="text-xs text-slate-400 mt-1 ml-4">Click ➕ Follow Up on any customer to add a note</p>
+                      <h2 className="text-lg font-bold text-slate-800 flex items-center"><span className="w-1 h-5 bg-gradient-to-b from-indigo-500 to-blue-500 rounded-full mr-3 inline-block"></span> List Customer Follow Up</h2>
+                      <p className="text-xs text-slate-400 mt-1 ml-4">Click  Follow Up on any customer to add a note</p>
                     </div>
                   </div>
                   <div className="relative">
@@ -1178,16 +1178,16 @@ export default function App() {
                         return (
                           <tr key={deal.id} className="hover:bg-indigo-50/30 transition-colors">
                             <td className="p-4 text-slate-400 text-sm font-medium">{idx+1}</td>
-                            <td className="p-4"><p className="font-semibold text-slate-800">{deal.client}</p>{deal.businessName&&<p className="text-xs text-slate-400">{deal.businessName}</p>}<p className="text-xs text-slate-400">👤 {deal.rmName}</p></td>
-                            <td className="p-4"><span className="px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg">{deal.branch||"—"}</span></td>
-                            <td className="p-4"><span className="text-xs text-slate-600">{deal.loanType||"—"}</span></td>
+                            <td className="p-4"><p className="font-semibold text-slate-800">{deal.client}</p>{deal.businessName&&<p className="text-xs text-slate-400">{deal.businessName}</p>}<p className="text-xs text-slate-400"> {deal.rmName}</p></td>
+                            <td className="p-4"><span className="px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg">{deal.branch||"-"}</span></td>
+                            <td className="p-4"><span className="text-xs text-slate-600">{deal.loanType||"-"}</span></td>
                             <td className="p-4"><span className="font-bold text-slate-700">{formatCurrency(deal.amount)}</span></td>
-                            <td className="p-4"><span className="text-sm text-slate-600">{deal.rate?`${deal.rate}%`:"—"}</span></td>
+                            <td className="p-4"><span className="text-sm text-slate-600">{deal.rate?"" + (deal.rate) + "%":"-"}</span></td>
                             <td className="p-4"><span className="text-xs text-slate-500">{new Date(deal.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span></td>
                             <td className="p-4">
                               <div className="flex items-center gap-1 flex-wrap">
-                                <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${dealFollowUps.length>0?"bg-emerald-100 text-emerald-700":"bg-slate-100 text-slate-400"}`}>{dealFollowUps.length} note{dealFollowUps.length!==1?"s":""}</span>
-                                {dealFollowUps.length>0 && <button onClick={()=>{setViewFollowUpDeal({deal,followUps:dealFollowUps});setIsViewFollowUpModal(true);}} className="px-2 py-1 bg-amber-50 text-amber-700 text-xs font-medium rounded-lg hover:bg-amber-100 transition-colors">👁 View</button>}
+                                <span className={"px-2.5 py-1 rounded-full text-xs font-bold " + (dealFollowUps.length>0?"bg-emerald-100 text-emerald-700":"bg-slate-100 text-slate-400") + ""}>{dealFollowUps.length} note{dealFollowUps.length!==1?"s":""}</span>
+                                {dealFollowUps.length>0 && <button onClick={()=>{setViewFollowUpDeal({deal,followUps:dealFollowUps});setIsViewFollowUpModal(true);}} className="px-2 py-1 bg-amber-50 text-amber-700 text-xs font-medium rounded-lg hover:bg-amber-100 transition-colors"> View</button>}
                               </div>
                             </td>
                             <td className="p-4">
@@ -1207,18 +1207,18 @@ export default function App() {
                   <div className="flex flex-wrap gap-3 items-center justify-between mb-3">
                     <h3 className="text-lg font-bold text-slate-800 flex items-center">
                       <span className="w-1 h-5 bg-gradient-to-b from-amber-500 to-orange-500 rounded-full mr-3 inline-block"></span>
-                      📝 Follow-up History
+                       Follow-up History
                       <span className="ml-3 text-xs bg-amber-100 text-amber-700 font-semibold px-2.5 py-1 rounded-full">
                         {(() => { let f=isAdmin||isBM?followUps:followUps.filter((f)=>f.rmUsername===loggedInUser.username); if(followUpFilter.start)f=f.filter((x)=>x.startDate>=followUpFilter.start); if(followUpFilter.end)f=f.filter((x)=>x.endDate<=followUpFilter.end); return f.length; })()} records
                       </span>
                     </h3>
-                    {followUpFilter.viewDealId && <button onClick={()=>setFollowUpFilter((p)=>({...p,viewDealId:null}))} className="text-xs text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg font-medium">✕ Show All</button>}
+                    {followUpFilter.viewDealId && <button onClick={()=>setFollowUpFilter((p)=>({...p,viewDealId:null}))} className="text-xs text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg font-medium"> Show All</button>}
                   </div>
                   <div className="flex flex-wrap gap-2 items-center">
-                    <span className="text-xs text-slate-500 font-medium">🔍 Filter:</span>
+                    <span className="text-xs text-slate-500 font-medium"> Filter:</span>
                     <div className="flex items-center gap-1"><span className="text-xs text-slate-400 whitespace-nowrap">From</span><input type="date" value={followUpFilter.start} onChange={(e)=>setFollowUpFilter((p)=>({...p,start:e.target.value}))} className="text-xs border border-slate-200 bg-white rounded-xl px-2 py-2 outline-none focus:border-indigo-400 text-slate-700 shadow-sm" /></div>
                     <div className="flex items-center gap-1"><span className="text-xs text-slate-400 whitespace-nowrap">To</span><input type="date" value={followUpFilter.end} onChange={(e)=>setFollowUpFilter((p)=>({...p,end:e.target.value}))} className="text-xs border border-slate-200 bg-white rounded-xl px-2 py-2 outline-none focus:border-indigo-400 text-slate-700 shadow-sm" /></div>
-                    {(followUpFilter.start||followUpFilter.end) && <button onClick={()=>setFollowUpFilter((p)=>({...p,start:"",end:""}))} className="text-xs text-red-400 hover:text-red-600 px-2 py-2 rounded-xl hover:bg-red-50 transition-colors whitespace-nowrap">✕ Reset</button>}
+                    {(followUpFilter.start||followUpFilter.end) && <button onClick={()=>setFollowUpFilter((p)=>({...p,start:"",end:""}))} className="text-xs text-red-400 hover:text-red-600 px-2 py-2 rounded-xl hover:bg-red-50 transition-colors whitespace-nowrap"> Reset</button>}
                   </div>
                 </div>
                 <div className="divide-y divide-slate-100">
@@ -1237,21 +1237,21 @@ export default function App() {
                               <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg">{f.branch}</span>
                               <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-lg">{formatCurrency(f.amount)}</span>
                               {f.rate&&<span className="px-2 py-0.5 bg-blue-50 text-blue-700 text-xs font-semibold rounded-lg">{f.rate}%</span>}
-                              <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${f.status==="High"?"bg-red-50 text-red-600 border-red-200":f.status==="Low"?"bg-emerald-50 text-emerald-600 border-emerald-200":"bg-amber-50 text-amber-600 border-amber-200"}`}>{f.status==="High"?"🔴 High":f.status==="Low"?"🟢 Low":"🟡 Medium"}</span>
+                              <span className={"px-2.5 py-0.5 rounded-full text-xs font-bold border " + (f.status==="High"?"bg-red-50 text-red-600 border-red-200":f.status==="Low"?"bg-emerald-50 text-emerald-600 border-emerald-200":"bg-amber-50 text-amber-600 border-amber-200") + ""}>{f.status==="High"?" High":f.status==="Low"?" Low":" Medium"}</span>
                             </div>
-                            <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mt-2"><p className="text-sm text-slate-700 leading-relaxed">💬 {f.remark}</p></div>
+                            <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mt-2"><p className="text-sm text-slate-700 leading-relaxed"> {f.remark}</p></div>
                             <div className="flex items-center gap-4 mt-2 flex-wrap">
                               <div className="flex items-center gap-1.5">
-                                <span className="text-xs text-slate-400">📅 Follow-up:</span>
+                                <span className="text-xs text-slate-400"> Follow-up:</span>
                                 <span className="text-xs font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-lg">{new Date(f.startDate).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span>
-                                <span className="text-xs text-slate-400">→</span>
+                                <span className="text-xs text-slate-400">-></span>
                                 <span className="text-xs font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-lg">{new Date(f.endDate).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span>
                               </div>
-                              <span className="text-xs text-slate-400">🔒 Locked</span>
+                              <span className="text-xs text-slate-400"> Locked</span>
                             </div>
                           </div>
                           <div className="text-right flex-shrink-0">
-                            <p className="text-xs font-semibold text-slate-600">👤 {f.rmName}</p>
+                            <p className="text-xs font-semibold text-slate-600"> {f.rmName}</p>
                             <p className="text-xs text-slate-400 mt-0.5">{new Date(f.createdAt).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</p>
                           </div>
                         </div>
@@ -1263,9 +1263,9 @@ export default function App() {
             </div>
           )}
 
-          {/* ══════════════════════════════════════════
+          {/* ==========================================
               USER CREATED TAB
-          ══════════════════════════════════════════ */}
+          ========================================== */}
           {activeTab==="users" && (
             <div className="max-w-4xl mx-auto space-y-6">
               {isAdmin && (
@@ -1273,7 +1273,7 @@ export default function App() {
                   <div className="p-6 border-b flex justify-between items-center">
                     <div><h2 className="text-lg font-bold text-slate-800">User Created</h2><p className="text-sm text-slate-500 mt-0.5">{appUsers.length} total accounts</p></div>
                     <div className="flex gap-2">
-                      <button onClick={handleExportUsers} className="flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-500 hover:to-violet-500 text-white px-4 py-2.5 rounded-xl text-sm font-medium"><FileDown size={18} /><span>👥 Export Users</span></button>
+                      <button onClick={handleExportUsers} className="flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-500 hover:to-violet-500 text-white px-4 py-2.5 rounded-xl text-sm font-medium"><FileDown size={18} /><span> Export Users</span></button>
                       <button onClick={()=>{setEditingUser(null);setNewUser({username:"",password:"",name:"",role:"rm",branch:"NRD",branches:[]});setIsUserModalOpen(true);}} className="flex items-center space-x-2 bg-red-700 hover:bg-red-800 text-white px-4 py-2.5 rounded-xl text-sm font-medium"><UserPlus size={18} /><span>Create New User</span></button>
                     </div>
                   </div>
@@ -1287,7 +1287,7 @@ export default function App() {
                     {appUsers.map((u) => (
                       <div key={u.id} className="flex items-center p-5 hover:bg-slate-50 transition-colors">
                         <div className="relative flex-shrink-0">
-                          {u.photoUrl ? <img src={u.photoUrl} alt={u.name} className="w-11 h-11 rounded-full object-cover border-2 border-indigo-100" /> : <div className={`w-11 h-11 rounded-full flex items-center justify-center font-bold text-lg ${u.role==="admin"?"bg-purple-100 text-purple-600":u.role==="bm"?"bg-amber-100 text-amber-600":"bg-indigo-100 text-indigo-600"}`}>{u.name?.charAt(0).toUpperCase()}</div>}
+                          {u.photoUrl ? <img src={u.photoUrl} alt={u.name} className="w-11 h-11 rounded-full object-cover border-2 border-indigo-100" /> : <div className={"w-11 h-11 rounded-full flex items-center justify-center font-bold text-lg " + (u.role==="admin"?"bg-purple-100 text-purple-600":u.role==="bm"?"bg-amber-100 text-amber-600":"bg-indigo-100 text-indigo-600") + ""}>{u.name?.charAt(0).toUpperCase()}</div>}
                           <label className="absolute -bottom-1 -right-1 bg-indigo-600 rounded-full p-1 cursor-pointer hover:bg-indigo-700" title="Upload photo">
                             <Upload size={10} className="text-white" />
                             <input type="file" accept="image/*" className="hidden" onChange={(e)=>handlePhotoUpload(u.id,e.target.files[0])} />
@@ -1296,14 +1296,14 @@ export default function App() {
                         <div className="ml-4 flex-1 min-w-0">
                           <div className="flex items-center space-x-2 flex-wrap gap-1">
                             <p className="font-bold text-slate-800">{u.name}</p>
-                            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${u.role==="admin"?"bg-purple-100 text-purple-700":u.role==="bm"?"bg-amber-100 text-amber-700":"bg-indigo-100 text-indigo-700"}`}>{u.role==="admin"?"🔑 Admin":u.role==="bm"?"🏦 BM":"👤 RM"}</span>
+                            <span className={"text-xs px-2 py-0.5 rounded-full font-medium " + (u.role==="admin"?"bg-purple-100 text-purple-700":u.role==="bm"?"bg-amber-100 text-amber-700":"bg-indigo-100 text-indigo-700") + ""}>{u.role==="admin"?" Admin":u.role==="bm"?" BM":" RM"}</span>
                             {u.username===loggedInUser.username && <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-medium">You</span>}
                           </div>
-                          <p className="text-sm text-slate-500 mt-0.5">@{u.username} • Branch: <span className="font-semibold text-slate-700">{u.branch}</span></p>
-                          {u.role==="bm"&&u.branches&&u.branches.length>1&&<p className="text-xs text-amber-600 mt-0.5">🏦 Controls: {u.branches.join(", ")}</p>}
+                          <p className="text-sm text-slate-500 mt-0.5">@{u.username} * Branch: <span className="font-semibold text-slate-700">{u.branch}</span></p>
+                          {u.role==="bm"&&u.branches&&u.branches.length>1&&<p className="text-xs text-amber-600 mt-0.5"> Controls: {u.branches.join(", ")}</p>}
                           <div className="flex items-center space-x-3 mt-1">
-                            <span className="text-xs text-slate-400">🔒 Password: <span className="font-mono tracking-widest">••••••</span></span>
-                            <span className="text-xs text-slate-400">📁 {deals.filter((d)=>d.rmUsername===u.username).length} customers</span>
+                            <span className="text-xs text-slate-400"> Password: <span className="font-mono tracking-widest">******</span></span>
+                            <span className="text-xs text-slate-400"> {deals.filter((d)=>d.rmUsername===u.username).length} customers</span>
                           </div>
                         </div>
                         <div className="flex space-x-2 ml-2">
@@ -1328,15 +1328,15 @@ export default function App() {
                           <div><p className="text-xs text-slate-400 uppercase tracking-wide font-medium">Full Name</p><p className="font-bold text-slate-800 text-lg mt-0.5">{loggedInUser.name}</p></div>
                           <div className="grid grid-cols-2 gap-4">
                             <div><p className="text-xs text-slate-400 uppercase tracking-wide font-medium">Username</p><p className="font-semibold text-slate-700 mt-0.5 font-mono">@{loggedInUser.username}</p></div>
-                            <div><p className="text-xs text-slate-400 uppercase tracking-wide font-medium">Password</p><p className="font-semibold text-slate-700 mt-0.5 font-mono tracking-widest">••••••••</p></div>
-                            <div><p className="text-xs text-slate-400 uppercase tracking-wide font-medium">Role</p><span className="inline-block mt-0.5 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium">👤 Relationship Manager</span></div>
+                            <div><p className="text-xs text-slate-400 uppercase tracking-wide font-medium">Password</p><p className="font-semibold text-slate-700 mt-0.5 font-mono tracking-widest">********</p></div>
+                            <div><p className="text-xs text-slate-400 uppercase tracking-wide font-medium">Role</p><span className="inline-block mt-0.5 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium"> Relationship Manager</span></div>
                             <div><p className="text-xs text-slate-400 uppercase tracking-wide font-medium">Branch</p><span className="inline-block mt-0.5 px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-sm font-bold">{loggedInUser.branch}</span></div>
                           </div>
                         </div>
                       </div>
                       <div className="mt-5 pt-5 border-t border-slate-100 grid grid-cols-3 gap-4 text-center">
                         {[{label:"Total Customers",value:visibleDeals.length,color:"text-slate-800"},{label:"Completed",value:visibleDeals.filter((d)=>d.status==="Won").length,color:"text-emerald-600"},{label:"Pending",value:visibleDeals.filter((d)=>d.status==="Pending").length,color:"text-amber-600"}].map((stat) => (
-                          <div key={stat.label} className="bg-slate-50 rounded-xl p-3"><p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p><p className="text-xs text-slate-500 mt-1">{stat.label}</p></div>
+                          <div key={stat.label} className="bg-slate-50 rounded-xl p-3"><p className={"text-2xl font-bold " + (stat.color) + ""}>{stat.value}</p><p className="text-xs text-slate-500 mt-1">{stat.label}</p></div>
                         ))}
                       </div>
                       <div className="mt-4 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-center space-x-2"><Shield size={16} className="text-amber-600 flex-shrink-0" /><p className="text-xs text-amber-700">To change your password or role, please contact your Admin.</p></div>
@@ -1348,13 +1348,13 @@ export default function App() {
                       {appUsers.map((u) => (
                         <div key={u.id} className="flex items-center p-4 hover:bg-slate-50">
                           <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
-                            {u.photoUrl ? <img src={u.photoUrl} alt={u.name} className="w-full h-full object-cover" /> : <div className={`w-full h-full flex items-center justify-center font-bold ${u.role==="admin"?"bg-purple-100 text-purple-600":"bg-indigo-100 text-indigo-600"}`}>{u.name?.charAt(0).toUpperCase()}</div>}
+                            {u.photoUrl ? <img src={u.photoUrl} alt={u.name} className="w-full h-full object-cover" /> : <div className={"w-full h-full flex items-center justify-center font-bold " + (u.role==="admin"?"bg-purple-100 text-purple-600":"bg-indigo-100 text-indigo-600") + ""}>{u.name?.charAt(0).toUpperCase()}</div>}
                           </div>
                           <div className="ml-3 flex-1">
                             <div className="flex items-center space-x-2"><p className="font-semibold text-slate-800 text-sm">{u.name}</p>{u.username===loggedInUser.username&&<span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">You</span>}</div>
                             <p className="text-xs text-slate-400">Branch: {u.branch}</p>
                           </div>
-                          <span className={`text-xs px-2 py-1 rounded-full font-medium ${u.role==="admin"?"bg-purple-100 text-purple-700":u.role==="bm"?"bg-amber-100 text-amber-700":"bg-indigo-100 text-indigo-700"}`}>{u.role==="admin"?"🔑 Admin":u.role==="bm"?"🏦 BM":"👤 RM"}</span>
+                          <span className={"text-xs px-2 py-1 rounded-full font-medium " + (u.role==="admin"?"bg-purple-100 text-purple-700":u.role==="bm"?"bg-amber-100 text-amber-700":"bg-indigo-100 text-indigo-700") + ""}>{u.role==="admin"?" Admin":u.role==="bm"?" BM":" RM"}</span>
                         </div>
                       ))}
                     </div>
@@ -1379,9 +1379,9 @@ export default function App() {
         </div>
       )}
 
-      {/* ══════════════════════════════════════════
+      {/* ==========================================
           CREATE CUSTOMER MODAL
-      ══════════════════════════════════════════ */}
+      ========================================== */}
       {isAddDealModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={()=>setIsAddDealModalOpen(false)}></div>
@@ -1394,7 +1394,7 @@ export default function App() {
               <div className="grid grid-cols-2 gap-4">
                 <div><label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Customer Name <span className="text-red-500">*</span></label><input type="text" required value={newDeal.client} onChange={(e)=>setNewDeal({...newDeal,client:e.target.value})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 focus:bg-white transition text-sm" placeholder="John Smith" /></div>
                 <div><label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Branch</label>
-                  {!isAdmin ? <div className="w-full px-4 py-2.5 bg-indigo-50 border border-indigo-200 rounded-xl text-indigo-800 font-bold text-sm flex items-center">🏦 {loggedInUser.branch} <span className="ml-2 text-xs text-indigo-400">(fixed)</span></div> : <select value={newDeal.branch} onChange={(e)=>setNewDeal({...newDeal,branch:e.target.value})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 text-sm">{BRANCHES.map((b)=><option key={b} value={b}>{b}</option>)}</select>}
+                  {!isAdmin ? <div className="w-full px-4 py-2.5 bg-indigo-50 border border-indigo-200 rounded-xl text-indigo-800 font-bold text-sm flex items-center"> {loggedInUser.branch} <span className="ml-2 text-xs text-indigo-400">(fixed)</span></div> : <select value={newDeal.branch} onChange={(e)=>setNewDeal({...newDeal,branch:e.target.value})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 text-sm">{BRANCHES.map((b)=><option key={b} value={b}>{b}</option>)}</select>}
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -1412,19 +1412,19 @@ export default function App() {
               <div className="grid grid-cols-2 gap-4">
                 <div><label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Loan Status</label><select value={newDeal.status} onChange={(e)=>setNewDeal({...newDeal,status:e.target.value})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 text-sm"><option value="Pending">Pending</option><option value="Pre-Approval">Pre-Approval</option><option value="Processing">Processing</option><option value="LOS">LOS</option><option value="LOO">LOO</option><option value="Won">Completed Drawdown</option><option value="Rejected">Rejected</option></select></div>
                 <div><label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Assign RM</label>
-                  {isAdmin ? <select value={newDeal.repUsername} onChange={(e)=>setNewDeal({...newDeal,repUsername:e.target.value})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 text-sm"><option value="">— Select RM —</option>{rmList.map((rm)=><option key={rm.id} value={rm.username}>{rm.name}</option>)}</select> : <div className="w-full px-4 py-2.5 bg-indigo-50 border border-indigo-100 rounded-xl text-indigo-800 font-medium text-sm">{loggedInUser.name} (You)</div>}
+                  {isAdmin ? <select value={newDeal.repUsername} onChange={(e)=>setNewDeal({...newDeal,repUsername:e.target.value})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 text-sm"><option value="">- Select RM -</option>{rmList.map((rm)=><option key={rm.id} value={rm.username}>{rm.name}</option>)}</select> : <div className="w-full px-4 py-2.5 bg-indigo-50 border border-indigo-100 rounded-xl text-indigo-800 font-medium text-sm">{loggedInUser.name} (You)</div>}
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div><label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Tenor (months)</label><input type="number" value={newDeal.tenor} onChange={(e)=>setNewDeal({...newDeal,tenor:e.target.value})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 focus:bg-white transition text-sm" placeholder="36" /></div>
-                <div><label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Customer Status</label><select value={newDeal.customerStatus||"Medium"} onChange={(e)=>setNewDeal({...newDeal,customerStatus:e.target.value})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 text-sm"><option value="High">🔴 High</option><option value="Medium">🟡 Medium</option><option value="Low">🟢 Low</option></select></div>
+                <div><label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Customer Status</label><select value={newDeal.customerStatus||"Medium"} onChange={(e)=>setNewDeal({...newDeal,customerStatus:e.target.value})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 text-sm"><option value="High"> High</option><option value="Medium"> Medium</option><option value="Low"> Low</option></select></div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div><label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Income Type</label><select value={newDeal.incomeType||"Salary"} onChange={(e)=>setNewDeal({...newDeal,incomeType:e.target.value})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 text-sm">{INCOME_TYPES.map((t)=><option key={t} value={t}>{t}</option>)}</select></div>
                 <div><label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Income Amount ($)</label><div className="relative"><span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-bold">$</span><input type="number" min="0" value={newDeal.incomeAmount} onChange={(e)=>setNewDeal({...newDeal,incomeAmount:e.target.value})} className="w-full pl-7 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 focus:bg-white transition text-sm" placeholder="3,000" /></div></div>
               </div>
               <div className="border-t border-slate-100 pt-4">
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3 flex items-center gap-2">🏦 Existing Bank <span className="text-slate-300 font-normal">(optional)</span></p>
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3 flex items-center gap-2"> Existing Bank <span className="text-slate-300 font-normal">(optional)</span></p>
                 <div className="grid grid-cols-2 gap-4">
                   <div><label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Existing Bank Name</label><input type="text" value={newDeal.existingBank} onChange={(e)=>setNewDeal({...newDeal,existingBank:e.target.value})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 focus:bg-white transition text-sm" placeholder="e.g. ABA Bank" /></div>
                   <div><label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Loan Outstanding ($)</label><div className="relative"><span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-bold">$</span><input type="number" min="0" value={newDeal.loanOutstanding} onChange={(e)=>setNewDeal({...newDeal,loanOutstanding:e.target.value})} className="w-full pl-7 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 focus:bg-white transition text-sm" placeholder="20,000" /></div></div>
@@ -1438,7 +1438,7 @@ export default function App() {
               </div>
               <div className="flex space-x-3 pt-1">
                 <button type="button" onClick={()=>setIsAddDealModalOpen(false)} className="flex-1 px-4 py-2.5 border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 text-sm font-medium transition-colors">Cancel</button>
-                <button type="submit" className="flex-1 px-4 py-2.5 bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 text-white rounded-xl text-sm font-semibold shadow-md transition-all">💾 Save Customer</button>
+                <button type="submit" className="flex-1 px-4 py-2.5 bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 text-white rounded-xl text-sm font-semibold shadow-md transition-all"> Save Customer</button>
               </div>
             </form>
           </div>
@@ -1458,20 +1458,20 @@ export default function App() {
                 <div><label className="block text-sm font-medium text-slate-700 mb-1">Password <span className="text-red-500">*</span></label><div className="relative"><input type={showNewUserPw?"text":"password"} required value={newUser.password} onChange={(e)=>setNewUser({...newUser,password:e.target.value})} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 pr-10" placeholder="Password" /><button type="button" onClick={()=>setShowNewUserPw(!showNewUserPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">{showNewUserPw?<EyeOff size={16} />:<Eye size={16} />}</button></div></div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="block text-sm font-medium text-slate-700 mb-1">Role</label><select value={newUser.role} onChange={(e)=>setNewUser({...newUser,role:e.target.value})} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500"><option value="rm">👤 Relationship Manager</option><option value="bm">🏦 Branch Manager</option><option value="admin">🔑 Administrator</option></select></div>
+                <div><label className="block text-sm font-medium text-slate-700 mb-1">Role</label><select value={newUser.role} onChange={(e)=>setNewUser({...newUser,role:e.target.value})} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500"><option value="rm"> Relationship Manager</option><option value="bm"> Branch Manager</option><option value="admin"> Administrator</option></select></div>
                 <div><label className="block text-sm font-medium text-slate-700 mb-1">Primary Branch</label><select value={newUser.branch} onChange={(e)=>setNewUser({...newUser,branch:e.target.value})} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500">{BRANCHES.map((b)=><option key={b} value={b}>{b}</option>)}</select></div>
               </div>
               {newUser.role==="bm" && (
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">🏦 Assigned Branches <span className="text-xs text-slate-400">(tick all branches this BM controls)</span></label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2"> Assigned Branches <span className="text-xs text-slate-400">(tick all branches this BM controls)</span></label>
                   <div className="grid grid-cols-4 gap-2 p-3 bg-indigo-50 border border-indigo-200 rounded-xl">
                     {BRANCHES.map((b)=>{ const checked=(newUser.branches||[newUser.branch]).includes(b); return (
-                      <label key={b} className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg cursor-pointer text-xs font-medium transition-all ${checked?"bg-indigo-600 text-white":"bg-white text-slate-600 border border-slate-200 hover:border-indigo-300"}`}>
+                      <label key={b} className={"flex items-center gap-1.5 px-2 py-1.5 rounded-lg cursor-pointer text-xs font-medium transition-all " + (checked?"bg-indigo-600 text-white":"bg-white text-slate-600 border border-slate-200 hover:border-indigo-300") + ""}>
                         <input type="checkbox" checked={checked} className="hidden" onChange={(e)=>{ const cur=newUser.branches||[newUser.branch]; const next=e.target.checked?[...new Set([...cur,b])]:cur.filter((x)=>x!==b); setNewUser({...newUser,branches:next.length?next:[newUser.branch]}); }} />{b}
                       </label>
                     ); })}
                   </div>
-                  <p className="text-xs text-indigo-600 mt-1.5">✅ Selected: {(newUser.branches||[newUser.branch]).join(", ")}</p>
+                  <p className="text-xs text-indigo-600 mt-1.5"> Selected: {(newUser.branches||[newUser.branch]).join(", ")}</p>
                 </div>
               )}
               <div className="flex space-x-3 pt-2">
@@ -1510,12 +1510,12 @@ export default function App() {
                         <tr key={d.id} className="hover:bg-slate-50">
                           <td className="p-4 text-slate-400 text-sm">{i+1}</td>
                           <td className="p-4"><p className="font-semibold text-sm">{d.client}</p>{d.businessName&&<p className="text-xs text-slate-400">{d.businessName}</p>}</td>
-                          <td className="p-4"><span className="px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg">{d.branch||"—"}</span></td>
-                          <td className="p-4"><span className="text-xs text-slate-600">{d.loanType||"—"}</span></td>
+                          <td className="p-4"><span className="px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg">{d.branch||"-"}</span></td>
+                          <td className="p-4"><span className="text-xs text-slate-600">{d.loanType||"-"}</span></td>
                           <td className="p-4"><span className="font-bold text-sm">{formatCurrency(d.amount)}</span></td>
-                          <td className="p-4"><span className="text-sm">{d.rmName||"—"}</span></td>
-                          <td className="p-4"><span className={`px-2 py-1 rounded-full text-xs font-bold ${d.customerStatus==="High"?"bg-red-100 text-red-600":d.customerStatus==="Low"?"bg-emerald-100 text-emerald-600":"bg-amber-100 text-amber-600"}`}>{d.customerStatus==="High"?"🔴 High":d.customerStatus==="Low"?"🟢 Low":"🟡 Med"}</span></td>
-                          <td className="p-4"><span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${statusBadge(d.status)}`}>{d.status==="Won"?"Completed":d.status}</span></td>
+                          <td className="p-4"><span className="text-sm">{d.rmName||"-"}</span></td>
+                          <td className="p-4"><span className={"px-2 py-1 rounded-full text-xs font-bold " + (d.customerStatus==="High"?"bg-red-100 text-red-600":d.customerStatus==="Low"?"bg-emerald-100 text-emerald-600":"bg-amber-100 text-amber-600") + ""}>{d.customerStatus==="High"?" High":d.customerStatus==="Low"?" Low":" Med"}</span></td>
+                          <td className="p-4"><span className={"px-2.5 py-1 rounded-full text-xs font-medium border " + (statusBadge(d.status)) + ""}>{d.status==="Won"?"Completed":d.status}</span></td>
                         </tr>
                       ))}
                     </tbody>
@@ -1534,14 +1534,14 @@ export default function App() {
           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={()=>setIsPriorityModalOpen(false)}></div>
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl relative z-10 flex flex-col max-h-[90vh]">
             <div className="px-6 py-4 border-b bg-gradient-to-r from-red-50 to-orange-50 flex justify-between items-center">
-              <div><h3 className="text-lg font-bold text-slate-800 flex items-center"><span className="w-2 h-2 rounded-full bg-red-500 animate-pulse mr-2"></span>🔴 High Priority Customers</h3><p className="text-xs text-slate-400 mt-0.5">AI-ranked customers that need immediate follow-up</p></div>
+              <div><h3 className="text-lg font-bold text-slate-800 flex items-center"><span className="w-2 h-2 rounded-full bg-red-500 animate-pulse mr-2"></span> High Priority Customers</h3><p className="text-xs text-slate-400 mt-0.5">AI-ranked customers that need immediate follow-up</p></div>
               <button onClick={()=>setIsPriorityModalOpen(false)}><X size={20} className="text-slate-400" /></button>
             </div>
             {!isAiLoading && priorityList.length>0 && (
               <div className="flex gap-2 px-6 pt-4 pb-2">
                 {["High","Medium","Low","All"].map((lvl)=>{ const count=lvl==="All"?priorityList.length:priorityList.filter((p)=>p.priorityLevel===lvl).length; return (
-                  <button key={lvl} onClick={()=>setPriorityTabFilter(lvl)} className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${(priorityTabFilter||"High")===lvl?lvl==="High"?"bg-red-500 text-white border-red-500":lvl==="Medium"?"bg-amber-500 text-white border-amber-500":lvl==="Low"?"bg-emerald-500 text-white border-emerald-500":"bg-indigo-600 text-white border-indigo-600":"bg-white text-slate-600 border-slate-200 hover:border-indigo-300"}`}>
-                    {lvl==="High"?"🔴":lvl==="Medium"?"🟡":lvl==="Low"?"🟢":"🌐"} {lvl} ({count})
+                  <button key={lvl} onClick={()=>setPriorityTabFilter(lvl)} className={"px-3 py-1.5 rounded-xl text-xs font-bold border transition-all " + ((priorityTabFilter||"High")===lvl?lvl==="High"?"bg-red-500 text-white border-red-500":lvl==="Medium"?"bg-amber-500 text-white border-amber-500":lvl==="Low"?"bg-emerald-500 text-white border-emerald-500":"bg-indigo-600 text-white border-indigo-600":"bg-white text-slate-600 border-slate-200 hover:border-indigo-300") + ""}>
+                    {lvl==="High"?"":lvl==="Medium"?"":lvl==="Low"?"":""} {lvl} ({count})
                   </button>
                 ); })}
               </div>
@@ -1550,12 +1550,12 @@ export default function App() {
               {isAiLoading ? <div className="flex flex-col items-center py-16 text-slate-400"><Loader2 size={40} className="animate-spin mb-3 text-red-400" /><p className="text-sm animate-pulse">AI is analyzing customers...</p></div> : (
                 <div className="space-y-3">
                   {priorityList.filter((item)=>(priorityTabFilter||"High")==="All"?true:item.priorityLevel===(priorityTabFilter||"High")).map((item,i)=>(
-                    <div key={i} className={`rounded-xl border p-4 ${priorityColor(item.priorityLevel)}`}>
+                    <div key={i} className={"rounded-xl border p-4 " + (priorityColor(item.priorityLevel)) + ""}>
                       <div className="flex items-start justify-between">
                         <div className="flex items-center space-x-3">
                           <span className="font-bold text-slate-400 w-6">{i+1}</span>
                           <div>
-                            <div className="flex items-center space-x-2"><span className={`w-2 h-2 rounded-full ${priorityDot(item.priorityLevel)}`}></span><h4 className="font-bold text-slate-800">{item.customerName}</h4></div>
+                            <div className="flex items-center space-x-2"><span className={"w-2 h-2 rounded-full " + (priorityDot(item.priorityLevel)) + ""}></span><h4 className="font-bold text-slate-800">{item.customerName}</h4></div>
                             {item.businessName&&<p className="text-xs text-slate-500 ml-4">{item.businessName}</p>}
                             <p className="text-xs mt-1 ml-4 opacity-80">{item.reason}</p>
                           </div>
@@ -1563,8 +1563,8 @@ export default function App() {
                         <div className="text-right ml-4 flex-shrink-0">
                           {item.amount>0&&<p className="font-bold text-slate-700">{formatCurrency(item.amount)}</p>}
                           <p className="text-xs text-slate-500">RM: {item.rmName}</p>
-                          {item.status&&<span className={`inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium border ${statusBadge(item.status)}`}>{item.status==="Won"?"Completed":item.status}</span>}
-                          <span className={`inline-block mt-1 ml-1 px-2 py-0.5 rounded-full text-xs font-bold border ${priorityColor(item.priorityLevel)}`}>{item.priorityLevel}</span>
+                          {item.status&&<span className={"inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium border " + (statusBadge(item.status)) + ""}>{item.status==="Won"?"Completed":item.status}</span>}
+                          <span className={"inline-block mt-1 ml-1 px-2 py-0.5 rounded-full text-xs font-bold border " + (priorityColor(item.priorityLevel)) + ""}>{item.priorityLevel}</span>
                         </div>
                       </div>
                     </div>
@@ -1605,9 +1605,9 @@ export default function App() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div><label className="block text-sm font-medium text-slate-700 mb-1">Loan Status</label><select value={editDealForm.status} onChange={(e)=>setEditDealForm({...editDealForm,status:e.target.value})} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500"><option value="Pending">Pending</option><option value="Pre-Approval">Pre-Approval</option><option value="Processing">Processing</option><option value="LOS">LOS</option><option value="LOO">LOO</option><option value="Won">Completed Drawdown</option><option value="Rejected">Rejected</option></select></div>
-                {isAdmin && <div><label className="block text-sm font-medium text-slate-700 mb-1">Assign RM</label><select value={editDealForm.repUsername} onChange={(e)=>setEditDealForm({...editDealForm,repUsername:e.target.value})} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500"><option value="">— Select RM —</option>{rmList.map((rm)=><option key={rm.id} value={rm.username}>{rm.name}</option>)}</select></div>}
+                {isAdmin && <div><label className="block text-sm font-medium text-slate-700 mb-1">Assign RM</label><select value={editDealForm.repUsername} onChange={(e)=>setEditDealForm({...editDealForm,repUsername:e.target.value})} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500"><option value="">- Select RM -</option>{rmList.map((rm)=><option key={rm.id} value={rm.username}>{rm.name}</option>)}</select></div>}
               </div>
-              <div className="bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3 flex items-center space-x-2"><CheckCircle size={16} className="text-indigo-600" /><span className="text-sm text-indigo-800">RM: <strong>{editingDeal.rmName}</strong> • Created: {editingDeal.date}</span></div>
+              <div className="bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3 flex items-center space-x-2"><CheckCircle size={16} className="text-indigo-600" /><span className="text-sm text-indigo-800">RM: <strong>{editingDeal.rmName}</strong> * Created: {editingDeal.date}</span></div>
               <div className="flex space-x-3 pt-2">
                 <button type="button" onClick={()=>setIsEditDealModalOpen(false)} className="flex-1 px-4 py-2 border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50">Cancel</button>
                 <button type="submit" className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 font-medium">Save Changes</button>
@@ -1624,7 +1624,7 @@ export default function App() {
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg relative z-10 flex flex-col max-h-[90vh]">
             <div className="px-6 py-4 border-b bg-indigo-50 flex justify-between items-center"><div className="flex items-center font-bold text-indigo-900"><Mail size={20} className="mr-2 text-indigo-600" />AI Follow-up Draft</div><button onClick={()=>setIsEmailModalOpen(false)}><X size={20} className="text-slate-400" /></button></div>
             <div className="p-6 overflow-y-auto">
-              <p className="text-sm text-slate-500 mb-4">To: <strong>{selectedDealForEmail?.client}</strong> — {formatCurrency(selectedDealForEmail?.amount||0)}</p>
+              <p className="text-sm text-slate-500 mb-4">To: <strong>{selectedDealForEmail?.client}</strong> - {formatCurrency(selectedDealForEmail?.amount||0)}</p>
               <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 min-h-[200px] relative">
                 {isAiLoading ? <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400"><Loader2 size={32} className="animate-spin mb-2 text-indigo-500" /><p className="text-sm animate-pulse">Writing...</p></div> : <textarea value={emailDraft} onChange={(e)=>setEmailDraft(e.target.value)} className="w-full min-h-[200px] bg-transparent resize-none outline-none text-slate-700 text-sm leading-relaxed" />}
               </div>
@@ -1643,7 +1643,7 @@ export default function App() {
           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={()=>setIsFollowUpModalOpen(false)}></div>
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative z-10">
             <div className="px-6 py-4 border-b bg-gradient-to-r from-indigo-50 to-blue-50 flex justify-between items-center rounded-t-2xl">
-              <div><h3 className="text-lg font-bold text-slate-800">📋 List Customer Follow Up</h3><p className="text-xs text-slate-500 mt-0.5">🔒 Locked after save — cannot be edited</p></div>
+              <div><h3 className="text-lg font-bold text-slate-800"> List Customer Follow Up</h3><p className="text-xs text-slate-500 mt-0.5"> Locked after save - cannot be edited</p></div>
               <button onClick={()=>setIsFollowUpModalOpen(false)}><X size={20} className="text-slate-400" /></button>
             </div>
             <div className="p-6 space-y-4">
@@ -1653,7 +1653,7 @@ export default function App() {
                   <div><p className="text-xs text-slate-400">Customer Name</p><p className="font-bold text-slate-800">{selectedDealForFollowUp.client}</p></div>
                   <div><p className="text-xs text-slate-400">Branch</p><p className="font-bold text-indigo-700">{selectedDealForFollowUp.branch}</p></div>
                   <div><p className="text-xs text-slate-400">Request Amount</p><p className="font-bold text-emerald-700">{formatCurrency(selectedDealForFollowUp.amount)}</p></div>
-                  <div><p className="text-xs text-slate-400">Rate</p><p className="font-bold text-slate-700">{selectedDealForFollowUp.rate?`${selectedDealForFollowUp.rate}%`:"—"}</p></div>
+                  <div><p className="text-xs text-slate-400">Rate</p><p className="font-bold text-slate-700">{selectedDealForFollowUp.rate?"" + (selectedDealForFollowUp.rate) + "%":"-"}</p></div>
                   <div className="col-span-2"><p className="text-xs text-slate-400">Date Created</p><p className="font-bold text-slate-700">{new Date(selectedDealForFollowUp.date).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}</p></div>
                 </div>
               </div>
@@ -1662,12 +1662,12 @@ export default function App() {
                   <div><label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Start Date <span className="text-red-500">*</span></label><input type="date" required value={followUpForm.startDate} onChange={(e)=>setFollowUpForm((p)=>({...p,startDate:e.target.value}))} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 text-sm" /></div>
                   <div><label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">End Date <span className="text-red-500">*</span></label><input type="date" required value={followUpForm.endDate} min={followUpForm.startDate} onChange={(e)=>setFollowUpForm((p)=>({...p,endDate:e.target.value}))} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 text-sm" /></div>
                 </div>
-                <div><label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Priority Status <span className="text-red-500">*</span></label><select value={followUpForm.status||"Medium"} onChange={(e)=>setFollowUpForm((p)=>({...p,status:e.target.value}))} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 text-sm"><option value="High">🔴 High</option><option value="Medium">🟡 Medium</option><option value="Low">🟢 Low</option></select></div>
+                <div><label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Priority Status <span className="text-red-500">*</span></label><select value={followUpForm.status||"Medium"} onChange={(e)=>setFollowUpForm((p)=>({...p,status:e.target.value}))} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 text-sm"><option value="High"> High</option><option value="Medium"> Medium</option><option value="Low"> Low</option></select></div>
                 <div><label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Remark <span className="text-red-500">*</span></label><textarea required rows={4} value={followUpForm.remark} onChange={(e)=>setFollowUpForm((p)=>({...p,remark:e.target.value}))} placeholder="Write your follow-up notes here..." className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 text-sm resize-none leading-relaxed" /></div>
                 <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-2.5 flex items-center gap-2"><Shield size={14} className="text-amber-600 flex-shrink-0" /><p className="text-xs text-amber-700">Once saved, this follow-up <strong>cannot be edited or deleted.</strong></p></div>
                 <div className="flex space-x-3 pt-1">
                   <button type="button" onClick={()=>setIsFollowUpModalOpen(false)} className="flex-1 px-4 py-2.5 border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 text-sm font-medium">Cancel</button>
-                  <button type="submit" className="flex-1 px-4 py-2.5 bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 text-white rounded-xl text-sm font-semibold shadow-md">🔒 Save &amp; Lock</button>
+                  <button type="submit" className="flex-1 px-4 py-2.5 bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 text-white rounded-xl text-sm font-semibold shadow-md"> Save &amp; Lock</button>
                 </div>
               </form>
             </div>
@@ -1681,7 +1681,7 @@ export default function App() {
           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={()=>setIsViewFollowUpModal(false)}></div>
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl relative z-10 flex flex-col max-h-[90vh]">
             <div className="px-6 py-4 border-b bg-gradient-to-r from-amber-50 to-orange-50 flex justify-between items-center rounded-t-2xl">
-              <div><h3 className="text-lg font-bold text-slate-800">👁 Follow-up Details</h3><p className="text-xs text-slate-500 mt-0.5">{viewFollowUpDeal.followUps.length} follow-up(s) recorded</p></div>
+              <div><h3 className="text-lg font-bold text-slate-800"> Follow-up Details</h3><p className="text-xs text-slate-500 mt-0.5">{viewFollowUpDeal.followUps.length} follow-up(s) recorded</p></div>
               <button onClick={()=>setIsViewFollowUpModal(false)}><X size={20} className="text-slate-400" /></button>
             </div>
             <div className="px-6 pt-4">
@@ -1689,30 +1689,30 @@ export default function App() {
                 <p className="text-xs text-indigo-400 uppercase font-semibold tracking-wide mb-3">Customer Information</p>
                 <div className="grid grid-cols-2 gap-3">
                   <div><p className="text-xs text-slate-400">Customer Name</p><p className="font-bold text-slate-800">{viewFollowUpDeal.deal.client}</p></div>
-                  <div><p className="text-xs text-slate-400">RM Name</p><p className="font-bold text-slate-700">{viewFollowUpDeal.deal.rmName||"—"}</p></div>
-                  <div><p className="text-xs text-slate-400">Branch</p><p className="font-bold text-indigo-700">{viewFollowUpDeal.deal.branch||"—"}</p></div>
-                  <div><p className="text-xs text-slate-400">Product Type</p><p className="font-bold text-slate-700">{viewFollowUpDeal.deal.loanType||"—"}</p></div>
+                  <div><p className="text-xs text-slate-400">RM Name</p><p className="font-bold text-slate-700">{viewFollowUpDeal.deal.rmName||"-"}</p></div>
+                  <div><p className="text-xs text-slate-400">Branch</p><p className="font-bold text-indigo-700">{viewFollowUpDeal.deal.branch||"-"}</p></div>
+                  <div><p className="text-xs text-slate-400">Product Type</p><p className="font-bold text-slate-700">{viewFollowUpDeal.deal.loanType||"-"}</p></div>
                   <div><p className="text-xs text-slate-400">Amount Request</p><p className="font-bold text-emerald-700">{formatCurrency(viewFollowUpDeal.deal.amount)}</p></div>
-                  <div><p className="text-xs text-slate-400">Rate</p><p className="font-bold text-slate-700">{viewFollowUpDeal.deal.rate?`${viewFollowUpDeal.deal.rate}%`:"—"}</p></div>
-                  {viewFollowUpDeal.deal.existingBank&&<><div><p className="text-xs text-slate-400">Existing Bank</p><p className="font-bold text-slate-700">{viewFollowUpDeal.deal.existingBank}</p></div><div><p className="text-xs text-slate-400">Loan Outstanding</p><p className="font-bold text-slate-700">{viewFollowUpDeal.deal.loanOutstanding?formatCurrency(viewFollowUpDeal.deal.loanOutstanding):"—"}</p></div></>}
+                  <div><p className="text-xs text-slate-400">Rate</p><p className="font-bold text-slate-700">{viewFollowUpDeal.deal.rate?"" + (viewFollowUpDeal.deal.rate) + "%":"-"}</p></div>
+                  {viewFollowUpDeal.deal.existingBank&&<><div><p className="text-xs text-slate-400">Existing Bank</p><p className="font-bold text-slate-700">{viewFollowUpDeal.deal.existingBank}</p></div><div><p className="text-xs text-slate-400">Loan Outstanding</p><p className="font-bold text-slate-700">{viewFollowUpDeal.deal.loanOutstanding?formatCurrency(viewFollowUpDeal.deal.loanOutstanding):"-"}</p></div></>}
                 </div>
               </div>
             </div>
             <div className="px-6 py-4 overflow-y-auto flex-1">
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">📝 Follow-up Notes</p>
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3"> Follow-up Notes</p>
               <div className="space-y-3">
                 {viewFollowUpDeal.followUps.map((f,i)=>(
                   <div key={f.id} className="border border-slate-200 rounded-xl p-4 bg-slate-50">
                     <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-bold text-slate-500">#{i+1}</span>
-                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${f.status==="High"?"bg-red-50 text-red-600 border-red-200":f.status==="Low"?"bg-emerald-50 text-emerald-600 border-emerald-200":"bg-amber-50 text-amber-600 border-amber-200"}`}>{f.status==="High"?"🔴 High":f.status==="Low"?"🟢 Low":"🟡 Medium"}</span>
-                        <span className="text-xs text-slate-400">📅 {new Date(f.startDate).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})} → {new Date(f.endDate).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span>
+                        <span className={"px-2.5 py-0.5 rounded-full text-xs font-bold border " + (f.status==="High"?"bg-red-50 text-red-600 border-red-200":f.status==="Low"?"bg-emerald-50 text-emerald-600 border-emerald-200":"bg-amber-50 text-amber-600 border-amber-200") + ""}>{f.status==="High"?" High":f.status==="Low"?" Low":" Medium"}</span>
+                        <span className="text-xs text-slate-400"> {new Date(f.startDate).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})} -> {new Date(f.endDate).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span>
                       </div>
-                      <span className="text-xs text-slate-400">🔒 {new Date(f.createdAt).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span>
+                      <span className="text-xs text-slate-400"> {new Date(f.createdAt).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span>
                     </div>
-                    <p className="text-sm text-slate-700 leading-relaxed">💬 {f.remark}</p>
-                    <p className="text-xs text-slate-400 mt-1.5">👤 {f.rmName}</p>
+                    <p className="text-sm text-slate-700 leading-relaxed"> {f.remark}</p>
+                    <p className="text-xs text-slate-400 mt-1.5"> {f.rmName}</p>
                   </div>
                 ))}
               </div>
@@ -1731,7 +1731,7 @@ export default function App() {
           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={()=>!isImporting&&setIsImportModalOpen(false)}></div>
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl relative z-10 flex flex-col max-h-[92vh]">
             <div className="px-6 py-4 border-b bg-gradient-to-r from-amber-50 to-orange-50 flex justify-between items-center rounded-t-2xl">
-              <div><h3 className="text-lg font-bold text-slate-800">📥 Import Customers from Excel</h3><p className="text-xs text-slate-500 mt-0.5">Upload CSV/Excel file — preview before saving</p></div>
+              <div><h3 className="text-lg font-bold text-slate-800"> Import Customers from Excel</h3><p className="text-xs text-slate-500 mt-0.5">Upload CSV/Excel file - preview before saving</p></div>
               <button onClick={()=>setIsImportModalOpen(false)} disabled={isImporting}><X size={20} className="text-slate-400" /></button>
             </div>
             <div className="p-6 overflow-y-auto flex-1 space-y-5">
@@ -1742,13 +1742,13 @@ export default function App() {
               <div className="border-2 border-dashed border-slate-200 hover:border-amber-400 rounded-xl p-8 text-center transition-colors">
                 <Upload size={36} className="mx-auto mb-3 text-slate-300" />
                 <p className="font-semibold text-slate-600 mb-1">Step 2: Upload your file</p>
-                <p className="text-xs text-slate-400 mb-4">Supports .CSV files (Excel → Save As → CSV)</p>
+                <p className="text-xs text-slate-400 mb-4">Supports .CSV files (Excel -> Save As -> CSV)</p>
                 <label className="cursor-pointer inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold rounded-xl transition-colors"><Upload size={16} /><span>Choose File</span><input type="file" accept=".csv,.txt" className="hidden" onChange={handleFileUpload} /></label>
               </div>
-              {importErrors.length>0 && <div className="bg-red-50 border border-red-200 rounded-xl p-4"><p className="font-semibold text-red-700 text-sm mb-2">⚠️ {importErrors.length} error(s) found:</p><div className="space-y-1 max-h-32 overflow-y-auto">{importErrors.map((e,i)=><p key={i} className="text-xs text-red-600">• {e}</p>)}</div></div>}
+              {importErrors.length>0 && <div className="bg-red-50 border border-red-200 rounded-xl p-4"><p className="font-semibold text-red-700 text-sm mb-2"> {importErrors.length} error(s) found:</p><div className="space-y-1 max-h-32 overflow-y-auto">{importErrors.map((e,i)=><p key={i} className="text-xs text-red-600">* {e}</p>)}</div></div>}
               {importPreview.length>0 && (
                 <div>
-                  <div className="flex items-center justify-between mb-3"><p className="font-semibold text-slate-800">✅ Step 3: Preview — <span className="text-emerald-600">{importPreview.length} customers ready to import</span></p></div>
+                  <div className="flex items-center justify-between mb-3"><p className="font-semibold text-slate-800"> Step 3: Preview - <span className="text-emerald-600">{importPreview.length} customers ready to import</span></p></div>
                   <div className="border border-slate-200 rounded-xl overflow-hidden">
                     <div className="overflow-x-auto max-h-72">
                       <table className="w-full text-left text-xs">
@@ -1761,9 +1761,9 @@ export default function App() {
                               <td className="px-3 py-2"><span className="px-1.5 py-0.5 bg-indigo-50 text-indigo-700 font-bold rounded">{row.branch}</span></td>
                               <td className="px-3 py-2 text-slate-600">{row.loanType}</td>
                               <td className="px-3 py-2 font-bold text-slate-700">{formatCurrency(row.amount)}</td>
-                              <td className="px-3 py-2">{row.rate?`${row.rate}%`:"—"}</td>
-                              <td className="px-3 py-2"><span className={`px-1.5 py-0.5 rounded text-xs font-medium ${statusBadge(row.status)}`}>{row.status}</span></td>
-                              <td className="px-3 py-2"><span className={`px-1.5 py-0.5 rounded text-xs font-bold ${row.customerStatus==="High"?"bg-red-100 text-red-600":row.customerStatus==="Low"?"bg-emerald-100 text-emerald-600":"bg-amber-100 text-amber-600"}`}>{row.customerStatus}</span></td>
+                              <td className="px-3 py-2">{row.rate?"" + (row.rate) + "%":"-"}</td>
+                              <td className="px-3 py-2"><span className={"px-1.5 py-0.5 rounded text-xs font-medium " + (statusBadge(row.status)) + ""}>{row.status}</span></td>
+                              <td className="px-3 py-2"><span className={"px-1.5 py-0.5 rounded text-xs font-bold " + (row.customerStatus==="High"?"bg-red-100 text-red-600":row.customerStatus==="Low"?"bg-emerald-100 text-emerald-600":"bg-amber-100 text-amber-600") + ""}>{row.customerStatus}</span></td>
                               <td className="px-3 py-2 text-slate-600">{row.rmName}</td>
                             </tr>
                           ))}
@@ -1776,7 +1776,7 @@ export default function App() {
             </div>
             <div className="px-6 py-4 border-t bg-slate-50 rounded-b-2xl flex items-center justify-between gap-3">
               <button onClick={()=>{setIsImportModalOpen(false);setImportPreview([]);setImportErrors([]);}} disabled={isImporting} className="px-4 py-2 border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-100 text-sm font-medium">Cancel</button>
-              {importPreview.length>0 && <button onClick={handleImportSave} disabled={isImporting} className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 disabled:opacity-60 text-white text-sm font-bold rounded-xl shadow-md transition-all">{isImporting?<Loader2 size={16} className="animate-spin" />:<CheckCircle size={16} />}{isImporting?"Importing...":`✅ Import ${importPreview.length} Customers`}</button>}
+              {importPreview.length>0 && <button onClick={handleImportSave} disabled={isImporting} className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 disabled:opacity-60 text-white text-sm font-bold rounded-xl shadow-md transition-all">{isImporting?<Loader2 size={16} className="animate-spin" />:<CheckCircle size={16} />}{isImporting?"Importing...":" Import " + (importPreview.length) + " Customers"}</button>}
             </div>
           </div>
         </div>
