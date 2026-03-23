@@ -205,60 +205,152 @@ function LoginPage({ onLogin }) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{background: "linear-gradient(135deg, #8B0000 0%, #C8102E 40%, #E31837 70%, #A00020 100%)"}}>
-      {/* Decorative circles */}
-      <div className="absolute top-0 left-0 w-96 h-96 rounded-full opacity-10" style={{background:"radial-gradient(circle, #ff6b6b, transparent)", transform:"translate(-30%, -30%)"}}></div>
-      <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full opacity-10" style={{background:"radial-gradient(circle, #ff9999, transparent)", transform:"translate(30%, 30%)"}}></div>
+    <div className="min-h-screen flex" style={{background:"#f5f5f5"}}>
 
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden relative z-10">
-        {/* Header — CIMB Red */}
-        <div className="px-8 py-10 text-center" style={{background:"linear-gradient(135deg, #8B0000 0%, #C8102E 50%, #E31837 100%)"}}>
-          {/* CIMB Bank Logo */}
-            <div className="flex flex-col items-center mb-1">
-              <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <polygon points="40,4 76,40 40,76 4,40" fill="white" fillOpacity="0.9"/>
-                <polygon points="40,14 66,40 40,66 14,40" fill="#C8102E"/>
-                <text x="40" y="35" textAnchor="middle" fill="white" fontSize="14" fontWeight="900" fontFamily="Arial,sans-serif">CIMB</text>
-                <text x="40" y="52" textAnchor="middle" fill="white" fontSize="9" fontWeight="600" fontFamily="Arial,sans-serif">BANK</text>
-              </svg>
-            </div>
-          <h1 className="text-2xl font-bold text-white">Welcome to CIMB Bank</h1>
-          <p className="text-red-200 text-sm mt-1">Sign in to your account</p>
+      {/* LEFT PANEL — CIMB Red with car illustration like real website */}
+      <div className="hidden lg:flex flex-col justify-between w-1/2 relative overflow-hidden" style={{background:"linear-gradient(160deg, #8B0000 0%, #C8102E 45%, #E31837 100%)"}}>
+        {/* Top nav bar like CIMB website */}
+        <div className="px-10 pt-8 flex items-center gap-3 relative z-10">
+          <svg width="44" height="44" viewBox="0 0 80 80" fill="none">
+            <polygon points="40,2 78,40 40,78 2,40" fill="white" fillOpacity="0.95"/>
+            <polygon points="40,13 67,40 40,67 13,40" fill="#C8102E"/>
+            <text x="40" y="36" textAnchor="middle" fill="white" fontSize="13" fontWeight="900" fontFamily="Arial,sans-serif">CIMB</text>
+            <text x="40" y="51" textAnchor="middle" fill="white" fontSize="8" fontWeight="700" fontFamily="Arial,sans-serif">BANK</text>
+          </svg>
+          <div>
+            <p className="text-white font-bold text-lg leading-tight">CIMB Bank</p>
+            <p className="text-red-200 text-xs">Cambodia</p>
+          </div>
         </div>
 
-        <form onSubmit={handleLogin} className="p-8 space-y-5">
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm flex items-center space-x-2">
-              <X size={16} /><span>{error}</span>
-            </div>
-          )}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Username</label>
-            <input type="text" required value={username} onChange={e => setUsername(e.target.value)}
-              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none transition" style={{"--tw-ring-color":"#C8102E"}}
-              onFocus={e => e.target.style.borderColor="#C8102E"} onBlur={e => e.target.style.borderColor=""}
-              placeholder="Enter username" />
+        {/* Main content area */}
+        <div className="flex-1 flex flex-col justify-center px-10 pb-8 relative z-10">
+          <div className="mb-6">
+            <p className="text-red-200 text-sm font-semibold uppercase tracking-widest mb-2">Loan Pipeline</p>
+            <h2 className="text-white text-4xl font-bold leading-tight">Internal Banking<br/>Management Portal</h2>
+            <p className="text-red-200 mt-3 text-sm leading-relaxed">Empowering your team with real-time<br/>loan tracking and performance insights.</p>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Password</label>
-            <div className="relative">
-              <input type={showPw ? "text" : "password"} required value={password} onChange={e => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none pr-12 transition"
+
+          {/* Car SVG illustration — clean like CIMB website */}
+          <div className="relative mt-4">
+            <svg viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg" className="w-full max-w-md">
+              {/* Road */}
+              <rect x="0" y="170" width="500" height="50" fill="rgba(0,0,0,0.2)" rx="4"/>
+              <rect x="0" y="170" width="500" height="4" fill="rgba(255,255,255,0.15)"/>
+              {/* Road dashes */}
+              <rect x="40" y="194" width="40" height="4" fill="rgba(255,255,255,0.3)" rx="2"/>
+              <rect x="130" y="194" width="40" height="4" fill="rgba(255,255,255,0.3)" rx="2"/>
+              <rect x="220" y="194" width="40" height="4" fill="rgba(255,255,255,0.3)" rx="2"/>
+              <rect x="310" y="194" width="40" height="4" fill="rgba(255,255,255,0.3)" rx="2"/>
+              <rect x="400" y="194" width="40" height="4" fill="rgba(255,255,255,0.3)" rx="2"/>
+              {/* Car body */}
+              <rect x="80" y="120" width="340" height="60" fill="white" rx="10"/>
+              {/* Car roof */}
+              <path d="M150 120 C160 85, 200 70, 250 68 C300 68, 330 82, 345 120 Z" fill="white"/>
+              {/* Windshield */}
+              <path d="M165 118 C170 92, 205 78, 248 76 C290 76, 318 90, 330 118 Z" fill="rgba(144,198,230,0.6)"/>
+              {/* Side windows */}
+              <rect x="160" y="95" width="60" height="24" fill="rgba(144,198,230,0.5)" rx="4"/>
+              <rect x="228" y="95" width="60" height="24" fill="rgba(144,198,230,0.5)" rx="4"/>
+              {/* Door lines */}
+              <line x1="225" y1="120" x2="225" y2="178" stroke="rgba(200,16,46,0.3)" strokeWidth="2"/>
+              <line x1="295" y1="120" x2="295" y2="178" stroke="rgba(200,16,46,0.3)" strokeWidth="2"/>
+              {/* CIMB logo on car */}
+              <rect x="200" y="138" width="100" height="22" fill="#C8102E" rx="4"/>
+              <text x="250" y="153" textAnchor="middle" fill="white" fontSize="10" fontWeight="900" fontFamily="Arial,sans-serif">CIMB BANK</text>
+              {/* Headlights */}
+              <ellipse cx="98" cy="152" rx="12" ry="8" fill="rgba(255,220,100,0.9)"/>
+              <ellipse cx="98" cy="152" rx="6" ry="4" fill="white"/>
+              <ellipse cx="402" cy="152" rx="12" ry="8" fill="rgba(255,100,100,0.8)"/>
+              {/* Wheels */}
+              <circle cx="155" cy="178" r="22" fill="#222"/>
+              <circle cx="155" cy="178" r="13" fill="#555"/>
+              <circle cx="155" cy="178" r="5" fill="#C8102E"/>
+              <circle cx="345" cy="178" r="22" fill="#222"/>
+              <circle cx="345" cy="178" r="13" fill="#555"/>
+              <circle cx="345" cy="178" r="5" fill="#C8102E"/>
+              {/* Speed lines */}
+              <line x1="30" y1="140" x2="75" y2="140" stroke="rgba(255,255,255,0.2)" strokeWidth="2" strokeDasharray="5,4"/>
+              <line x1="20" y1="152" x2="70" y2="152" stroke="rgba(255,255,255,0.15)" strokeWidth="1.5" strokeDasharray="4,4"/>
+              <line x1="30" y1="163" x2="72" y2="163" stroke="rgba(255,255,255,0.1)" strokeWidth="1" strokeDasharray="4,4"/>
+            </svg>
+          </div>
+        </div>
+
+        {/* Bottom tagline */}
+        <div className="px-10 pb-8 relative z-10">
+          <p className="text-red-200 text-xs">© {new Date().getFullYear()} CIMB Bank PLC. All rights reserved.</p>
+        </div>
+
+        {/* Background decorative elements */}
+        <div className="absolute top-0 right-0 w-72 h-72 rounded-full opacity-10" style={{background:"radial-gradient(circle, #ffffff, transparent)", transform:"translate(30%, -30%)"}}></div>
+        <div className="absolute bottom-0 left-0 w-56 h-56 rounded-full opacity-10" style={{background:"radial-gradient(circle, #ffffff, transparent)", transform:"translate(-20%, 20%)"}}></div>
+        <div className="absolute top-1/2 right-8 w-32 h-32 rounded-full opacity-5" style={{background:"radial-gradient(circle, #ffffff, transparent)"}}></div>
+      </div>
+
+      {/* RIGHT PANEL — Clean white login form */}
+      <div className="flex-1 flex flex-col items-center justify-center px-8 py-12 bg-white">
+        {/* Mobile logo */}
+        <div className="lg:hidden mb-8 flex flex-col items-center">
+          <svg width="60" height="60" viewBox="0 0 80 80" fill="none">
+            <polygon points="40,2 78,40 40,78 2,40" fill="#C8102E" fillOpacity="0.95"/>
+            <polygon points="40,13 67,40 40,67 13,40" fill="#8B0000"/>
+            <text x="40" y="36" textAnchor="middle" fill="white" fontSize="13" fontWeight="900" fontFamily="Arial,sans-serif">CIMB</text>
+            <text x="40" y="51" textAnchor="middle" fill="white" fontSize="8" fontWeight="700" fontFamily="Arial,sans-serif">BANK</text>
+          </svg>
+        </div>
+
+        <div className="w-full max-w-sm">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-2xl font-bold text-slate-800">Sign In</h1>
+            <p className="text-slate-500 text-sm mt-1">Welcome back! Please enter your credentials.</p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-5">
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm flex items-center space-x-2">
+                <X size={16} /><span>{error}</span>
+              </div>
+            )}
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Username</label>
+              <input type="text" required value={username} onChange={e => setUsername(e.target.value)}
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none transition text-slate-800"
                 onFocus={e => e.target.style.borderColor="#C8102E"} onBlur={e => e.target.style.borderColor=""}
-                placeholder="Enter password" />
-              <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
-                {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
+                placeholder="Enter your username" />
             </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Password</label>
+              <div className="relative">
+                <input type={showPw ? "text" : "password"} required value={password} onChange={e => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none pr-12 transition text-slate-800"
+                  onFocus={e => e.target.style.borderColor="#C8102E"} onBlur={e => e.target.style.borderColor=""}
+                  placeholder="Enter your password" />
+                <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                  {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+            <button type="submit" disabled={loading}
+              className="w-full text-white py-3.5 rounded-xl font-bold flex items-center justify-center space-x-2 transition-all hover:opacity-90 shadow-lg disabled:opacity-60 mt-2"
+              style={{background:"linear-gradient(135deg, #C8102E, #E31837)"}}>
+              {loading && <Loader2 size={18} className="animate-spin" />}
+              <span>{loading ? "Signing in..." : "Sign In"}</span>
+            </button>
+          </form>
+
+          <p className="text-center text-xs text-slate-400 mt-6">Contact your administrator for login credentials.</p>
+
+          {/* CIMB branding bottom */}
+          <div className="mt-10 pt-6 border-t border-slate-100 flex items-center justify-center gap-2">
+            <svg width="20" height="20" viewBox="0 0 80 80" fill="none">
+              <polygon points="40,2 78,40 40,78 2,40" fill="#C8102E"/>
+              <polygon points="40,13 67,40 40,67 13,40" fill="#8B0000"/>
+            </svg>
+            <span className="text-xs text-slate-400 font-medium">CIMB Bank — Loan Pipeline System</span>
           </div>
-          <button type="submit" disabled={loading}
-            className="w-full text-white py-3 rounded-xl font-semibold flex items-center justify-center space-x-2 transition-all hover:opacity-90 shadow-lg disabled:opacity-60"
-            style={{background:"linear-gradient(135deg, #C8102E, #E31837)"}}>
-            {loading && <Loader2 size={18} className="animate-spin" />}
-            <span>{loading ? "Signing in..." : "Sign In"}</span>
-          </button>
-          <p className="text-center text-xs text-slate-400">Contact your administrator for login credentials.</p>
-        </form>
+        </div>
       </div>
     </div>
   );
