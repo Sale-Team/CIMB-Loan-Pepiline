@@ -1,4 +1,4 @@
-// CIMB LOAN PIPELINE - COMPLETE APP
+// CIMB LOAN PIPELINE APP
 import React, { useState, useMemo } from "react";
 import {
   LayoutDashboard, Users, DollarSign, Target, Bell,
@@ -18,19 +18,19 @@ const HOME_HERO_SRC = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/4gHbSU
 
 const exportToExcel = function(data, filename, headers) {
   var dq = String.fromCharCode(34);
-  var rows = [headers.map(function(h){ return dq + h.label + dq; }).join(",")];
+  var rows = [headers.map(function(h){ return dq+h.label+dq; }).join(",")];
   data.forEach(function(row){
     rows.push(headers.map(function(h){
       var v = String(row[h.key] !== null && row[h.key] !== undefined ? row[h.key] : "");
-      var escaped = v.split(String.fromCharCode(34)).join(String.fromCharCode(34)+String.fromCharCode(34));
-      return dq + escaped + dq;
+      var esc = v.split(String.fromCharCode(34)).join(String.fromCharCode(34)+String.fromCharCode(34));
+      return dq+esc+dq;
     }).join(","));
   });
   var bom = String.fromCharCode(0xFEFF);
-  var blob = new Blob([bom + rows.join("\n")], { type: "text/csv;charset=utf-8;" });
+  var blob = new Blob([bom+rows.join("\n")], {type:"text/csv;charset=utf-8;"});
   var a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = filename + "_" + new Date().toISOString().split("T")[0] + ".csv";
+  a.download = filename+"_"+new Date().toISOString().split("T")[0]+".csv";
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
 };
 
@@ -63,39 +63,37 @@ const DEFAULT_ADMINS = [
   {username:"admin",password:"admin123",role:"admin",name:"System Admin",branch:"NRD",createdAt:Date.now(),passwordHashed:false},
   {username:"Ck-Team",password:"123!!@@",role:"admin",name:"Ck-Team",branch:"NRD",createdAt:Date.now(),passwordHashed:false},
 ];
-
 const hashPassword = async function(pw) {
-  var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(pw + "CMB_SALT_2024_#$@!"));
-  return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,"0"); }).join("");
+  var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(pw+"CMB_SALT_2024_#$@!"));
+  return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,"0");}).join("");
 };
 const loginAttempts = {};
 const MAX_ATTEMPTS = 5;
-const LOCKOUT_MS = 15 * 60 * 1000;
-const SESSION_TIMEOUT_MS = 60 * 60 * 1000;
+const LOCKOUT_MS = 15*60*1000;
+const SESSION_TIMEOUT_MS = 60*60*1000;
 const checkLoginAttempts = function(u) {
   var rec = loginAttempts[u];
-  if (!rec) return { allowed: true };
+  if (!rec) return {allowed:true};
   if (rec.lockedUntil && Date.now() < rec.lockedUntil)
-    return { allowed: false, message: "Account locked. Try again in " + Math.ceil((rec.lockedUntil - Date.now()) / 60000) + " min." };
-  return { allowed: true };
+    return {allowed:false, message:"Account locked. Try again in "+Math.ceil((rec.lockedUntil-Date.now())/60000)+" min."};
+  return {allowed:true};
 };
 const recordFailedAttempt = function(u) {
-  if (!loginAttempts[u]) loginAttempts[u] = { count: 0 };
+  if (!loginAttempts[u]) loginAttempts[u] = {count:0};
   loginAttempts[u].count++;
   if (loginAttempts[u].count >= MAX_ATTEMPTS) {
-    loginAttempts[u].lockedUntil = Date.now() + LOCKOUT_MS;
+    loginAttempts[u].lockedUntil = Date.now()+LOCKOUT_MS;
     loginAttempts[u].count = 0;
   }
 };
 const clearLoginAttempts = function(u) { delete loginAttempts[u]; };
-
 const fbApp = initializeApp({
-  apiKey: "AIzaSyCbzJneJiTUB9F1uYpKKo6slLv1TiMHSqQ",
-  authDomain: "sale-performance-3765a.firebaseapp.com",
-  projectId: "sale-performance-3765a",
-  storageBucket: "sale-performance-3765a.firebasestorage.app",
-  messagingSenderId: "51620902864",
-  appId: "1:51620902864:web:8eaf76c66f36a9bee0abd5",
+  apiKey:"AIzaSyCbzJneJiTUB9F1uYpKKo6slLv1TiMHSqQ",
+  authDomain:"sale-performance-3765a.firebaseapp.com",
+  projectId:"sale-performance-3765a",
+  storageBucket:"sale-performance-3765a.firebasestorage.app",
+  messagingSenderId:"51620902864",
+  appId:"1:51620902864:web:8eaf76c66f36a9bee0abd5",
 });
 const auth = getAuth(fbApp);
 const db = getFirestore(fbApp);
@@ -356,11 +354,11 @@ function MultiSelect({ label, options, selected, onChange, color="indigo" }) {
     emerald: {a:"border-emerald-500 bg-emerald-50 text-emerald-700",c:"bg-emerald-600",t:"bg-emerald-100 text-emerald-700"},
   };
   const c = cm[color]||cm.indigo;
-  const display = selected.length===0 ? "All "+String(label)+"" : selected.map(s=>options.find(o=>o.value===s)?.label||s).join(", ");
+  const display = selected.length===0 ? "All "+(label) : selected.map(s=>options.find(o=>o.value===s)?.label||s).join(", ");
   return (
     <div className="relative flex-shrink-0" ref={ref}>
       <button type="button" onClick={()=>setOpen(o=>!o)}
-        className={"flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold transition-all shadow-sm min-w-[140px] max-w-[240px] "+String(selected.length>0?c.a:"border-slate-200 bg-white text-slate-600 hover:border-slate-300")+""}>
+        className={"flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold transition-all shadow-sm min-w-[140px] max-w-[240px] "+(selected.length>0?c.a:"border-slate-200 bg-white text-slate-600 hover:border-slate-300")}>
         <span className="flex-1 text-left truncate">{display}</span>
         <span className="text-slate-400 flex-shrink-0">{open?"":""}</span>
       </button>
@@ -368,16 +366,16 @@ function MultiSelect({ label, options, selected, onChange, color="indigo" }) {
         <div className="absolute top-full left-0 mt-1 bg-white rounded-xl border border-slate-200 shadow-2xl min-w-[200px] max-h-64 overflow-y-auto" style={{zIndex:9999}}>
           <div className="p-1.5">
             <button type="button" onClick={()=>{onChange([]);setOpen(false);}}
-              className={"w-full text-left px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 "+String(selected.length===0?c.t+" font-bold":"text-slate-500 hover:bg-slate-50")+""}>
-              <span className={"w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center "+String(selected.length===0?c.c+" border-transparent":"border-slate-300")+""}>
+              className={"w-full text-left px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 "+(selected.length===0?c.t+" font-bold":"text-slate-500 hover:bg-slate-50")}>
+              <span className={"w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center "+(selected.length===0?c.c+" border-transparent":"border-slate-300")}>
                 {selected.length===0&&<span className="text-white text-xs font-bold"></span>}
               </span>All {label}
             </button>
             <div className="border-t border-slate-100 my-1"></div>
             {options.map(opt=>{const checked=selected.includes(opt.value);return(
               <button key={opt.value} type="button" onClick={()=>toggle(opt.value)}
-                className={"w-full text-left px-3 py-2 rounded-lg text-xs flex items-center gap-2 "+String(checked?c.t+" font-semibold":"text-slate-600 hover:bg-slate-50")+""}>
-                <span className={"w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center "+String(checked?c.c+" border-transparent":"border-slate-300 bg-white")+""}>
+                className={"w-full text-left px-3 py-2 rounded-lg text-xs flex items-center gap-2 "+(checked?c.t+" font-semibold":"text-slate-600 hover:bg-slate-50")}>
+                <span className={"w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center "+(checked?c.c+" border-transparent":"border-slate-300 bg-white")}>
                   {checked&&<span className="text-white text-xs font-bold"></span>}
                 </span>{opt.label}
               </button>
@@ -500,7 +498,7 @@ export default function App() {
       const diffMs = logoutTime - loginTime;
       const mins = Math.floor(diffMs/60000);
       const hrs = Math.floor(mins/60);
-      const duration = hrs>0 ? String(hrs)+"h "+String(mins%60)+"m" : String(mins)+"m";
+      const duration = hrs>0 ? (hrs)+"h "+(mins%60)+"m" : (mins)+"m";
       await updateDoc(doc(db,"artifacts",appId,"public","data","loginActivity",docId),{
         logoutTime, duration, status:"Logged Out",
       });
@@ -512,7 +510,7 @@ export default function App() {
   const handleExportCustomers=(d)=>{exportToExcel(d.map((x,i)=>({...x,no:i+1,status:x.status==="Won"?"Completed Drawdown":x.status})),"Customers",CUSTOMER_HEADERS);showToast(" Exported!");};
   const handleExportUsers=()=>{exportToExcel(appUsers.map((u,i)=>({...u,no:i+1,role:u.role==="admin"?"Administrator":u.role==="bm"?"Branch Manager":"Relationship Manager"})),"Users",USER_HEADERS);showToast(" Users exported!");};
   const handleDownloadTemplate=()=>{
-    const csv="\uFEFF"+[["Customer Name","Business/Workplace","Phone","Branch","Loan Type","Request Amount ($)","Approved Amount ($)","Rate (%)","Tenor (months)","Income Type","Income Amount ($)","Income Status","Customer Priority","Loan Status","Existing Bank","Loan Outstanding ($)","Existing Rate (%)","Maturity Date","RM Username"],["John Smith","Acme Corp","+855 12 345 678","NRD","Personal Loan","50000","45000","5.5","36","Salary","3000","Verified","Medium","Pending","ABA Bank","20000","7","2026-12-31","rm_username"]].map(function(r){return r.map(function(v){return String.fromCharCode(34)+String(v)+String.fromCharCode(34);}).join(",");}).join("\n");
+    const csv="\uFEFF"+[["Customer Name","Business/Workplace","Phone","Branch","Loan Type","Request Amount ($)","Approved Amount ($)","Rate (%)","Tenor (months)","Income Type","Income Amount ($)","Income Status","Customer Priority","Loan Status","Existing Bank","Loan Outstanding ($)","Existing Rate (%)","Maturity Date","RM Username"],["John Smith","Acme Corp","+855 12 345 678","NRD","Personal Loan","50000","45000","5.5","36","Salary","3000","Verified","Medium","Pending","ABA Bank","20000","7","2026-12-31","rm_username"]].map(r=>r.map(v=>"+(v)+").join(",")).join("\n");
     const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8;"}));a.download="Template.csv";document.body.appendChild(a);a.click();document.body.removeChild(a);showToast(" Downloaded!");
   };
   const handleFileUpload=(e)=>{
@@ -533,10 +531,10 @@ export default function App() {
         const get=(f)=>idx[f]!==-1?cols[idx[f]]||"":"";
         const client=get("client"),branch=get("branch"),amount=parseFloat(get("amount"))||0;
         const re2=[];
-        if(!client)re2.push("Row "+String(rn+2)+": Customer Name required");
-        if(!branch)re2.push("Row "+String(rn+2)+": Branch required");
-        if(!amount)re2.push("Row "+String(rn+2)+": Amount must be a number");
-        if(branch&&!BRANCHES.includes(branch))re2.push("Row "+String(rn+2)+": Invalid branch " + branch);
+        if(!client)re2.push("Row "+(rn+2)+": Customer Name required");
+        if(!branch)re2.push("Row "+(rn+2)+": Branch required");
+        if(!amount)re2.push("Row "+(rn+2)+": Amount must be a number");
+        if(branch&&!BRANCHES.includes(branch))re2.push("Row "+(rn+2)+": Invalid branch "+(branch)+");
         if(re2.length){errors.push(...re2);return;}
         const rmUser=appUsers.find(u=>u.username===get("rmUsername"));
         preview.push({client,businessName:get("businessName"),phone:get("phone"),branch,loanType:get("loanType")||"Personal Loan",amount,approvedAmount:parseFloat(get("approvedAmount"))||0,rate:parseFloat(get("rate"))||0,tenor:parseInt(get("tenor"))||0,incomeType:get("incomeType")||"Salary",incomeAmount:parseFloat(get("incomeAmount"))||0,incomeStatus:get("incomeStatus")||"Pending",customerStatus:get("customerStatus")||"Medium",status:get("status")||"Pending",existingBank:get("existingBank"),loanOutstanding:parseFloat(get("loanOutstanding"))||0,existingRate:parseFloat(get("existingRate"))||0,maturityDate:get("maturityDate"),rmUsername:rmUser?.username||loggedInUser.username,rmName:rmUser?.name||loggedInUser.name,date:new Date().toISOString().split("T")[0],createdAt:Date.now()});
@@ -547,7 +545,7 @@ export default function App() {
   };
   const handleImportSave=async()=>{
     if(!importPreview.length)return;setIsImporting(true);
-    try{const ref=collection(db,"artifacts",appId,"public","data","deals");for(const d of importPreview)await addDoc(ref,d);showToast(" "+String(importPreview.length)+" imported!");setIsImportModalOpen(false);setImportPreview([]);setImportErrors([]);}catch{showToast(" Import failed.");}
+    try{const ref=collection(db,"artifacts",appId,"public","data","deals");for(const d of importPreview)await addDoc(ref,d);showToast(" "+(importPreview.length)+" imported!");setIsImportModalOpen(false);setImportPreview([]);setImportErrors([]);}catch{showToast(" Import failed.");}
     setIsImporting(false);
   };
 
@@ -574,11 +572,11 @@ export default function App() {
       my.forEach(f=>{
         if(!f.startDate)return;
         const startMs=new Date(f.startDate).setHours(8,0,0,0);const diff=startMs-now;
-        [{key:" + f.id + "_1d",ms:86400000,label:"1 day"},{key:" + f.id + "_4h",ms:14400000,label:"4 hours"},{key:" + f.id + "_1h",ms:3600000,label:"1 hour"}].forEach(({key,ms,label})=>{
+        [{key:(f.id)+"_1d",ms:86400000,label:"1 day"},{key:(f.id)+"_4h",ms:14400000,label:"4 hours"},{key:(f.id)+"_1h",ms:3600000,label:"1 hour"}].forEach(({key,ms,label})=>{
           if(diff>0&&diff<=ms&&!sessionStorage.getItem(key)){
             sessionStorage.setItem(key,"1");
-            newN.push({id:key,title:" Follow-up in "+String(label)+"",body:" + f.client + "  "+String(f.rmName)+"",priority:f.status||"Medium",time:new Date().toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"})});
-            if("Notification"in window&&Notification.permission==="granted")new Notification(" Follow-up in "+String(label)+"",{body:" + f.client + "\nStart: "+String(f.startDate)+"",tag:key});
+            newN.push({id:key,title:" Follow-up in "+(label),body:(f.client)+"  "+(f.rmName),priority:f.status||"Medium",time:new Date().toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"})});
+            if("Notification"in window&&Notification.permission==="granted")new Notification(" Follow-up in "+(label),{body:(f.client)+"\nStart: "+(f.startDate),tag:key});
           }
         });
       });
@@ -622,16 +620,16 @@ export default function App() {
 
   const callGeminiAPI=async(prompt)=>{const url="https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=";let r=3,d=1000;while(r>0){try{const res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});if(!res.ok)throw new Error();const data=await res.json();return data.candidates[0].content.parts[0].text;}catch{r--;if(!r)return"AI unavailable.";await new Promise(x=>setTimeout(x,d));d*=2;}}};
 
-  const handleAnalyzePipeline=async()=>{setIsAiLoading(true);setIsPriorityModalOpen(true);setPriorityList([]);setPriorityTabFilter("High");const list=visibleDeals.filter(d=>d.customerStatus).map(d=>({customerName:d.client,businessName:d.businessName||"",amount:d.amount||0,loanType:d.loanType||"",rmName:d.rmName||"",priorityLevel:d.customerStatus||"Medium",reason:" + d.loanType||"Loan" + "  Status: "+String(d.status)+"  Income: "+String(d.incomeType||"N/A")+"",status:d.status,branch:d.branch})).sort((a,b)=>({High:0,Medium:1,Low:2}[a.priorityLevel]??1)-({High:0,Medium:1,Low:2}[b.priorityLevel]??1));setPriorityList(list.length?list:[{customerName:"No customers with priority set",reason:"Please assign Customer Status when creating customers.",priorityLevel:"Low"}]);setIsAiLoading(false);};
-  const handleDraftEmail=async(deal)=>{setSelectedDealForEmail(deal);setIsEmailModalOpen(true);setEmailDraft("");setIsAiLoading(true);const draft=await callGeminiAPI("Write a professional follow-up email from RM "+String(deal.rmName||"our team")+" to " + deal.client + " about a "+String(deal.loanType||"loan")+" worth $"+String(deal.amount)+". Under 150 words, no subject line.");setEmailDraft(draft);setIsAiLoading(false);};
+  const handleAnalyzePipeline=async()=>{setIsAiLoading(true);setIsPriorityModalOpen(true);setPriorityList([]);setPriorityTabFilter("High");const list=visibleDeals.filter(d=>d.customerStatus).map(d=>({customerName:d.client,businessName:d.businessName||"",amount:d.amount||0,loanType:d.loanType||"",rmName:d.rmName||"",priorityLevel:d.customerStatus||"Medium",reason:(d.loanType||"Loan")+"  Status: "+(d.status)+"  Income: "+(d.incomeType||"N/A"),status:d.status,branch:d.branch})).sort((a,b)=>({High:0,Medium:1,Low:2}[a.priorityLevel]??1)-({High:0,Medium:1,Low:2}[b.priorityLevel]??1));setPriorityList(list.length?list:[{customerName:"No customers with priority set",reason:"Please assign Customer Status when creating customers.",priorityLevel:"Low"}]);setIsAiLoading(false);};
+  const handleDraftEmail=async(deal)=>{setSelectedDealForEmail(deal);setIsEmailModalOpen(true);setEmailDraft("");setIsAiLoading(true);const draft=await callGeminiAPI("Write a professional follow-up email from RM "+(deal.rmName||"our team")+" to ""+(deal.client)+"" about a "+(deal.loanType||"loan")+" worth $"+(deal.amount)+". Under 150 words, no subject line.");setEmailDraft(draft);setIsAiLoading(false);};
   const copyToClipboard=(text)=>{const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");showToast(" Copied!");}catch{}document.body.removeChild(ta);};
 
-  const handleAddDeal=async(e)=>{e.preventDefault();if(!newDeal.client||!newDeal.amount)return;setIsSyncing(true);const rm=isAdmin&&newDeal.repUsername?appUsers.find(u=>u.username===newDeal.repUsername):loggedInUser;const deal={client:newDeal.client,businessName:newDeal.businessName,phone:newDeal.phone,branch:newDeal.branch,amount:parseFloat(newDeal.amount),rmUsername:rm?.username||loggedInUser.username,rmName:rm?.name||loggedInUser.name,status:newDeal.status,loanType:newDeal.loanType,rate:parseFloat(newDeal.rate)||0,tenor:parseInt(newDeal.tenor)||0,incomeStatus:newDeal.incomeStatus,incomeType:newDeal.incomeType||"Salary",incomeAmount:parseFloat(newDeal.incomeAmount)||0,customerStatus:newDeal.customerStatus||"Medium",approvedAmount:parseFloat(newDeal.approvedAmount)||0,existingBank:newDeal.existingBank||"",loanOutstanding:parseFloat(newDeal.loanOutstanding)||0,existingRate:parseFloat(newDeal.existingRate)||0,maturityDate:newDeal.maturityDate||"",date:new Date().toISOString().split("T")[0],createdAt:Date.now()};try{await addDoc(collection(db,"artifacts",appId,"public","data","deals"),deal);setNewDeal({client:"",businessName:"",phone:"",branch:loggedInUser?.branch||"NRD",amount:"",approvedAmount:"",repUsername:"",status:"Pending",loanType:"Personal Loan",rate:"",tenor:"",incomeStatus:"Pending",incomeType:"Salary",incomeAmount:"",customerStatus:"Medium",existingBank:"",loanOutstanding:"",existingRate:"",maturityDate:""});setIsAddDealModalOpen(false);showToast(" Customer " + deal.client + " created!");}catch(err){console.error(err);}finally{setIsSyncing(false);}};
+  const handleAddDeal=async(e)=>{e.preventDefault();if(!newDeal.client||!newDeal.amount)return;setIsSyncing(true);const rm=isAdmin&&newDeal.repUsername?appUsers.find(u=>u.username===newDeal.repUsername):loggedInUser;const deal={client:newDeal.client,businessName:newDeal.businessName,phone:newDeal.phone,branch:newDeal.branch,amount:parseFloat(newDeal.amount),rmUsername:rm?.username||loggedInUser.username,rmName:rm?.name||loggedInUser.name,status:newDeal.status,loanType:newDeal.loanType,rate:parseFloat(newDeal.rate)||0,tenor:parseInt(newDeal.tenor)||0,incomeStatus:newDeal.incomeStatus,incomeType:newDeal.incomeType||"Salary",incomeAmount:parseFloat(newDeal.incomeAmount)||0,customerStatus:newDeal.customerStatus||"Medium",approvedAmount:parseFloat(newDeal.approvedAmount)||0,existingBank:newDeal.existingBank||"",loanOutstanding:parseFloat(newDeal.loanOutstanding)||0,existingRate:parseFloat(newDeal.existingRate)||0,maturityDate:newDeal.maturityDate||"",date:new Date().toISOString().split("T")[0],createdAt:Date.now()};try{await addDoc(collection(db,"artifacts",appId,"public","data","deals"),deal);setNewDeal({client:"",businessName:"",phone:"",branch:loggedInUser?.branch||"NRD",amount:"",approvedAmount:"",repUsername:"",status:"Pending",loanType:"Personal Loan",rate:"",tenor:"",incomeStatus:"Pending",incomeType:"Salary",incomeAmount:"",customerStatus:"Medium",existingBank:"",loanOutstanding:"",existingRate:"",maturityDate:""});setIsAddDealModalOpen(false);showToast(" Customer ""+(deal.client)+"" created!");}catch(err){console.error(err);}finally{setIsSyncing(false);}};
   const handleUpdateDeal=async(e)=>{e.preventDefault();if(!editingDeal)return;setIsSyncing(true);try{await updateDoc(doc(db,"artifacts",appId,"public","data","deals",editingDeal.id),{client:editDealForm.client,businessName:editDealForm.businessName,phone:editDealForm.phone,branch:editDealForm.branch,amount:parseFloat(editDealForm.amount)||0,loanType:editDealForm.loanType,rate:parseFloat(editDealForm.rate)||0,tenor:parseInt(editDealForm.tenor)||0,incomeStatus:editDealForm.incomeStatus,status:editDealForm.status,customerStatus:editDealForm.customerStatus||"Medium",incomeType:editDealForm.incomeType||"Salary",incomeAmount:parseFloat(editDealForm.incomeAmount)||0,approvedAmount:parseFloat(editDealForm.approvedAmount)||0,...(isAdmin&&editDealForm.repUsername?{rmUsername:editDealForm.repUsername,rmName:appUsers.find(u=>u.username===editDealForm.repUsername)?.name||editingDeal.rmName}:{})});setIsEditDealModalOpen(false);setEditingDeal(null);showToast(" Customer updated!");}catch(err){console.error(err);}finally{setIsSyncing(false);}};
   const openEditDeal=(deal)=>{setEditingDeal(deal);setEditDealForm({client:deal.client||"",businessName:deal.businessName||"",phone:deal.phone||"",branch:deal.branch||"NRD",amount:deal.amount||"",approvedAmount:deal.approvedAmount||"",loanType:deal.loanType||"Personal Loan",rate:deal.rate||"",tenor:deal.tenor||"",incomeStatus:deal.incomeStatus||"Pending",incomeType:deal.incomeType||"Salary",incomeAmount:deal.incomeAmount||"",customerStatus:deal.customerStatus||"Medium",status:deal.status||"Pending",repUsername:deal.rmUsername||""});setIsEditDealModalOpen(true);};
-  const handleDeleteDeal=async(dealId,clientName)=>{if(!dealId||typeof dealId!=="string"){showToast(" Cannot delete.");return;}if(!window.confirm("Delete " + clientName + "?"))return;try{await deleteDoc(doc(db,"artifacts",appId,"public","data","deals",dealId));showToast(" " + clientName + " deleted.");}catch{showToast(" Delete failed.");}};
-  const handleSaveUser=async(e)=>{e.preventDefault();if(!newUser.username||!newUser.password||!newUser.name)return;const exists=appUsers.find(u=>u.username===newUser.username&&u.id!==editingUser?.id);if(exists){showToast(" Username already exists!");return;}const usersRef=collection(db,"artifacts",appId,"public","data","appUsers");if(editingUser){const upd={name:newUser.name,role:newUser.role,branch:newUser.branch,branches:newUser.role==="bm"?newUser.branches||[newUser.branch]:[newUser.branch]};if(newUser.password!==""){upd.password=await hashPassword(newUser.password);upd.passwordHashed=true;}await updateDoc(doc(db,"artifacts",appId,"public","data","appUsers",editingUser.id),upd);showToast(" User " + newUser.name + " updated!");}else{const hp=await hashPassword(newUser.password);await addDoc(usersRef,{...newUser,branches:newUser.role==="bm"?newUser.branches||[newUser.branch]:[newUser.branch],password:hp,passwordHashed:true,createdAt:Date.now()});showToast(" User " + newUser.name + " created!");}setNewUser({username:"",password:"",name:"",role:"rm",branch:"NRD",branches:[]});setEditingUser(null);setIsUserModalOpen(false);};
-  const handleDeleteUser=async(userId,userName)=>{if(!window.confirm("Delete " + userName + "?"))return;await deleteDoc(doc(db,"artifacts",appId,"public","data","appUsers",userId));showToast(" " + userName + " deleted.");};
+  const handleDeleteDeal=async(dealId,clientName)=>{if(!dealId||typeof dealId!=="string"){showToast(" Cannot delete.");return;}if(!window.confirm("Delete ""+(clientName)+""?"))return;try{await deleteDoc(doc(db,"artifacts",appId,"public","data","deals",dealId));showToast(" ""+(clientName)+"" deleted.");}catch{showToast(" Delete failed.");}};
+  const handleSaveUser=async(e)=>{e.preventDefault();if(!newUser.username||!newUser.password||!newUser.name)return;const exists=appUsers.find(u=>u.username===newUser.username&&u.id!==editingUser?.id);if(exists){showToast(" Username already exists!");return;}const usersRef=collection(db,"artifacts",appId,"public","data","appUsers");if(editingUser){const upd={name:newUser.name,role:newUser.role,branch:newUser.branch,branches:newUser.role==="bm"?newUser.branches||[newUser.branch]:[newUser.branch]};if(newUser.password!==""){upd.password=await hashPassword(newUser.password);upd.passwordHashed=true;}await updateDoc(doc(db,"artifacts",appId,"public","data","appUsers",editingUser.id),upd);showToast(" User ""+(newUser.name)+"" updated!");}else{const hp=await hashPassword(newUser.password);await addDoc(usersRef,{...newUser,branches:newUser.role==="bm"?newUser.branches||[newUser.branch]:[newUser.branch],password:hp,passwordHashed:true,createdAt:Date.now()});showToast(" User ""+(newUser.name)+"" created!");}setNewUser({username:"",password:"",name:"",role:"rm",branch:"NRD",branches:[]});setEditingUser(null);setIsUserModalOpen(false);};
+  const handleDeleteUser=async(userId,userName)=>{if(!window.confirm("Delete ""+(userName)+""?"))return;await deleteDoc(doc(db,"artifacts",appId,"public","data","appUsers",userId));showToast(" ""+(userName)+"" deleted.");};
   const handleEditUser=(u)=>{setEditingUser(u);setNewUser({username:u.username,password:"",name:u.name,role:u.role,branch:u.branch||"NRD",branches:u.branches||[u.branch||"NRD"]});setIsUserModalOpen(true);};
   const handleLogout=async()=>{await recordLogoutActivity();setLoggedInUser(null);setActiveTab("dashboard");};
   const handleSaveFollowUp=async(e)=>{e.preventDefault();if(!selectedDealForFollowUp||!followUpForm.startDate||!followUpForm.endDate||!followUpForm.remark.trim())return;try{await addDoc(collection(db,"artifacts",appId,"public","data","followUps"),{dealId:selectedDealForFollowUp.id,client:selectedDealForFollowUp.client,branch:selectedDealForFollowUp.branch,amount:selectedDealForFollowUp.amount,rate:selectedDealForFollowUp.rate,date:selectedDealForFollowUp.date,rmUsername:loggedInUser.username,rmName:loggedInUser.name,startDate:followUpForm.startDate,endDate:followUpForm.endDate,remark:followUpForm.remark.trim(),status:followUpForm.status||"Medium",createdAt:Date.now(),locked:true});setIsFollowUpModalOpen(false);setFollowUpForm({startDate:"",endDate:"",remark:"",status:"Medium"});setSelectedDealForFollowUp(null);showToast(" Follow-up saved!");}catch{showToast(" Failed to save.");}};
@@ -658,7 +656,7 @@ export default function App() {
         ]:[]),
       ].map(item=>(
         <button key={item.id} onClick={()=>{setActiveTab(item.id);setIsMobileMenuOpen(false);}}
-          className={"w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all "+String(activeTab===item.id?"bg-gradient-to-r from-red-600/40 to-red-500/20 text-white border border-red-500/40 shadow-sm":"text-slate-400 hover:bg-white/5 hover:text-white")+""}>
+          className={"w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all "+(activeTab===item.id?"bg-gradient-to-r from-red-600/40 to-red-500/20 text-white border border-red-500/40 shadow-sm":"text-slate-400 hover:bg-white/5 hover:text-white")}>
           {item.icon}
           <span className="font-medium flex-1 text-left">{item.label}</span>
           {item.badge&&<span className="text-xs bg-red-500/30 text-red-300 border border-red-500/30 px-2 py-0.5 rounded-full">{item.badge}</span>}
@@ -718,7 +716,7 @@ export default function App() {
               <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="6" x2="17" y2="6"/><line x1="3" y1="12" x2="17" y2="12"/><line x1="3" y1="18" x2="17" y2="18"/></svg>
             </button>
             <span className="text-sm font-semibold text-slate-700"> {loggedInUser.name}</span>
-            <span className={"text-xs px-2 py-0.5 rounded-full font-medium "+String(isAdmin?"bg-purple-100 text-purple-700":isBM?"bg-amber-100 text-amber-700":"bg-indigo-100 text-indigo-700")+""}>
+            <span className={"text-xs px-2 py-0.5 rounded-full font-medium "+(isAdmin?"bg-purple-100 text-purple-700":isBM?"bg-amber-100 text-amber-700":"bg-indigo-100 text-indigo-700")}>
               {isAdmin?" Admin":isBM?" BM":" RM"}  {loggedInUser.branch}
             </span>
           </div>
@@ -798,8 +796,8 @@ export default function App() {
                       {label:" Mobile",        value:activityLogs.filter(a=>a.device==="Mobile").length,     color:"text-blue-700",   bg:"bg-blue-50 border-blue-200"},
                       {label:" Desktop",       value:activityLogs.filter(a=>a.device==="Desktop").length,    color:"text-purple-700", bg:"bg-purple-50 border-purple-200"},
                     ].map(s=>(
-                      <div key={s.label} className={" + s.bg + " border rounded-xl p-3 text-center"}>
-                        <p className={"text-2xl font-extrabold "+String(s.color)+""}>{s.value}</p>
+                      <div key={s.label} className={(s.bg)+" border rounded-xl p-3 text-center"}>
+                        <p className={"text-2xl font-extrabold "+(s.color)}>{s.value}</p>
                         <p className="text-xs text-slate-500 mt-0.5">{s.label}</p>
                       </div>
                     ))}
@@ -855,7 +853,7 @@ export default function App() {
                             <td className="p-4 text-slate-400 text-sm">{idx+1}</td>
                             <td className="p-4">
                               <div className="flex items-center gap-2">
-                                <div className={"w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 "+String(log.role==="admin"?"bg-purple-100 text-purple-700":log.role==="bm"?"bg-amber-100 text-amber-700":"bg-indigo-100 text-indigo-700")+""}>
+                                <div className={"w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 "+(log.role==="admin"?"bg-purple-100 text-purple-700":log.role==="bm"?"bg-amber-100 text-amber-700":"bg-indigo-100 text-indigo-700")}>
                                   {log.name?.charAt(0)?.toUpperCase()||"?"}
                                 </div>
                                 <div>
@@ -868,7 +866,7 @@ export default function App() {
                               <span className="font-mono text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg">{log.ip||""}</span>
                             </td>
                             <td className="p-4">
-                              <span className={"px-2.5 py-1 rounded-full text-xs font-bold "+String(log.device==="Mobile"?"bg-blue-50 text-blue-700":log.device==="Tablet"?"bg-teal-50 text-teal-700":"bg-purple-50 text-purple-700")+""}>
+                              <span className={"px-2.5 py-1 rounded-full text-xs font-bold "+(log.device==="Mobile"?"bg-blue-50 text-blue-700":log.device==="Tablet"?"bg-teal-50 text-teal-700":"bg-purple-50 text-purple-700")}>
                                 {log.device==="Mobile"?" Mobile":log.device==="Tablet"?" Tablet":" Desktop"}
                               </span>
                             </td>
@@ -904,7 +902,7 @@ export default function App() {
                               </span>
                             </td>
                             <td className="p-4">
-                              <span className={"px-2.5 py-1 rounded-full text-xs font-bold border "+String(log.status==="Active"?"bg-emerald-50 text-emerald-700 border-emerald-200":"bg-slate-50 text-slate-500 border-slate-200")+""}>
+                              <span className={"px-2.5 py-1 rounded-full text-xs font-bold border "+(log.status==="Active"?"bg-emerald-50 text-emerald-700 border-emerald-200":"bg-slate-50 text-slate-500 border-slate-200")}>
                                 {log.status==="Active"?" Active":" Logged Out"}
                               </span>
                             </td>
@@ -994,14 +992,14 @@ export default function App() {
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8 gap-3">
                     {cards.map((card,i) => (
                       <button key={card.status} onClick={() => setStatusFilterModal({title:card.title,status:card.status,filteredDeals:dashDeals})}
-                        className={"relative overflow-hidden bg-gradient-to-br "+String(card.bg)+" border "+String(card.border)+" rounded-2xl p-6 hover:shadow-xl transition-all hover:-translate-y-1 group flex flex-col items-center justify-center w-full"}
-                        style={{animationDelay:" + i*80 + "ms",minHeight:"200px"}}>
-                        <div className={"absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r "+String(card.gradient)+" rounded-t-2xl"}></div>
-                        <div className={"flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br "+String(card.gradient)+" shadow-lg mb-4 group-hover:scale-110 transition-transform"}>
+                        className={"relative overflow-hidden bg-gradient-to-br "+(card.bg)+" border "+(card.border)+" rounded-2xl p-6 hover:shadow-xl transition-all hover:-translate-y-1 group flex flex-col items-center justify-center w-full"}
+                        style={{animationDelay:(i*80)+"ms",minHeight:"200px"}}>
+                        <div className={"absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r "+(card.gradient)+" rounded-t-2xl"}></div>
+                        <div className={"flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br "+(card.gradient)+" shadow-lg mb-4 group-hover:scale-110 transition-transform"}>
                           <span className="text-white">{React.cloneElement(card.icon,{size:28})}</span>
                         </div>
                         <p className="text-xs font-bold text-slate-500 mb-1.5 text-center uppercase tracking-wide">{card.title}</p>
-                        <p className={"text-4xl font-extrabold "+String(card.text)+" text-center"}>{card.value}</p>
+                        <p className={"text-4xl font-extrabold "+(card.text)+" text-center"}>{card.value}</p>
                         <p className="text-sm text-slate-400 mt-1.5 text-center w-full font-medium">{card.sub}</p>
                         <div className="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all rounded-2xl"></div>
                       </button>
@@ -1037,9 +1035,9 @@ export default function App() {
                   const maxVal=perfList[0]?.filteredTotal||1;
                   const filterLabel=topPerfFilter.length===0?"All Status":topPerfFilter.map((s)=>s==="Won"?"Completed":s).join(", ");
                   return perfList.map((br,i)=>(
-                    <div key={br.branch} onClick={()=>setStatusFilterModal({title:"Branch "+String(br.branch)+"  "+String(filterLabel)+"",status:topPerfFilter.length===0?"all":topPerfFilter[0],branchFilter:br.branch})}
+                    <div key={br.branch} onClick={()=>setStatusFilterModal({title:"Branch "+(br.branch)+"  "+(filterLabel),status:topPerfFilter.length===0?"all":topPerfFilter[0],branchFilter:br.branch})}
                       className="flex items-center px-5 py-4 border-b border-slate-50 last:border-0 hover:bg-indigo-50/40 transition-colors cursor-pointer">
-                      <span className={"font-extrabold w-7 text-base flex-shrink-0 "+String(i===0?"text-amber-400":i===1?"text-slate-400":i===2?"text-orange-400":"text-slate-300")+""}>{i===0?"":i===1?"":i===2?"":" + i+1 + "}</span>
+                      <span className={"font-extrabold w-7 text-base flex-shrink-0 "+(i===0?"text-amber-400":i===1?"text-slate-400":i===2?"text-orange-400":"text-slate-300")}>{i===0?"":i===1?"":i===2?"":(i+1)}</span>
                       <div className="w-10 h-10 rounded-full ml-1 flex-shrink-0 bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center">
                         <span className="text-white font-bold text-xs">{br.branch.substring(0,3)}</span>
                       </div>
@@ -1047,7 +1045,7 @@ export default function App() {
                         <p className="font-bold text-slate-800"> {br.branch}</p>
                         <div className="flex items-center gap-2 mt-1">
                           <div className="flex-1 bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                            <div className={"h-full rounded-full "+String(i===0?"bg-amber-400":i===1?"bg-slate-400":i===2?"bg-orange-400":"bg-indigo-300")+""} style={{width:"" + (maxVal>0?Math.round(br.filteredTotal/maxVal*100):0) + "%",transition:"width 0.8s ease"}}></div>
+                            <div className={"h-full rounded-full "+(i===0?"bg-amber-400":i===1?"bg-slate-400":i===2?"bg-orange-400":"bg-indigo-300")} style={{width:(maxVal>0?Math.round(br.filteredTotal/maxVal*100):0)+"%",transition:"width 0.8s ease"}}></div>
                           </div>
                           <span className="text-xs text-slate-400 flex-shrink-0">{br.filteredCount} deals</span>
                         </div>
@@ -1120,8 +1118,8 @@ export default function App() {
                               <td className="p-4"><span className="text-sm text-slate-600">{deal.phone||""}</span></td>
                               <td className="p-4"><span className="text-sm text-slate-600">{deal.loanType||""}</span></td>
                               <td className="p-4"><span className="font-bold text-slate-700">{formatCurrency(deal.amount)}</span></td>
-                              <td className="p-4"><span className={"px-2 py-1 rounded-full text-xs font-medium "+String(deal.incomeType==="Salary"?"bg-blue-50 text-blue-700":deal.incomeType==="Business"?"bg-purple-50 text-purple-700":deal.incomeType==="Rental"?"bg-teal-50 text-teal-700":"bg-slate-50 text-slate-600")+""}>{deal.incomeType||""}</span></td>
-                              <td className="p-4"><span className={"px-2.5 py-1 rounded-full text-xs font-bold "+String(deal.customerStatus==="High"?"bg-red-100 text-red-600":deal.customerStatus==="Low"?"bg-emerald-100 text-emerald-600":"bg-amber-100 text-amber-600")+""}>{deal.customerStatus==="High"?" High":deal.customerStatus==="Low"?" Low":" Medium"}</span></td>
+                              <td className="p-4"><span className={"px-2 py-1 rounded-full text-xs font-medium "+(deal.incomeType==="Salary"?"bg-blue-50 text-blue-700":deal.incomeType==="Business"?"bg-purple-50 text-purple-700":deal.incomeType==="Rental"?"bg-teal-50 text-teal-700":"bg-slate-50 text-slate-600")}>{deal.incomeType||""}</span></td>
+                              <td className="p-4"><span className={"px-2.5 py-1 rounded-full text-xs font-bold "+(deal.customerStatus==="High"?"bg-red-100 text-red-600":deal.customerStatus==="Low"?"bg-emerald-100 text-emerald-600":"bg-amber-100 text-amber-600")}>{deal.customerStatus==="High"?" High":deal.customerStatus==="Low"?" Low":" Medium"}</span></td>
                               <td className="p-4">
                                 <div className="flex items-center gap-2">
                                   {(() => { const rm=appUsers.find((u)=>u.username===deal.rmUsername); return rm?.photoUrl ? <img src={rm.photoUrl} alt={rm.name} className="w-7 h-7 rounded-full object-cover flex-shrink-0" /> : <div className="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-600 flex-shrink-0">{deal.rmName?.charAt(0)}</div>; })()}
@@ -1129,7 +1127,7 @@ export default function App() {
                                 </div>
                               </td>
                               <td className="p-4"><span className="text-xs text-slate-500">{new Date(deal.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span></td>
-                              <td className="p-4"><span className={"px-2.5 py-1 rounded-full text-xs font-medium border " + (statusBadge(deal.status)) + ""}>{deal.status==="Won"?"Completed":deal.status}</span></td>
+                              <td className="p-4"><span className={"px-2.5 py-1 rounded-full text-xs font-medium border "+(statusBadge(deal.status))}>{deal.status==="Won"?"Completed":deal.status}</span></td>
                               <td className="p-4">
                                 <div className="flex items-center gap-2">
                                   {!isBM && <button onClick={()=>openEditDeal(deal)} className="flex items-center space-x-1 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-lg text-xs font-medium transition-colors"><Edit2 size={12} /><span>Edit</span></button>}
@@ -1182,11 +1180,11 @@ export default function App() {
                             <td className="p-4"><span className="px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg">{deal.branch||""}</span></td>
                             <td className="p-4"><span className="text-xs text-slate-600">{deal.loanType||""}</span></td>
                             <td className="p-4"><span className="font-bold text-slate-700">{formatCurrency(deal.amount)}</span></td>
-                            <td className="p-4"><span className="text-sm text-slate-600">{deal.rate?" + deal.rate + "%":""}</span></td>
+                            <td className="p-4"><span className="text-sm text-slate-600">{deal.rate?(deal.rate)+"%":""}</span></td>
                             <td className="p-4"><span className="text-xs text-slate-500">{new Date(deal.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span></td>
                             <td className="p-4">
                               <div className="flex items-center gap-1 flex-wrap">
-                                <span className={"px-2.5 py-1 rounded-full text-xs font-bold "+String(dealFollowUps.length>0?"bg-emerald-100 text-emerald-700":"bg-slate-100 text-slate-400")+""}>{dealFollowUps.length} note{dealFollowUps.length!==1?"s":""}</span>
+                                <span className={"px-2.5 py-1 rounded-full text-xs font-bold "+(dealFollowUps.length>0?"bg-emerald-100 text-emerald-700":"bg-slate-100 text-slate-400")}>{dealFollowUps.length} note{dealFollowUps.length!==1?"s":""}</span>
                                 {dealFollowUps.length>0 && <button onClick={()=>{setViewFollowUpDeal({deal,followUps:dealFollowUps});setIsViewFollowUpModal(true);}} className="px-2 py-1 bg-amber-50 text-amber-700 text-xs font-medium rounded-lg hover:bg-amber-100 transition-colors"> View</button>}
                               </div>
                             </td>
@@ -1237,7 +1235,7 @@ export default function App() {
                               <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg">{f.branch}</span>
                               <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-lg">{formatCurrency(f.amount)}</span>
                               {f.rate&&<span className="px-2 py-0.5 bg-blue-50 text-blue-700 text-xs font-semibold rounded-lg">{f.rate}%</span>}
-                              <span className={"px-2.5 py-0.5 rounded-full text-xs font-bold border "+String(f.status==="High"?"bg-red-50 text-red-600 border-red-200":f.status==="Low"?"bg-emerald-50 text-emerald-600 border-emerald-200":"bg-amber-50 text-amber-600 border-amber-200")+""}>{f.status==="High"?" High":f.status==="Low"?" Low":" Medium"}</span>
+                              <span className={"px-2.5 py-0.5 rounded-full text-xs font-bold border "+(f.status==="High"?"bg-red-50 text-red-600 border-red-200":f.status==="Low"?"bg-emerald-50 text-emerald-600 border-emerald-200":"bg-amber-50 text-amber-600 border-amber-200")}>{f.status==="High"?" High":f.status==="Low"?" Low":" Medium"}</span>
                             </div>
                             <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mt-2"><p className="text-sm text-slate-700 leading-relaxed"> {f.remark}</p></div>
                             <div className="flex items-center gap-4 mt-2 flex-wrap">
@@ -1287,7 +1285,7 @@ export default function App() {
                     {appUsers.map((u) => (
                       <div key={u.id} className="flex items-center p-5 hover:bg-slate-50 transition-colors">
                         <div className="relative flex-shrink-0">
-                          {u.photoUrl ? <img src={u.photoUrl} alt={u.name} className="w-11 h-11 rounded-full object-cover border-2 border-indigo-100" /> : <div className={"w-11 h-11 rounded-full flex items-center justify-center font-bold text-lg "+String(u.role==="admin"?"bg-purple-100 text-purple-600":u.role==="bm"?"bg-amber-100 text-amber-600":"bg-indigo-100 text-indigo-600")+""}>{u.name?.charAt(0).toUpperCase()}</div>}
+                          {u.photoUrl ? <img src={u.photoUrl} alt={u.name} className="w-11 h-11 rounded-full object-cover border-2 border-indigo-100" /> : <div className={"w-11 h-11 rounded-full flex items-center justify-center font-bold text-lg "+(u.role==="admin"?"bg-purple-100 text-purple-600":u.role==="bm"?"bg-amber-100 text-amber-600":"bg-indigo-100 text-indigo-600")}>{u.name?.charAt(0).toUpperCase()}</div>}
                           <label className="absolute -bottom-1 -right-1 bg-indigo-600 rounded-full p-1 cursor-pointer hover:bg-indigo-700" title="Upload photo">
                             <Upload size={10} className="text-white" />
                             <input type="file" accept="image/*" className="hidden" onChange={(e)=>handlePhotoUpload(u.id,e.target.files[0])} />
@@ -1296,7 +1294,7 @@ export default function App() {
                         <div className="ml-4 flex-1 min-w-0">
                           <div className="flex items-center space-x-2 flex-wrap gap-1">
                             <p className="font-bold text-slate-800">{u.name}</p>
-                            <span className={"text-xs px-2 py-0.5 rounded-full font-medium "+String(u.role==="admin"?"bg-purple-100 text-purple-700":u.role==="bm"?"bg-amber-100 text-amber-700":"bg-indigo-100 text-indigo-700")+""}>{u.role==="admin"?" Admin":u.role==="bm"?" BM":" RM"}</span>
+                            <span className={"text-xs px-2 py-0.5 rounded-full font-medium "+(u.role==="admin"?"bg-purple-100 text-purple-700":u.role==="bm"?"bg-amber-100 text-amber-700":"bg-indigo-100 text-indigo-700")}>{u.role==="admin"?" Admin":u.role==="bm"?" BM":" RM"}</span>
                             {u.username===loggedInUser.username && <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-medium">You</span>}
                           </div>
                           <p className="text-sm text-slate-500 mt-0.5">@{u.username}  Branch: <span className="font-semibold text-slate-700">{u.branch}</span></p>
@@ -1336,7 +1334,7 @@ export default function App() {
                       </div>
                       <div className="mt-5 pt-5 border-t border-slate-100 grid grid-cols-3 gap-4 text-center">
                         {[{label:"Total Customers",value:visibleDeals.length,color:"text-slate-800"},{label:"Completed",value:visibleDeals.filter((d)=>d.status==="Won").length,color:"text-emerald-600"},{label:"Pending",value:visibleDeals.filter((d)=>d.status==="Pending").length,color:"text-amber-600"}].map((stat) => (
-                          <div key={stat.label} className="bg-slate-50 rounded-xl p-3"><p className={"text-2xl font-bold "+String(stat.color)+""}>{stat.value}</p><p className="text-xs text-slate-500 mt-1">{stat.label}</p></div>
+                          <div key={stat.label} className="bg-slate-50 rounded-xl p-3"><p className={"text-2xl font-bold "+(stat.color)}>{stat.value}</p><p className="text-xs text-slate-500 mt-1">{stat.label}</p></div>
                         ))}
                       </div>
                       <div className="mt-4 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-center space-x-2"><Shield size={16} className="text-amber-600 flex-shrink-0" /><p className="text-xs text-amber-700">To change your password or role, please contact your Admin.</p></div>
@@ -1348,13 +1346,13 @@ export default function App() {
                       {appUsers.map((u) => (
                         <div key={u.id} className="flex items-center p-4 hover:bg-slate-50">
                           <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
-                            {u.photoUrl ? <img src={u.photoUrl} alt={u.name} className="w-full h-full object-cover" /> : <div className={"w-full h-full flex items-center justify-center font-bold "+String(u.role==="admin"?"bg-purple-100 text-purple-600":"bg-indigo-100 text-indigo-600")+""}>{u.name?.charAt(0).toUpperCase()}</div>}
+                            {u.photoUrl ? <img src={u.photoUrl} alt={u.name} className="w-full h-full object-cover" /> : <div className={"w-full h-full flex items-center justify-center font-bold "+(u.role==="admin"?"bg-purple-100 text-purple-600":"bg-indigo-100 text-indigo-600")}>{u.name?.charAt(0).toUpperCase()}</div>}
                           </div>
                           <div className="ml-3 flex-1">
                             <div className="flex items-center space-x-2"><p className="font-semibold text-slate-800 text-sm">{u.name}</p>{u.username===loggedInUser.username&&<span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">You</span>}</div>
                             <p className="text-xs text-slate-400">Branch: {u.branch}</p>
                           </div>
-                          <span className={"text-xs px-2 py-1 rounded-full font-medium "+String(u.role==="admin"?"bg-purple-100 text-purple-700":u.role==="bm"?"bg-amber-100 text-amber-700":"bg-indigo-100 text-indigo-700")+""}>{u.role==="admin"?" Admin":u.role==="bm"?" BM":" RM"}</span>
+                          <span className={"text-xs px-2 py-1 rounded-full font-medium "+(u.role==="admin"?"bg-purple-100 text-purple-700":u.role==="bm"?"bg-amber-100 text-amber-700":"bg-indigo-100 text-indigo-700")}>{u.role==="admin"?" Admin":u.role==="bm"?" BM":" RM"}</span>
                         </div>
                       ))}
                     </div>
@@ -1466,7 +1464,7 @@ export default function App() {
                   <label className="block text-sm font-medium text-slate-700 mb-2"> Assigned Branches <span className="text-xs text-slate-400">(tick all branches this BM controls)</span></label>
                   <div className="grid grid-cols-4 gap-2 p-3 bg-indigo-50 border border-indigo-200 rounded-xl">
                     {BRANCHES.map((b)=>{ const checked=(newUser.branches||[newUser.branch]).includes(b); return (
-                      <label key={b} className={"flex items-center gap-1.5 px-2 py-1.5 rounded-lg cursor-pointer text-xs font-medium transition-all "+String(checked?"bg-indigo-600 text-white":"bg-white text-slate-600 border border-slate-200 hover:border-indigo-300")+""}>
+                      <label key={b} className={"flex items-center gap-1.5 px-2 py-1.5 rounded-lg cursor-pointer text-xs font-medium transition-all "+(checked?"bg-indigo-600 text-white":"bg-white text-slate-600 border border-slate-200 hover:border-indigo-300")}>
                         <input type="checkbox" checked={checked} className="hidden" onChange={(e)=>{ const cur=newUser.branches||[newUser.branch]; const next=e.target.checked?[...new Set([...cur,b])]:cur.filter((x)=>x!==b); setNewUser({...newUser,branches:next.length?next:[newUser.branch]}); }} />{b}
                       </label>
                     ); })}
@@ -1514,8 +1512,8 @@ export default function App() {
                           <td className="p-4"><span className="text-xs text-slate-600">{d.loanType||""}</span></td>
                           <td className="p-4"><span className="font-bold text-sm">{formatCurrency(d.amount)}</span></td>
                           <td className="p-4"><span className="text-sm">{d.rmName||""}</span></td>
-                          <td className="p-4"><span className={"px-2 py-1 rounded-full text-xs font-bold "+String(d.customerStatus==="High"?"bg-red-100 text-red-600":d.customerStatus==="Low"?"bg-emerald-100 text-emerald-600":"bg-amber-100 text-amber-600")+""}>{d.customerStatus==="High"?" High":d.customerStatus==="Low"?" Low":" Med"}</span></td>
-                          <td className="p-4"><span className={"px-2.5 py-1 rounded-full text-xs font-medium border " + (statusBadge(d.status)) + ""}>{d.status==="Won"?"Completed":d.status}</span></td>
+                          <td className="p-4"><span className={"px-2 py-1 rounded-full text-xs font-bold "+(d.customerStatus==="High"?"bg-red-100 text-red-600":d.customerStatus==="Low"?"bg-emerald-100 text-emerald-600":"bg-amber-100 text-amber-600")}>{d.customerStatus==="High"?" High":d.customerStatus==="Low"?" Low":" Med"}</span></td>
+                          <td className="p-4"><span className={"px-2.5 py-1 rounded-full text-xs font-medium border "+(statusBadge(d.status))}>{d.status==="Won"?"Completed":d.status}</span></td>
                         </tr>
                       ))}
                     </tbody>
@@ -1540,7 +1538,7 @@ export default function App() {
             {!isAiLoading && priorityList.length>0 && (
               <div className="flex gap-2 px-6 pt-4 pb-2">
                 {["High","Medium","Low","All"].map((lvl)=>{ const count=lvl==="All"?priorityList.length:priorityList.filter((p)=>p.priorityLevel===lvl).length; return (
-                  <button key={lvl} onClick={()=>setPriorityTabFilter(lvl)} className={"px-3 py-1.5 rounded-xl text-xs font-bold border transition-all " + ((priorityTabFilter||"High")===lvl?lvl==="High"?"bg-red-500 text-white border-red-500":lvl==="Medium"?"bg-amber-500 text-white border-amber-500":lvl==="Low"?"bg-emerald-500 text-white border-emerald-500":"bg-indigo-600 text-white border-indigo-600":"bg-white text-slate-600 border-slate-200 hover:border-indigo-300") + ""}>
+                  <button key={lvl} onClick={()=>setPriorityTabFilter(lvl)} className={"px-3 py-1.5 rounded-xl text-xs font-bold border transition-all "+((priorityTabFilter||"High")===lvl?lvl==="High"?"bg-red-500 text-white border-red-500":lvl==="Medium"?"bg-amber-500 text-white border-amber-500":lvl==="Low"?"bg-emerald-500 text-white border-emerald-500":"bg-indigo-600 text-white border-indigo-600":"bg-white text-slate-600 border-slate-200 hover:border-indigo-300")}>
                     {lvl==="High"?"":lvl==="Medium"?"":lvl==="Low"?"":""} {lvl} ({count})
                   </button>
                 ); })}
@@ -1550,12 +1548,12 @@ export default function App() {
               {isAiLoading ? <div className="flex flex-col items-center py-16 text-slate-400"><Loader2 size={40} className="animate-spin mb-3 text-red-400" /><p className="text-sm animate-pulse">AI is analyzing customers...</p></div> : (
                 <div className="space-y-3">
                   {priorityList.filter((item)=>(priorityTabFilter||"High")==="All"?true:item.priorityLevel===(priorityTabFilter||"High")).map((item,i)=>(
-                    <div key={i} className={"rounded-xl border p-4 " + (priorityColor(item.priorityLevel)) + ""}>
+                    <div key={i} className={"rounded-xl border p-4 "+(priorityColor(item.priorityLevel))}>
                       <div className="flex items-start justify-between">
                         <div className="flex items-center space-x-3">
                           <span className="font-bold text-slate-400 w-6">{i+1}</span>
                           <div>
-                            <div className="flex items-center space-x-2"><span className={"w-2 h-2 rounded-full " + (priorityDot(item.priorityLevel)) + ""}></span><h4 className="font-bold text-slate-800">{item.customerName}</h4></div>
+                            <div className="flex items-center space-x-2"><span className={"w-2 h-2 rounded-full "+(priorityDot(item.priorityLevel))}></span><h4 className="font-bold text-slate-800">{item.customerName}</h4></div>
                             {item.businessName&&<p className="text-xs text-slate-500 ml-4">{item.businessName}</p>}
                             <p className="text-xs mt-1 ml-4 opacity-80">{item.reason}</p>
                           </div>
@@ -1563,8 +1561,8 @@ export default function App() {
                         <div className="text-right ml-4 flex-shrink-0">
                           {item.amount>0&&<p className="font-bold text-slate-700">{formatCurrency(item.amount)}</p>}
                           <p className="text-xs text-slate-500">RM: {item.rmName}</p>
-                          {item.status&&<span className={"inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium border " + (statusBadge(item.status)) + ""}>{item.status==="Won"?"Completed":item.status}</span>}
-                          <span className={"inline-block mt-1 ml-1 px-2 py-0.5 rounded-full text-xs font-bold border " + (priorityColor(item.priorityLevel)) + ""}>{item.priorityLevel}</span>
+                          {item.status&&<span className={"inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium border "+(statusBadge(item.status))}>{item.status==="Won"?"Completed":item.status}</span>}
+                          <span className={"inline-block mt-1 ml-1 px-2 py-0.5 rounded-full text-xs font-bold border "+(priorityColor(item.priorityLevel))}>{item.priorityLevel}</span>
                         </div>
                       </div>
                     </div>
@@ -1653,7 +1651,7 @@ export default function App() {
                   <div><p className="text-xs text-slate-400">Customer Name</p><p className="font-bold text-slate-800">{selectedDealForFollowUp.client}</p></div>
                   <div><p className="text-xs text-slate-400">Branch</p><p className="font-bold text-indigo-700">{selectedDealForFollowUp.branch}</p></div>
                   <div><p className="text-xs text-slate-400">Request Amount</p><p className="font-bold text-emerald-700">{formatCurrency(selectedDealForFollowUp.amount)}</p></div>
-                  <div><p className="text-xs text-slate-400">Rate</p><p className="font-bold text-slate-700">{selectedDealForFollowUp.rate?" + selectedDealForFollowUp.rate + "%":""}</p></div>
+                  <div><p className="text-xs text-slate-400">Rate</p><p className="font-bold text-slate-700">{selectedDealForFollowUp.rate?(selectedDealForFollowUp.rate)+"%":""}</p></div>
                   <div className="col-span-2"><p className="text-xs text-slate-400">Date Created</p><p className="font-bold text-slate-700">{new Date(selectedDealForFollowUp.date).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}</p></div>
                 </div>
               </div>
@@ -1693,7 +1691,7 @@ export default function App() {
                   <div><p className="text-xs text-slate-400">Branch</p><p className="font-bold text-indigo-700">{viewFollowUpDeal.deal.branch||""}</p></div>
                   <div><p className="text-xs text-slate-400">Product Type</p><p className="font-bold text-slate-700">{viewFollowUpDeal.deal.loanType||""}</p></div>
                   <div><p className="text-xs text-slate-400">Amount Request</p><p className="font-bold text-emerald-700">{formatCurrency(viewFollowUpDeal.deal.amount)}</p></div>
-                  <div><p className="text-xs text-slate-400">Rate</p><p className="font-bold text-slate-700">{viewFollowUpDeal.deal.rate?" + viewFollowUpDeal.deal.rate + "%":""}</p></div>
+                  <div><p className="text-xs text-slate-400">Rate</p><p className="font-bold text-slate-700">{viewFollowUpDeal.deal.rate?(viewFollowUpDeal.deal.rate)+"%":""}</p></div>
                   {viewFollowUpDeal.deal.existingBank&&<><div><p className="text-xs text-slate-400">Existing Bank</p><p className="font-bold text-slate-700">{viewFollowUpDeal.deal.existingBank}</p></div><div><p className="text-xs text-slate-400">Loan Outstanding</p><p className="font-bold text-slate-700">{viewFollowUpDeal.deal.loanOutstanding?formatCurrency(viewFollowUpDeal.deal.loanOutstanding):""}</p></div></>}
                 </div>
               </div>
@@ -1706,7 +1704,7 @@ export default function App() {
                     <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-bold text-slate-500">#{i+1}</span>
-                        <span className={"px-2.5 py-0.5 rounded-full text-xs font-bold border "+String(f.status==="High"?"bg-red-50 text-red-600 border-red-200":f.status==="Low"?"bg-emerald-50 text-emerald-600 border-emerald-200":"bg-amber-50 text-amber-600 border-amber-200")+""}>{f.status==="High"?" High":f.status==="Low"?" Low":" Medium"}</span>
+                        <span className={"px-2.5 py-0.5 rounded-full text-xs font-bold border "+(f.status==="High"?"bg-red-50 text-red-600 border-red-200":f.status==="Low"?"bg-emerald-50 text-emerald-600 border-emerald-200":"bg-amber-50 text-amber-600 border-amber-200")}>{f.status==="High"?" High":f.status==="Low"?" Low":" Medium"}</span>
                         <span className="text-xs text-slate-400"> {new Date(f.startDate).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}  {new Date(f.endDate).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span>
                       </div>
                       <span className="text-xs text-slate-400"> {new Date(f.createdAt).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span>
@@ -1761,9 +1759,9 @@ export default function App() {
                               <td className="px-3 py-2"><span className="px-1.5 py-0.5 bg-indigo-50 text-indigo-700 font-bold rounded">{row.branch}</span></td>
                               <td className="px-3 py-2 text-slate-600">{row.loanType}</td>
                               <td className="px-3 py-2 font-bold text-slate-700">{formatCurrency(row.amount)}</td>
-                              <td className="px-3 py-2">{row.rate?" + row.rate + "%":""}</td>
-                              <td className="px-3 py-2"><span className={"px-1.5 py-0.5 rounded text-xs font-medium " + (statusBadge(row.status)) + ""}>{row.status}</span></td>
-                              <td className="px-3 py-2"><span className={"px-1.5 py-0.5 rounded text-xs font-bold "+String(row.customerStatus==="High"?"bg-red-100 text-red-600":row.customerStatus==="Low"?"bg-emerald-100 text-emerald-600":"bg-amber-100 text-amber-600")+""}>{row.customerStatus}</span></td>
+                              <td className="px-3 py-2">{row.rate?(row.rate)+"%":""}</td>
+                              <td className="px-3 py-2"><span className={"px-1.5 py-0.5 rounded text-xs font-medium "+(statusBadge(row.status))}>{row.status}</span></td>
+                              <td className="px-3 py-2"><span className={"px-1.5 py-0.5 rounded text-xs font-bold "+(row.customerStatus==="High"?"bg-red-100 text-red-600":row.customerStatus==="Low"?"bg-emerald-100 text-emerald-600":"bg-amber-100 text-amber-600")}>{row.customerStatus}</span></td>
                               <td className="px-3 py-2 text-slate-600">{row.rmName}</td>
                             </tr>
                           ))}
@@ -1776,7 +1774,7 @@ export default function App() {
             </div>
             <div className="px-6 py-4 border-t bg-slate-50 rounded-b-2xl flex items-center justify-between gap-3">
               <button onClick={()=>{setIsImportModalOpen(false);setImportPreview([]);setImportErrors([]);}} disabled={isImporting} className="px-4 py-2 border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-100 text-sm font-medium">Cancel</button>
-              {importPreview.length>0 && <button onClick={handleImportSave} disabled={isImporting} className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 disabled:opacity-60 text-white text-sm font-bold rounded-xl shadow-md transition-all">{isImporting?<Loader2 size={16} className="animate-spin" />:<CheckCircle size={16} />}{isImporting?"Importing...":" Import "+String(importPreview.length)+" Customers"}</button>}
+              {importPreview.length>0 && <button onClick={handleImportSave} disabled={isImporting} className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 disabled:opacity-60 text-white text-sm font-bold rounded-xl shadow-md transition-all">{isImporting?<Loader2 size={16} className="animate-spin" />:<CheckCircle size={16} />}{isImporting?"Importing...":" Import "+(importPreview.length)+" Customers"}</button>}
             </div>
           </div>
         </div>
