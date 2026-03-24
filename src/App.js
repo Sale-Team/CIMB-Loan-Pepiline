@@ -512,7 +512,7 @@ export default function App() {
   const handleExportCustomers=(d)=>{exportToExcel(d.map((x,i)=>({...x,no:i+1,status:x.status==="Won"?"Completed Drawdown":x.status})),"Customers",CUSTOMER_HEADERS);showToast(" Exported!");};
   const handleExportUsers=()=>{exportToExcel(appUsers.map((u,i)=>({...u,no:i+1,role:u.role==="admin"?"Administrator":u.role==="bm"?"Branch Manager":"Relationship Manager"})),"Users",USER_HEADERS);showToast(" Users exported!");};
   const handleDownloadTemplate=()=>{
-    const csv="\uFEFF"+[["Customer Name","Business/Workplace","Phone","Branch","Loan Type","Request Amount ($)","Approved Amount ($)","Rate (%)","Tenor (months)","Income Type","Income Amount ($)","Income Status","Customer Priority","Loan Status","Existing Bank","Loan Outstanding ($)","Existing Rate (%)","Maturity Date","RM Username"],["John Smith","Acme Corp","+855 12 345 678","NRD","Personal Loan","50000","45000","5.5","36","Salary","3000","Verified","Medium","Pending","ABA Bank","20000","7","2026-12-31","rm_username"]].map(r=>r.map(v=>""" + (v) + """).join(",")).join("\n");
+    const csv="\uFEFF"+[["Customer Name","Business/Workplace","Phone","Branch","Loan Type","Request Amount ($)","Approved Amount ($)","Rate (%)","Tenor (months)","Income Type","Income Amount ($)","Income Status","Customer Priority","Loan Status","Existing Bank","Loan Outstanding ($)","Existing Rate (%)","Maturity Date","RM Username"],["John Smith","Acme Corp","+855 12 345 678","NRD","Personal Loan","50000","45000","5.5","36","Salary","3000","Verified","Medium","Pending","ABA Bank","20000","7","2026-12-31","rm_username"]].map(function(r){return r.map(function(v){return String.fromCharCode(34)+String(v)+String.fromCharCode(34);}).join(",");}).join("\n");
     const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8;"}));a.download="Template.csv";document.body.appendChild(a);a.click();document.body.removeChild(a);showToast(" Downloaded!");
   };
   const handleFileUpload=(e)=>{
@@ -536,7 +536,7 @@ export default function App() {
         if(!client)re2.push("Row " + (rn+2) + ": Customer Name required");
         if(!branch)re2.push("Row " + (rn+2) + ": Branch required");
         if(!amount)re2.push("Row " + (rn+2) + ": Amount must be a number");
-        if(branch&&!BRANCHES.includes(branch))re2.push("Row " + (rn+2) + ": Invalid branch "" + (branch) + """);
+        if(branch&&!BRANCHES.includes(branch))re2.push("Row " + (rn+2) + ": Invalid branch " + branch);
         if(re2.length){errors.push(...re2);return;}
         const rmUser=appUsers.find(u=>u.username===get("rmUsername"));
         preview.push({client,businessName:get("businessName"),phone:get("phone"),branch,loanType:get("loanType")||"Personal Loan",amount,approvedAmount:parseFloat(get("approvedAmount"))||0,rate:parseFloat(get("rate"))||0,tenor:parseInt(get("tenor"))||0,incomeType:get("incomeType")||"Salary",incomeAmount:parseFloat(get("incomeAmount"))||0,incomeStatus:get("incomeStatus")||"Pending",customerStatus:get("customerStatus")||"Medium",status:get("status")||"Pending",existingBank:get("existingBank"),loanOutstanding:parseFloat(get("loanOutstanding"))||0,existingRate:parseFloat(get("existingRate"))||0,maturityDate:get("maturityDate"),rmUsername:rmUser?.username||loggedInUser.username,rmName:rmUser?.name||loggedInUser.name,date:new Date().toISOString().split("T")[0],createdAt:Date.now()});
