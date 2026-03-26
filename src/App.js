@@ -5,7 +5,7 @@ import {
   Search, X, Plus, CheckCircle, Briefcase,
   Upload, Sparkles, Mail, Copy, Loader2, Star, LogOut, Shield,
   Eye, EyeOff, UserPlus, Trash2, Edit2, FileDown, Clock,
-  Activity,  //
+  Activity,
 } from "lucide-react";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
