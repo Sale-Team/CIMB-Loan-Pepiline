@@ -404,7 +404,6 @@ export default function App() {
       // Firestore "in" supports up to 30 values
       constraints.push(where("branch", "in", branches.slice(0, 30)));
     }
-
     if (filters.status && filters.status.length > 0) {
       constraints.push(where("status", "in", filters.status.slice(0, 30)));
     }
@@ -431,21 +430,44 @@ export default function App() {
   const loadInitialDeals = useCallback(() => {
     if (!loggedInUser) return () => {};
     setIsSyncing(true);
-    const q = buildDealsQuery({}, PAGE_SIZE);
-    const unsub = onSnapshot(q, async (snap) => {
-      const d = snap.docs.map(d => ({ ...d.data(), id: d.id }));
-      setDeals(d);
-      setLastDealDoc(snap.docs[snap.docs.length - 1] || null);
-      setHasMoreDeals(snap.docs.length === PAGE_SIZE);
-      setIsSyncing(false);
-
-      // Get total count for display (cheap metadata-only call)
-      try {
-        const countSnap = await getCountFromServer(buildDealsQuery({}, 99999));
-        setTotalDealCount(countSnap.data().count);
-      } catch { setTotalDealCount(d.length); }
+    const loadDeals = async () => {
+  try {
+    setIsSyncing(true);
+    const response = await fetch("https://9d6ce4334b3bea639cf39b918d5636.86.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/081d1e52035941b99fdf4faec74c4c97/triggers/manual/paths/invoke?api-version=1", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({})
     });
-    return unsub;
+
+    const data = await response.json();
+
+    const formattedDeals = data.map((item, index) => ({
+      id: item.ID,
+      client: item.CustomerName,
+      phone: item.Phone,
+      rmName: item.RMName,
+      branch: item.Branch,
+      amount: item.LoanAmount,
+      status: item.Status,
+      loanType: item.Product,
+      no: index + 1
+    }));
+
+    setDeals(formattedDeals);
+    setTotalDealCount(formattedDeals.length);
+    setIsSyncing(false);
+
+  } catch (err) {
+    console.error(err);
+    setIsSyncing(false);
+  }
+};
+
+loadDeals();
+
+return () => {};
   }, [loggedInUser, buildDealsQuery]);
 
   // ─── IMPROVEMENT #1 — load next page ─────────────────────────────────────────
@@ -691,7 +713,25 @@ export default function App() {
     const rm = isAdmin && newDeal.repUsername ? appUsers.find(u => u.username === newDeal.repUsername) : loggedInUser;
     const deal = { client: newDeal.client, businessName: newDeal.businessName, phone: newDeal.phone, branch: newDeal.branch, amount: parseFloat(newDeal.amount), rmUsername: rm?.username || loggedInUser.username, rmName: rm?.name || loggedInUser.name, status: newDeal.status, loanType: newDeal.loanType, rate: parseFloat(newDeal.rate) || 0, tenor: parseInt(newDeal.tenor) || 0, incomeStatus: newDeal.incomeStatus, incomeType: newDeal.incomeType || "Salary", incomeAmount: parseFloat(newDeal.incomeAmount) || 0, customerStatus: newDeal.customerStatus || "Medium", approvedAmount: parseFloat(newDeal.approvedAmount) || 0, existingBank: newDeal.existingBank || "", loanOutstanding: parseFloat(newDeal.loanOutstanding) || 0, existingRate: parseFloat(newDeal.existingRate) || 0, maturityDate: newDeal.maturityDate || "", date: new Date().toISOString().split("T")[0], createdAt: Date.now() };
     try {
-      await addDoc(collection(db, "artifacts", appId, "public", "data", "deals"), deal);
+      await fetch("https://9d6ce4334b3bea639cf39b918d5636.86.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/6373bc49b6b24fa3ac4cbd1b7e27f570/triggers/manual/paths/invoke?api-version=1", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    CustomerName: deal.client,
+    Phone: deal.phone,
+    RMName: deal.rmName,
+    Branch: deal.branch,
+    Product: deal.loanType,
+    LoanAmount: deal.amount,
+    Status: deal.status,
+    NextFollowUp: "",
+    Remarks: "",
+    UpdatedBy: deal.rmName,
+    UpdatedDate: new Date().toISOString()
+  })
+});
       setNewDeal({ client: "", businessName: "", phone: "", branch: loggedInUser?.branch || "NRD", amount: "", approvedAmount: "", repUsername: "", status: "Pending", loanType: "Personal Loan", rate: "", tenor: "", incomeStatus: "Pending", incomeType: "Salary", incomeAmount: "", customerStatus: "Medium", existingBank: "", loanOutstanding: "", existingRate: "", maturityDate: "" });
       setIsAddDealModalOpen(false); showToast("✅ Customer " + deal.client + " created!");
     } catch (err) { console.error(err); } finally { setIsSyncing(false); }
