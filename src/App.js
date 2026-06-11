@@ -72,7 +72,7 @@ const ACTIVITY_HEADERS = [
 const LOAN_TYPES = ["Personal Loan", "Business Loan", "SME Loan", "Corporate Loan", "Mortgage", "Auto Loan"];
 const INCOME_STATUSES = ["Verified", "Pending", "Unverified"];
 const INCOME_TYPES = ["Salary", "Business", "Rental", "Other"];
-const BRANCHES = ["BB 1", "BB 3", "TLK", "Deposit Team", "NRM", "BTK", "MTT", "BTB", "KPC", "SRP", "271MM", "SSM", "598M", "VSR", "CMT"];
+const BRANCHES = ["BB 1", "BB 3", "TLK", "Deposit Team", "EB 1", "EB 2", "EB 3", "BTB", "KPC", "SRP", "271MM", "SSM", "598M", "VSR", "CMT"];
 
 const DEFAULT_ADMINS = [
   { username: "admin", password: "admin123", role: "admin", name: "System Admin", branch: "BB 1", createdAt: Date.now(), passwordHashed: false },
