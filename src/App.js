@@ -72,11 +72,11 @@ const ACTIVITY_HEADERS = [
 const LOAN_TYPES = ["Personal Loan", "Business Loan", "SME Loan", "Corporate Loan", "Mortgage", "Auto Loan"];
 const INCOME_STATUSES = ["Verified", "Pending", "Unverified"];
 const INCOME_TYPES = ["Salary", "Business", "Rental", "Other"];
-const BRANCHES = ["NRD", "BSL", "TLK", "PDT", "NRM", "BTK", "MTT", "BTB", "KPC", "SRP", "271MM", "SSM", "598M", "VSR", "CMT"];
+const BRANCHES = ["BB 1", "BB 3", "TLK", "Deposit Team", "NRM", "BTK", "MTT", "BTB", "KPC", "SRP", "271MM", "SSM", "598M", "VSR", "CMT"];
 
 const DEFAULT_ADMINS = [
-  { username: "admin", password: "admin123", role: "admin", name: "System Admin", branch: "NRD", createdAt: Date.now(), passwordHashed: false },
-  { username: "Ck-Team", password: "123!!@@", role: "admin", name: "Ck-Team", branch: "NRD", createdAt: Date.now(), passwordHashed: false },
+  { username: "admin", password: "admin123", role: "admin", name: "System Admin", branch: "BB 1", createdAt: Date.now(), passwordHashed: false },
+  { username: "Ck-Team", password: "123!!@@", role: "admin", name: "Ck-Team", branch: "BB 1", createdAt: Date.now(), passwordHashed: false },
 ];
 
 const hashPassword = async (pw) => {
@@ -335,7 +335,7 @@ export default function App() {
   const [statusFilterModal, setStatusFilterModal] = useState(null);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
-  const [newUser, setNewUser] = useState({ username: "", password: "", name: "", role: "rm", branch: "NRD", branches: [] });
+  const [newUser, setNewUser] = useState({ username: "", password: "", name: "", role: "rm", branch: "BB 1", branches: [] });
   const [showNewUserPw, setShowNewUserPw] = useState(false);
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [priorityList, setPriorityList] = useState([]);
@@ -368,7 +368,7 @@ export default function App() {
   const [followUpForm, setFollowUpForm] = useState({ startDate: "", endDate: "", remark: "", status: "Medium" });
   const [followUpFilter, setFollowUpFilter] = useState({ start: "", end: "" });
   const [newDeal, setNewDeal] = useState({
-    client: "", businessName: "", phone: "", branch: "NRD", amount: "", approvedAmount: "",
+    client: "", businessName: "", phone: "", branch: "BB 1", amount: "", approvedAmount: "",
     repUsername: "", status: "Pending", loanType: "Personal Loan", rate: "", tenor: "",
     incomeStatus: "Pending", incomeType: "Salary", incomeAmount: "", customerStatus: "Medium",
     existingBank: "", loanOutstanding: "", existingRate: "", maturityDate: "",
@@ -633,7 +633,7 @@ return () => {};
   const handleExportCustomers = (d) => { exportToExcel(d.map((x, i) => ({ ...x, no: i + 1, status: x.status === "Won" ? "Completed Drawdown" : x.status })), "Customers", CUSTOMER_HEADERS); showToast("✅ Exported!"); };
   const handleExportUsers = () => { exportToExcel(appUsers.map((u, i) => ({ ...u, no: i + 1, role: u.role === "admin" ? "Administrator" : u.role === "bm" ? "Branch Manager" : "Relationship Manager" })), "Users", USER_HEADERS); showToast("✅ Users exported!"); };
   const handleDownloadTemplate = () => {
-    const csv = "\uFEFF" + [["Customer Name", "Business/Workplace", "Phone", "Branch", "Loan Type", "Request Amount ($)", "Approved Amount ($)", "Rate (%)", "Tenor (months)", "Income Type", "Income Amount ($)", "Income Status", "Customer Priority", "Loan Status", "Existing Bank", "Loan Outstanding ($)", "Existing Rate (%)", "Maturity Date", "RM Username"], ["John Smith", "Acme Corp", "+855 12 345 678", "NRD", "Personal Loan", "50000", "45000", "5.5", "36", "Salary", "3000", "Verified", "Medium", "Pending", "ABA Bank", "20000", "7", "2026-12-31", "rm_username"]].map(r => r.map(v => '"' + String(v) + '"').join(",")).join("\n");
+    const csv = "\uFEFF" + [["Customer Name", "Business/Workplace", "Phone", "Branch", "Loan Type", "Request Amount ($)", "Approved Amount ($)", "Rate (%)", "Tenor (months)", "Income Type", "Income Amount ($)", "Income Status", "Customer Priority", "Loan Status", "Existing Bank", "Loan Outstanding ($)", "Existing Rate (%)", "Maturity Date", "RM Username"], ["John Smith", "Acme Corp", "+855 12 345 678", "BB 1", "Personal Loan", "50000", "45000", "5.5", "36", "Salary", "3000", "Verified", "Medium", "Pending", "ABA Bank", "20000", "7", "2026-12-31", "rm_username"]].map(r => r.map(v => '"' + String(v) + '"').join(",")).join("\n");
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" })); a.download = "Template.csv"; document.body.appendChild(a); a.click(); document.body.removeChild(a); showToast("✅ Downloaded!");
   };
 
@@ -732,7 +732,7 @@ return () => {};
     UpdatedDate: new Date().toISOString()
   })
 });
-      setNewDeal({ client: "", businessName: "", phone: "", branch: loggedInUser?.branch || "NRD", amount: "", approvedAmount: "", repUsername: "", status: "Pending", loanType: "Personal Loan", rate: "", tenor: "", incomeStatus: "Pending", incomeType: "Salary", incomeAmount: "", customerStatus: "Medium", existingBank: "", loanOutstanding: "", existingRate: "", maturityDate: "" });
+      setNewDeal({ client: "", businessName: "", phone: "", branch: loggedInUser?.branch || "BB 1", amount: "", approvedAmount: "", repUsername: "", status: "Pending", loanType: "Personal Loan", rate: "", tenor: "", incomeStatus: "Pending", incomeType: "Salary", incomeAmount: "", customerStatus: "Medium", existingBank: "", loanOutstanding: "", existingRate: "", maturityDate: "" });
       setIsAddDealModalOpen(false); showToast("✅ Customer " + deal.client + " created!");
     } catch (err) { console.error(err); } finally { setIsSyncing(false); }
   };
@@ -747,7 +747,7 @@ return () => {};
 
   const openEditDeal = (deal) => {
     setEditingDeal(deal);
-    setEditDealForm({ client: deal.client || "", businessName: deal.businessName || "", phone: deal.phone || "", branch: deal.branch || "NRD", amount: deal.amount || "", approvedAmount: deal.approvedAmount || "", loanType: deal.loanType || "Personal Loan", rate: deal.rate || "", tenor: deal.tenor || "", incomeStatus: deal.incomeStatus || "Pending", incomeType: deal.incomeType || "Salary", incomeAmount: deal.incomeAmount || "", customerStatus: deal.customerStatus || "Medium", status: deal.status || "Pending", repUsername: deal.rmUsername || "" });
+    setEditDealForm({ client: deal.client || "", businessName: deal.businessName || "", phone: deal.phone || "", branch: deal.branch || "BB 1", amount: deal.amount || "", approvedAmount: deal.approvedAmount || "", loanType: deal.loanType || "Personal Loan", rate: deal.rate || "", tenor: deal.tenor || "", incomeStatus: deal.incomeStatus || "Pending", incomeType: deal.incomeType || "Salary", incomeAmount: deal.incomeAmount || "", customerStatus: deal.customerStatus || "Medium", status: deal.status || "Pending", repUsername: deal.rmUsername || "" });
     setIsEditDealModalOpen(true);
   };
 
@@ -772,11 +772,11 @@ return () => {};
       await addDoc(usersRef, { ...newUser, branches: newUser.role === "bm" ? newUser.branches || [newUser.branch] : [newUser.branch], password: hp, passwordHashed: true, createdAt: Date.now() });
       showToast("✅ User " + newUser.name + " created!");
     }
-    setNewUser({ username: "", password: "", name: "", role: "rm", branch: "NRD", branches: [] }); setEditingUser(null); setIsUserModalOpen(false);
+    setNewUser({ username: "", password: "", name: "", role: "rm", branch: "BB 1", branches: [] }); setEditingUser(null); setIsUserModalOpen(false);
   };
 
   const handleDeleteUser = async (userId, userName) => { if (!window.confirm("Delete " + userName + "?")) return; await deleteDoc(doc(db, "artifacts", appId, "public", "data", "appUsers", userId)); showToast("✅ " + userName + " deleted."); };
-  const handleEditUser = (u) => { setEditingUser(u); setNewUser({ username: u.username, password: "", name: u.name, role: u.role, branch: u.branch || "NRD", branches: u.branches || [u.branch || "NRD"] }); setIsUserModalOpen(true); };
+  const handleEditUser = (u) => { setEditingUser(u); setNewUser({ username: u.username, password: "", name: u.name, role: u.role, branch: u.branch || "BB 1", branches: u.branches || [u.branch || "BB 1"] }); setIsUserModalOpen(true); };
 
   const handleLogout = async () => {
     await recordLogoutActivity();
@@ -809,7 +809,7 @@ return () => {};
   if (!loggedInUser) return (
     <LoginPage onLogin={(u) => {
       setLoggedInUser(u);
-      setNewDeal(p => ({ ...p, branch: u.branch || "NRD" }));
+      setNewDeal(p => ({ ...p, branch: u.branch || "BB 1" }));
       setTimeout(() => recordLoginActivity(u), 800);
     }} />
   );
@@ -1256,7 +1256,7 @@ return () => {};
                   <div><h2 className="text-lg font-bold text-slate-800">User Management</h2><p className="text-sm text-slate-500 mt-0.5">{appUsers.length} total accounts</p></div>
                   <div className="flex gap-2">
                     <button onClick={handleExportUsers} className="flex items-center space-x-2 bg-purple-600 hover:bg-purple-500 text-white px-4 py-2.5 rounded-xl text-sm font-medium"><FileDown size={18} /><span>Export</span></button>
-                    <button onClick={() => { setEditingUser(null); setNewUser({ username: "", password: "", name: "", role: "rm", branch: "NRD", branches: [] }); setIsUserModalOpen(true); }} className="flex items-center space-x-2 bg-red-700 hover:bg-red-800 text-white px-4 py-2.5 rounded-xl text-sm font-medium"><UserPlus size={18} /><span>New User</span></button>
+                    <button onClick={() => { setEditingUser(null); setNewUser({ username: "", password: "", name: "", role: "rm", branch: "BB 1", branches: [] }); setIsUserModalOpen(true); }} className="flex items-center space-x-2 bg-red-700 hover:bg-red-800 text-white px-4 py-2.5 rounded-xl text-sm font-medium"><UserPlus size={18} /><span>New User</span></button>
                   </div>
                 </div>
                 <div className="divide-y divide-slate-100">
